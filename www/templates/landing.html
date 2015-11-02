@@ -1,5 +1,39 @@
 <ion-view view-title="Landing">
 	<ion-content>
-		<a href="#/browse">Browse</a>
+		<div class="row" id="title">
+			<img id="logo" src="img/textlogo.png">
+		</div>
+		<div id="breakpoint-description">
+			<h4>Watch videos at your own pace.</h4>
+			<p>Pause. Play. Repeat. Split a long video into meaningful
+			segments, with improved controls! Don't get it? Just dive in
+			and experience breakpoint for yourself.</p>
+		</div>
+		<ion-slide-box does-continue="true" slide-interval="3000" auto-play="true">
+			<ion-slide>
+				<iframe class="sample-video" src="https://www.youtube.com/embed/ept61k7Pnr4" frameborder="0" allowfullscreen></iframe>
+			</ion-slide>
+			<ion-slide>
+				<iframe class="sample-video" src="https://www.youtube.com/embed/-LAXSNyTRnI" frameborder="0" allowfullscreen></iframe>
+			</ion-slide>
+			<ion-slide>
+				<iframe class="sample-video" src="https://www.youtube.com/embed/brMTHzcLsKc" frameborder="0" allowfullscreen></iframe>
+			</ion-slide>
+		</ion-slide-box>
+		<div id="browse">
+			<a class="button button-block button-royal" href="#/browse">Browse</a>
+			<label class="item item-input with-button">
+				<input type="text" placeholder="Search">
+				<button class="button button-royal "><i class="icon ion-search"></i></button>
+			</label>
+		</div>
+		<div id="make-breakpoint">
+			<h4>Can't find a video?</h4>
+			<p>Breakpoint it in a few seconds</p>
+			<label class="item item-input with-button">
+				<input type="text" placeholder="Enter YouTube link">
+				<button class="button button-royal"><i class="icon ion-arrow-right-c"></i></button>
+			</label>
+		</div>
 	</ion-content>
 </ion-view>

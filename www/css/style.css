@@ -1,1 +1,35 @@
 /* Empty. Add your own CSS if you like */
+
+#logo {
+	width: 70%;
+	height: 100%;
+	margin: 20px auto;
+}
+
+#breakpoint-description {
+	margin: 20px 0;
+	padding: 0 20px;
+}
+
+#browse {
+	margin: 20px 0;
+	padding: 0 20px;
+}
+
+#make-breakpoint {
+	background-color: rgba(136,106,234,.5);
+	padding: 20px 20px 50px 20px;
+	margin: 20px 0 0 0;
+}
+
+iframe.sample-video {
+	width:70%;
+	height:100%;
+	margin-left: auto;
+	margin-right: auto;
+	display: block;
+}
+
+.item-input.with-button {
+	padding: 0 0 0 16px;
+}
