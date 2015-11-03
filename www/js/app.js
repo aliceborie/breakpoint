@@ -21,19 +21,26 @@ angular.module('breakpoint', ['ionic', 'breakpoint.controllers', 'breakpoint.dir
 .config(function($stateProvider, $urlRouterProvider) {
 	$stateProvider
 
-	.state('landing', {
+	.state('app', {
+		url: '',
+		abstract: true,
+		controller: 'AppCtrl',
+		templateUrl: 'index.html',
+	})
+
+	.state('app.landing', {
 		url: '/',
 		templateUrl: 'templates/landing.html',
 		controller: 'LandingCtrl'
 	})
 
-	.state('browse', {
+	.state('app.browse', {
 		url: '/browse',
 		templateUrl: 'templates/browse.html',
 		controller: 'BrowseCtrl'
 	})
 
-	.state('category', {
+	.state('app.category', {
 		url: '/browse/:categoryName',
 		templateUrl: 'templates/category.html',
 		controller: 'CategoryCtrl'

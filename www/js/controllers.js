@@ -1,5 +1,52 @@
 angular.module('breakpoint.controllers', [])
 
+.controller('AppCtrl', function($scope, $ionicModal, $ionicPopup) {
+	// Opens search popup when search button in nav bar clicked
+	$scope.openSearch = function() {
+		$ionicPopup.show({
+			title: 'Search',
+			templateUrl: 'templates/modals/search.html',
+			scope: $scope,
+			buttons: [{
+				text: 'Cancel',
+				type: 'button-default',
+				onTap: function(e) {
+					return true;
+				}, 
+			},
+			{
+				text: '<i class="icon ion-search">',
+				type: 'button-royal',
+				onTap: function(e) {
+					return true;
+				}, 
+			}]
+		}).then(function(popup) {
+			$scope.searchModal = popup;
+		})
+	}
+
+	// Create login modal that gets opened when login button in nav clicked
+	$ionicModal.fromTemplateUrl('templates/modals/login.html', {
+		scope: $scope
+	}).then(function(modal) {
+		$scope.loginModal = modal
+	})
+
+	// Opens login modal when login button in nav bar clicked
+	$scope.openLogin = function() {
+		$scope.loginModal.show();
+	}
+
+	$scope.closeLogin = function() {
+		$scope.loginModal.hide();
+	}
+
+	$scope.doLogin = function() {
+		$scope.closeLogin();
+	}
+})
+
 .controller('LandingCtrl', function($scope) {
 })
 
