@@ -7,9 +7,9 @@
 		<div id="categories-grid">
 			<h4>Select category:</h4>
 			<div class="category" ng-repeat="category in categories">
-				<a href="#/browse/{{category.url}}">
+				<a href="#/browse/{{category.attributes.url}}">
 					<div class="item">
-						{{ category.name }}
+						{{ category.attributes.name }}
 					</div>
 				</a>
 			</div>
