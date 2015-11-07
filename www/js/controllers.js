@@ -1,4 +1,4 @@
-angular.module('breakpoint.controllers', [])
+angular.module('breakpoint.controllers', ['breakpoint.player'])
 
 .controller('LandingCtrl', function($scope) {
 })
@@ -33,4 +33,28 @@ angular.module('breakpoint.controllers', [])
 			}
 		})
 	}
+})
+
+.controller('VideoCtrl', function($scope, $stateParams, testFactory) {
+
+    
+    $scope.breakpoints = [
+        {id: 1, time: 0},
+        {id: 2, time: 1},
+        {id: 3, time: 10}
+    ]
+
+    $scope.$on( "$ionicView.enter", function( scopes, states ) {
+
+
+        document.getElementById("player").innerHTML = "TEST";
+
+        // $("div#player").text("TEST");
+    });
+
+    $scope.init = function() {
+        console.log("init");
+    }
+
+    console.log(testFactory.Hello());
 })

@@ -1,0 +1,14 @@
+<ion-view ng-view view-title="Yipee!!!" ng-init="init()" >
+    <ion-content>
+    <!-- ngview -->
+
+    <div ng-repeat="breakpoint in breakpoints">
+        {{ breakpoint.time }}
+    </div>
+    <div id="player"></div>
+
+    <span ng-bind="user.name">
+
+    <!-- <iframe src="https://www.youtube.com/embed/ept61k7Pnr4" frameborder="0" allowfullscreen></iframe> -->
+    </ion-content>
+</ion-view>

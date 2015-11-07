@@ -39,6 +39,12 @@ angular.module('breakpoint', ['ionic', 'breakpoint.controllers'])
 		controller: 'CategoryCtrl'
 	})
 
+    .state('video', {
+        url: "/video/:videoId",
+        templateUrl: 'templates/video.html',
+        controller: 'VideoCtrl'
+    })
+
 	// if none of the above states are matched, use landing page as the fallback
 	$urlRouterProvider.otherwise('/');
 })
