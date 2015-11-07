@@ -1,7 +1,24 @@
 <ion-view view-title="Browse">
+	<ion-nav-buttons side="right" class="show">
+		<nav-buttons></nav-buttons>
+	</ion-nav-buttons>
+	
 	<ion-content>
-		<div ng-repeat="category in categories">
-			<a href="#/browse/{{category.url}}">{{ category.name }}</a>
+		<div id="categories-grid">
+			<h4>Select category:</h4>
+			<div class="category" ng-repeat="category in categories">
+				<a href="#/browse/{{category.attributes.url}}">
+					<div class="item">
+						{{ category.attributes.name }}
+					</div>
+				</a>
+			</div>
+		</div>
+		<div id="search">
+			<label class="item item-input with-button">
+				<input type="text" placeholder="Search">
+				<button class="button button-royal "><i class="icon ion-search"></i></button>
+			</label>
 		</div>
 	</ion-content>
 </ion-view>

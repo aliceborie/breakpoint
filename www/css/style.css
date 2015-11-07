@@ -22,6 +22,19 @@
 	margin: 20px 0 0 0;
 }
 
+#categories-grid {
+	margin: 20px 0;
+	padding: 0 20px;
+	display:block;
+	overflow:hidden;
+}
+
+#search {
+	margin-top: 40px;
+	padding: 0 20px;
+	display: block;
+}
+
 iframe.sample-video {
 	width:70%;
 	height:100%;
@@ -32,4 +45,12 @@ iframe.sample-video {
 
 .item-input.with-button {
 	padding: 0 0 0 16px;
+}
+
+.category > a > .item{
+	display: inline-block;
+	float: left;
+	width: 46%;
+	height: 80px;
+	margin: 2%;
 }

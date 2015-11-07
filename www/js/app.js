@@ -3,7 +3,7 @@
 // angular.module is a global place for creating, registering and retrieving Angular modules
 // 'starter' is the name of this angular module example (also set in a <body> attribute in index.html)
 // the 2nd parameter is an array of 'requires'
-angular.module('breakpoint', ['ionic', 'breakpoint.controllers'])
+angular.module('breakpoint', ['ionic', 'breakpoint.controllers', 'breakpoint.directives'])
 
 .run(function($ionicPlatform) {
 	$ionicPlatform.ready(function() {
@@ -21,19 +21,26 @@ angular.module('breakpoint', ['ionic', 'breakpoint.controllers'])
 .config(function($stateProvider, $urlRouterProvider) {
 	$stateProvider
 
-	.state('landing', {
+	.state('app', {
+		url: '',
+		abstract: true,
+		controller: 'AppCtrl',
+		templateUrl: 'index.html',
+	})
+
+	.state('app.landing', {
 		url: '/',
 		templateUrl: 'templates/landing.html',
 		controller: 'LandingCtrl'
 	})
 
-	.state('browse', {
+	.state('app.browse', {
 		url: '/browse',
 		templateUrl: 'templates/browse.html',
 		controller: 'BrowseCtrl'
 	})
 
-	.state('category', {
+	.state('app.category', {
 		url: '/browse/:categoryName',
 		templateUrl: 'templates/category.html',
 		controller: 'CategoryCtrl'
