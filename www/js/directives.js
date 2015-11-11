@@ -30,7 +30,7 @@ angular.module('breakpoint.directives', [])
 
       $window.onYouTubeIframeAPIReady = function() {
 
-        player = new YT.Player(element.children()[0], {
+      player = new YT.Player(element.children()[0], {
           playerVars: {
             autoplay: 0,
             html5: 1,
@@ -52,18 +52,14 @@ angular.module('breakpoint.directives', [])
         if (newValue == oldValue) {
           return;
         }
-
         player.cueVideoById(scope.videoid);
-
       }); 
 
       scope.$watch('height + width', function(newValue, oldValue) {
         if (newValue == oldValue) {
           return;
         }
-
         player.setSize(scope.width, scope.height);
-
       });
 
       // --------------------------------------------------
@@ -88,6 +84,10 @@ angular.module('breakpoint.directives', [])
 
       scope.$on('BACK', function(event, data) {
         player.seekTo(data, true);
+      });
+
+      scope.$on('REPEAT', function(event, data) {
+        var currTime = player.getCurrentTime();
       });
 
     }  

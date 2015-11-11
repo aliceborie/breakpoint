@@ -122,6 +122,10 @@ angular.module('breakpoint.controllers', ['breakpoint.services'])
         this.$broadcast('BACK', $scope.breakpoints[current].get("time"));
     }
 
+    $scope.repeat = function() {
+        var x = this.$broadcast('REPEAT', $scope.breakpoints);
+    }
+
     // Move later probably
     // Methods
     function increaseCurrent() {
