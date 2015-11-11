@@ -1,3 +1,5 @@
+<script scr="https://www.youtube.com/iframe_api"></script>
+
 <ion-view ng-view view-title="Yipee!!!" ng-init="init()" >
     <ion-content>
     <!-- ngview -->
@@ -5,7 +7,15 @@
     <div ng-repeat="breakpoint in breakpoints">
         {{ breakpoint.time }}
     </div>
+
     <div id="player"></div>
+
+    <youtube width="{{ yt.width }}" height="{{ yt.height }}" videoid="{{ yt.videoid }}"></youtube>
+    <button ng-click="sendControlEvent('PLAY')">Send Play</button>
+    <button ng-click="sendControlEvent('PAUSE')">Send Pause</button>
+    <button ng-click="sendControlEvent('STOP')">Send Stop</button>
+    <button ng-click="skipForward()">Forward</button>
+    <button ng-click="skipBack()">Backward</button>
 
     <span ng-bind="user.name">
 

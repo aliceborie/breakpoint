@@ -1,5 +1,5 @@
 
-angular.module('breakpoint.controllers', ['breakpoint.services', 'breakpoint.player'])
+angular.module('breakpoint.controllers', ['breakpoint.services'])
 
 .controller('AppCtrl', function($scope, $ionicModal, $ionicPopup, $sce) {
 	// Opens search popup when search button in nav bar clicked
@@ -82,45 +82,59 @@ angular.module('breakpoint.controllers', ['breakpoint.services', 'breakpoint.pla
 		console.log(videos);
 		$scope.videos = videos;
 	})
-	
-	// getCategory(category);
-	// function getCategory(name) {
-	// 	// hardcoding these until we use Parse 
-	// 	categories = [
-	// 		{id: 1, name: 'Recipes', url: 'recipes'},
-	// 		{id: 2, name: 'Lectures', url: 'lectures'},
-	// 		{id: 3, name: 'Fix It Yourself', url: 'fix-it-yourself'},
-	// 		{id: 4, name: 'Music', url: 'music'},
-	// 	]
 
-	// 	categories.forEach( function(category) {
-	// 		if (category.url == name) {
-	// 			$scope.category = category;
-	// 		}
-	// 	})
-	// }
 })
 
-.controller('VideoCtrl', function($scope, $stateParams, testFactory) {
+.controller('VideoCtrl', function($scope, $stateParams, parse) {
 
-    
-    $scope.breakpoints = [
-        {id: 1, time: 0},
-        {id: 2, time: 1},
-        {id: 3, time: 10}
-    ]
+    var current = 0; // Which breakpoint index I'm on
 
-    $scope.$on( "$ionicView.enter", function( scopes, states ) {
+    parse.getVideo($stateParams.videoId).then(function(video) {
+        $scope.video = video;
+    })
 
+    parse.getSetsForVideo($stateParams.videoId).then(function(sets) {
+        $scope.sets = sets;
+        // For now, just default to first set always
+        parse.getBreakpointsForSet(sets[0].id).then(function(breakpoints) {
+            $scope.breakpoints = breakpoints;
+        })
+    })
 
-        document.getElementById("player").innerHTML = "TEST";
-
-        // $("div#player").text("TEST");
-    });
-
-    $scope.init = function() {
-        console.log("init");
+    $scope.yt = {
+        width: 600, 
+        height: 480, 
+        videoid: "M7lc1UVf-VE",
     }
 
-    console.log(testFactory.Hello());
+    // Handles all events that don't require additional arguments
+    $scope.sendControlEvent = function (event_name) {
+        this.$broadcast(event_name);
+    };
+
+    $scope.skipForward = function() {
+        increaseCurrent();
+        this.$broadcast('FORWARD', $scope.breakpoints[current].get("time"));
+    };
+
+    $scope.skipBack = function() {
+        decreaseCurrent();
+        this.$broadcast('BACK', $scope.breakpoints[current].get("time"));
+    }
+
+    // Move later probably
+    // Methods
+    function increaseCurrent() {
+        current++;
+        current = current % $scope.breakpoints.length;
+    }
+    function decreaseCurrent() {
+        current--;
+        if (current < 0) {
+            current = $scope.breakpoints.length - 1;
+        }
+    }
+
 })
+
+
