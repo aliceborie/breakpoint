@@ -10,16 +10,15 @@
 
     <div id="player"></div>
 
-    <youtube width="{{ yt.width }}" height="{{ yt.height }}" videoid="{{ yt.videoid }}"></youtube>
+    <youtube width="{{ yt.width }}" height="{{ yt.height }}"></youtube>
     <button ng-click="sendControlEvent('PLAY')">Send Play</button>
     <button ng-click="sendControlEvent('PAUSE')">Send Pause</button>
     <button ng-click="sendControlEvent('STOP')">Send Stop</button>
-    <button ng-click="skipForward()">Forward</button>
-    <button ng-click="skipBack()">Backward</button>
-    <button ng-click="repeat()">Repeat</button>
+    <button ng-click="sendControlEvent('FORWARD')">Forward</button>
+    <button ng-click="sendControlEvent('BACK')">Backward</button>
+    <button ng-click="sendControlEvent('REPEAT')">Repeat</button>
 
     <span ng-bind="user.name">
 
-    <!-- <iframe src="https://www.youtube.com/embed/ept61k7Pnr4" frameborder="0" allowfullscreen></iframe> -->
     </ion-content>
 </ion-view>

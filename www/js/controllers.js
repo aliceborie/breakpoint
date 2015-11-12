@@ -85,59 +85,39 @@ angular.module('breakpoint.controllers', ['breakpoint.services'])
 
 })
 
-.controller('VideoCtrl', function($scope, $stateParams, parse) {
-
-    var current = 0; // Which breakpoint index I'm on
+.controller('VideoCtrl', function($rootScope, $scope, $stateParams, parse) {
 
     parse.getVideo($stateParams.videoId).then(function(video) {
         $scope.video = video;
-    })
+        $scope.$broadcast('INIT', video.get("yt_videoId"));
 
-    parse.getSetsForVideo($stateParams.videoId).then(function(sets) {
-        $scope.sets = sets;
-        // For now, just default to first set always
-        parse.getBreakpointsForSet(sets[0].id).then(function(breakpoints) {
-            $scope.breakpoints = breakpoints;
+        // Loading sets, breakpoints, sorting breakpoints in order of time
+        parse.getSetsForVideo(video.id).then(function(sets) {
+            // For now, just default to first set always
+            parse.getBreakpointsForSet(sets[0].id).then(function(set_breakpoints) {
+                $scope.breakpoints = set_breakpoints;
+                $scope.breakpoints.sort(function(a, b) {
+                    if (a.get("time") < b.get("time"))
+                        return -1;
+                    if (a.get("time") > b.get("time"))
+                        return 1;
+                    return 0;
+                })
+                // Pass sorted breakpoints into the youtube directive too
+                $scope.$broadcast('LOAD_BPS', $scope.breakpoints);
+            })
         })
     })
 
     $scope.yt = {
         width: 600, 
-        height: 480, 
-        videoid: "M7lc1UVf-VE",
+        height: 480
     }
 
     // Handles all events that don't require additional arguments
     $scope.sendControlEvent = function (event_name) {
         this.$broadcast(event_name);
     };
-
-    $scope.skipForward = function() {
-        increaseCurrent();
-        this.$broadcast('FORWARD', $scope.breakpoints[current].get("time"));
-    };
-
-    $scope.skipBack = function() {
-        decreaseCurrent();
-        this.$broadcast('BACK', $scope.breakpoints[current].get("time"));
-    }
-
-    $scope.repeat = function() {
-        var x = this.$broadcast('REPEAT', $scope.breakpoints);
-    }
-
-    // Move later probably
-    // Methods
-    function increaseCurrent() {
-        current++;
-        current = current % $scope.breakpoints.length;
-    }
-    function decreaseCurrent() {
-        current--;
-        if (current < 0) {
-            current = $scope.breakpoints.length - 1;
-        }
-    }
 
 })
 
