@@ -31,5 +31,32 @@ angular.module('breakpoint.services', [])
 			var query = new Parse.Query(Category).equalTo("url", categoryUrl);
 			return query.first()
 		},
+
+        getVideo: function(videoId) {
+            var Video = Parse.Object.extend("Video");
+            // get video that matches videoId
+            var query = new Parse.Query(Video).equalTo("objectId", videoId);
+            return query.first();
+        },
+
+        getVideoWithYT: function(videoId) {
+            var Video = Parse.Object.extend("Video");
+            // get video that matches yt_videoId
+            var query = new Parse.Query(Video).equalTo("yt_videoId", yt_videoId);
+            return query.first();
+        },
+
+        getSetsForVideo: function(videoId) {
+            var Set = Parse.Object.extend("Set");
+            var query = new Parse.Query(Set).equalTo("videoId", videoId);
+            return query.find();
+        },
+
+        getBreakpointsForSet: function(setId) {
+            var Breakpoint = Parse.Object.extend("Breakpoint");
+            var query = new Parse.Query(Breakpoint).equalTo("setId", setId);
+            return query.find();
+        },
+
 	}
 })

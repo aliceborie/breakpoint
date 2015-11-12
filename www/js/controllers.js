@@ -1,5 +1,5 @@
 
-angular.module('breakpoint.controllers', ['breakpoint.services', 'breakpoint.player'])
+angular.module('breakpoint.controllers', ['breakpoint.services'])
 
 .controller('AppCtrl', function($scope, $ionicModal, $ionicPopup, $sce) {
 	// Opens search popup when search button in nav bar clicked
@@ -82,45 +82,43 @@ angular.module('breakpoint.controllers', ['breakpoint.services', 'breakpoint.pla
 		console.log(videos);
 		$scope.videos = videos;
 	})
-	
-	// getCategory(category);
-	// function getCategory(name) {
-	// 	// hardcoding these until we use Parse 
-	// 	categories = [
-	// 		{id: 1, name: 'Recipes', url: 'recipes'},
-	// 		{id: 2, name: 'Lectures', url: 'lectures'},
-	// 		{id: 3, name: 'Fix It Yourself', url: 'fix-it-yourself'},
-	// 		{id: 4, name: 'Music', url: 'music'},
-	// 	]
 
-	// 	categories.forEach( function(category) {
-	// 		if (category.url == name) {
-	// 			$scope.category = category;
-	// 		}
-	// 	})
-	// }
 })
 
-.controller('VideoCtrl', function($scope, $stateParams, testFactory) {
+.controller('VideoCtrl', function($scope, $stateParams, parse) {
 
-    
-    $scope.breakpoints = [
-        {id: 1, time: 0},
-        {id: 2, time: 1},
-        {id: 3, time: 10}
-    ]
+    parse.getVideo($stateParams.videoId).then(function(video) {
+        $scope.video = video;
+        $scope.$broadcast('INIT', video.get("yt_videoId"));
 
-    $scope.$on( "$ionicView.enter", function( scopes, states ) {
+        // Loading sets, breakpoints, sorting breakpoints in order of time
+        parse.getSetsForVideo(video.id).then(function(sets) {
+            // For now, just default to first set always
+            parse.getBreakpointsForSet(sets[0].id).then(function(set_breakpoints) {
+                $scope.breakpoints = set_breakpoints;
+                $scope.breakpoints.sort(function(a, b) {
+                    if (a.get("time") < b.get("time"))
+                        return -1;
+                    if (a.get("time") > b.get("time"))
+                        return 1;
+                    return 0;
+                })
+                // Pass sorted breakpoints into the youtube directive too
+                $scope.$broadcast('LOAD_BPS', $scope.breakpoints);
+            })
+        })
+    })
 
-
-        document.getElementById("player").innerHTML = "TEST";
-
-        // $("div#player").text("TEST");
-    });
-
-    $scope.init = function() {
-        console.log("init");
+    $scope.yt = {
+        width: 600, 
+        height: 480
     }
 
-    console.log(testFactory.Hello());
+    // Handles all events that don't require additional arguments
+    $scope.sendControlEvent = function (event_name) {
+        this.$broadcast(event_name);
+    };
+
 })
+
+
