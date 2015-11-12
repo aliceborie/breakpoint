@@ -85,7 +85,7 @@ angular.module('breakpoint.controllers', ['breakpoint.services'])
 
 })
 
-.controller('VideoCtrl', function($rootScope, $scope, $stateParams, parse) {
+.controller('VideoCtrl', function($scope, $stateParams, parse) {
 
     parse.getVideo($stateParams.videoId).then(function(video) {
         $scope.video = video;
