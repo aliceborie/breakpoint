@@ -5,8 +5,10 @@
 	
 	<ion-content>
 		<div ng-repeat="video in videos">
-			<h5>{{ video.attributes.yt_title }}</h5>
-			<iframe width="560" height="315" src="{{trust('https://www.youtube.com/embed/'+video.attributes.yt_videoId)}}" frameborder="0" allowfullscreen></iframe>
+			<a href="#/video/{{video.id}}">
+				<h5>{{ video.attributes.yt_title }}</h5>
+				<iframe width="560" height="315" src="{{trust('https://www.youtube.com/embed/'+video.attributes.yt_videoId)}}" frameborder="0" allowfullscreen></iframe>
+			</a>
 		</div>
 	</ion-content>
 </ion-view>
