@@ -193,35 +193,37 @@ angular.module('breakpoint.directives', ['breakpoint.services'])
         restrict: 'E',
         scope: false,
         link: function(scope, elem, attr) {
+            var commands = {
+                'break play': function() {
+                    console.log("PLAY");
+                    angular.element(document.getElementById('test')).scope().sendControlEvent("PLAY");
+                },
+                'break pause' : function() {
+                    angular.element(document.getElementById('test')).scope().sendControlEvent("PAUSE");
+                },
+                'break forward' : function () {
+                    angular.element(document.getElementById('test')).scope().sendControlEvent("FORWARD");
+                },
+                'break back' : function() {
+                    angular.element(document.getElementById('test')).scope().sendControlEvent("BACK");
+                },
+                'break repeat' : function() {
+                    angular.element(document.getElementById('test')).scope().sendControlEvent("REPEAT");
+                }
+            };
+            // Add our commands to annyang
+            annyang.addCommands(commands);
+
             scope.$on('INIT', function() {
-                if (annyang) {
-                    var commands = {
-                        'break play': function() {
-                            console.log("PLAY");
-                            angular.element(document.getElementById('test')).scope().sendControlEvent("PLAY");
-                        },
-                        'break pause' : function() {
-                            angular.element(document.getElementById('test')).scope().sendControlEvent("PAUSE");
-                        },
-                        'break forward' : function () {
-                            angular.element(document.getElementById('test')).scope().sendControlEvent("FORWARD");
-                        },
-                        'break back' : function() {
-                            angular.element(document.getElementById('test')).scope().sendControlEvent("BACK");
-                        },
-                        'break repeat' : function() {
-                            angular.element(document.getElementById('test')).scope().sendControlEvent("REPEAT");
-                        }
-                  };
-
-                    // Add our commands to annyang
-                    annyang.addCommands(commands);
-
                     // Start listening. You can call this here, or attach this call to an event, button, etc.
                     // NOTE: LIKELY MOVE THIS INTO... WHEN THE VIDEO IS FULLSCREEN MAYBE??
                     annyang.start();
-                }
+                })
+
+            scope.$on("PAUSE_LISTENER", function() {
+                annyang.abort();
             })
+
         }
     }
 })

@@ -85,7 +85,7 @@ angular.module('breakpoint.controllers', ['breakpoint.services'])
 
 })
 
-.controller('VideoCtrl', function($scope, $stateParams, parse) {
+.controller('VideoCtrl', function($rootScope, $scope, $stateParams, parse) {
 
     parse.getVideo($stateParams.videoId).then(function(video) {
         $scope.video = video;
@@ -118,6 +118,11 @@ angular.module('breakpoint.controllers', ['breakpoint.services'])
     $scope.sendControlEvent = function (event_name) {
         this.$broadcast(event_name);
     };
+
+    // When the page is "popped" and we go back
+    $scope.$on('$locationChangeStart', function(event) {
+        $rootScope.$broadcast("PAUSE_LISTENER"); // For some reason this != scope, so...just use rootscope
+    });
 
 })
 
