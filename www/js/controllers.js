@@ -87,42 +87,46 @@ angular.module('breakpoint.controllers', ['breakpoint.services'])
 
 .controller('VideoCtrl', function($rootScope, $scope, $stateParams, parse) {
 
-    parse.getVideo($stateParams.videoId).then(function(video) {
-        $scope.video = video;
-        $scope.$broadcast('INIT', video.get("yt_videoId"));
-
-        // Loading sets, breakpoints, sorting breakpoints in order of time
-        parse.getSetsForVideo(video.id).then(function(sets) {
-            // For now, just default to first set always
-            parse.getBreakpointsForSet(sets[0].id).then(function(set_breakpoints) {
-                $scope.breakpoints = set_breakpoints;
-                $scope.breakpoints.sort(function(a, b) {
-                    if (a.get("time") < b.get("time"))
-                        return -1;
-                    if (a.get("time") > b.get("time"))
-                        return 1;
-                    return 0;
-                })
-                // Pass sorted breakpoints into the youtube directive too
-                $scope.$broadcast('LOAD_BPS', $scope.breakpoints);
-            })
-        })
-    })
-
     $scope.yt = {
         width: 600, 
         height: 480
     }
 
+    // Page has enetered
+    $scope.$on('$ionicView.beforeEnter', function(){
+        parse.getVideo($stateParams.videoId).then(function(video) {
+            $scope.video = video;
+            $scope.$broadcast('INIT', video.get("yt_videoId"));
+
+            // Loading sets, breakpoints, sorting breakpoints in order of time
+            parse.getSetsForVideo(video.id).then(function(sets) {
+                // For now, just default to first set always
+                parse.getBreakpointsForSet(sets[0].id).then(function(set_breakpoints) {
+                    $scope.breakpoints = set_breakpoints;
+                    $scope.breakpoints.sort(function(a, b) {
+                        if (a.get("time") < b.get("time"))
+                            return -1;
+                        if (a.get("time") > b.get("time"))
+                            return 1;
+                        return 0;
+                    })
+                    // Pass sorted breakpoints into the youtube directive too
+                    $scope.$broadcast('LOAD_BPS', $scope.breakpoints);
+                })
+            })
+        })
+    });
+
+    // When the page is "popped" and we go back
+    $scope.$on('$stateChangeStart', function(event) {
+        console.log("CHANGE");
+        $rootScope.$broadcast("PAUSE_LISTENER"); // For some reason this != scope, so...just use rootscope
+    });
+
     // Handles all events that don't require additional arguments
     $scope.sendControlEvent = function (event_name) {
         this.$broadcast(event_name);
     };
-
-    // When the page is "popped" and we go back
-    $scope.$on('$locationChangeStart', function(event) {
-        $rootScope.$broadcast("PAUSE_LISTENER"); // For some reason this != scope, so...just use rootscope
-    });
 
 })
 
