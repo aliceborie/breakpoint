@@ -6,7 +6,7 @@ angular.module('breakpoint.directives', ['breakpoint.services'])
 	}
 })
 
-
+// Youtube Directive, help from:
 // http://blog.oxrud.com/posts/creating-youtube-directive/
 .directive('youtube', function($window, parse) {
   return {
@@ -154,4 +154,74 @@ angular.module('breakpoint.directives', ['breakpoint.services'])
 
     }  
   };
-});
+})
+
+// Allow use of script tag on partials
+// https://gist.github.com/subudeepak/9617483#file-angular-loadscript-js
+// Use: <script type="text/javascript-lazy"></script>
+.directive('script', function() {
+    return {
+      restrict: 'E',
+      scope: false,
+      link: function(scope, elem, attr) 
+      {
+        if (attr.type==='text/javascript-lazy') 
+        {
+          var s = document.createElement("script");
+          s.type = "text/javascript";                
+          var src = elem.attr('src');
+          if(src!==undefined)
+          {
+              s.src = src;
+          }
+          else
+          {
+              var code = elem.text();
+              s.text = code;
+          }
+          document.head.appendChild(s);
+          elem.remove();
+        }
+      }
+    };
+})
+
+// http://stackoverflow.com/questions/12197880/angularjs-how-to-make-angular-load-script-inside-ng-include
+// We call the VideoController which in turn sends an event back down... causing the youtube directive to play
+.directive('annyang', function() {
+    return {
+        restrict: 'E',
+        scope: false,
+        link: function(scope, elem, attr) {
+            scope.$on('INIT', function() {
+                if (annyang) {
+                    var commands = {
+                        'break play': function() {
+                            console.log("PLAY");
+                            angular.element(document.getElementById('test')).scope().sendControlEvent("PLAY");
+                        },
+                        'break pause' : function() {
+                            angular.element(document.getElementById('test')).scope().sendControlEvent("PAUSE");
+                        },
+                        'break forward' : function () {
+                            angular.element(document.getElementById('test')).scope().sendControlEvent("FORWARD");
+                        },
+                        'break back' : function() {
+                            angular.element(document.getElementById('test')).scope().sendControlEvent("BACK");
+                        },
+                        'break repeat' : function() {
+                            angular.element(document.getElementById('test')).scope().sendControlEvent("REPEAT");
+                        }
+                  };
+
+                    // Add our commands to annyang
+                    annyang.addCommands(commands);
+
+                    // Start listening. You can call this here, or attach this call to an event, button, etc.
+                    // NOTE: LIKELY MOVE THIS INTO... WHEN THE VIDEO IS FULLSCREEN MAYBE??
+                    annyang.start();
+                }
+            })
+        }
+    }
+})
