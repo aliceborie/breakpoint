@@ -20,7 +20,10 @@ angular.module('breakpoint.directives', ['breakpoint.services'])
       api_timeoutId: "=" // ID of the timeout event that rechecks yt API load state
     },
 
-    template: '<div></div>',
+    template: '<div></div>' + // Youtube replaces this with the iframe
+           '<div id=\'yt_overlay\'>'+
+                '<fa name="spinner" spin></fa>'+
+           '</div>', // Our overlay
 
     link: function(scope, element) {
 
@@ -84,6 +87,7 @@ angular.module('breakpoint.directives', ['breakpoint.services'])
         scope.$on('FORWARD', function() { forwardPlayer(); });
         scope.$on('BACK', function() { backPlayer(); });
         scope.$on('REPEAT', function() { repeatPlayerSegment(); });
+        scope.$on('FULLSCREEN', function() { fullscreen(); })
 
         // --------------------------------------------------
         // VIDEO METHODS
@@ -110,11 +114,11 @@ angular.module('breakpoint.directives', ['breakpoint.services'])
                     color: "white",
                     iv_load_policy: 3,
                     showinfo: 0,
-                    controls: 0,
+                    controls: 1,
                     iv_load_policy: 3
                 },
-                height: scope.height,
-                width: scope.width,
+                height: "100%",
+                width: "100%",
                 videoId: data, 
             });
 
@@ -126,6 +130,7 @@ angular.module('breakpoint.directives', ['breakpoint.services'])
         }
 
         function playPlayer() {
+            console.log("PLAY!");
             scope.player.playVideo();
         }
 
@@ -152,6 +157,10 @@ angular.module('breakpoint.directives', ['breakpoint.services'])
                 findCurrent(currentTime);
             }
             scope.player.seekTo(scope.breakpoints[scope.current].get("time"), true);
+        }
+
+        function fullscreen() {
+            document.getElementsByTagName("youtube")[0].children[0].classList.add("fullscreen");
         }
 
         // --------------------------------------------------

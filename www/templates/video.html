@@ -6,13 +6,14 @@
         {{ breakpoint.time }}
     </div>
 
-    <youtube width="{{ yt.width }}" height="{{ yt.height }}"></youtube>
+    <youtube></youtube>
     <button ng-click="sendControlEvent('PLAY')">Send Play</button>
     <button ng-click="sendControlEvent('PAUSE')">Send Pause</button>
     <button ng-click="sendControlEvent('STOP')">Send Stop</button>
     <button ng-click="sendControlEvent('FORWARD')">Forward</button>
     <button ng-click="sendControlEvent('BACK')">Backward</button>
     <button ng-click="sendControlEvent('REPEAT')">Repeat</button>
+    <button ng-click="sendControlEvent('FULLSCREEN')">Fullscreen</button>
 
     <span ng-bind="user.name"></span>
 

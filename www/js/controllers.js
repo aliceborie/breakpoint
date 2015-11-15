@@ -87,11 +87,6 @@ angular.module('breakpoint.controllers', ['breakpoint.services'])
 
 .controller('VideoCtrl', function($window, $rootScope, $scope, $stateParams, parse) {
 
-    $scope.yt = {
-        width: 600, 
-        height: 480,
-    }
-
 document.addEventListener("deviceready", onDeviceReady, false);
     function onDeviceReady() {
         console.log("READY!");
