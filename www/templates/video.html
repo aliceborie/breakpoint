@@ -7,7 +7,6 @@
     </div>
 
     <div id="player"></div>
-    <annyang></annyang>
 
     <youtube width="{{ yt.width }}" height="{{ yt.height }}"></youtube>
     <button ng-click="sendControlEvent('PLAY')">Send Play</button>
@@ -17,37 +16,11 @@
     <button ng-click="sendControlEvent('BACK')">Backward</button>
     <button ng-click="sendControlEvent('REPEAT')">Repeat</button>
 
-    <span ng-bind="user.name">
+    <span ng-bind="user.name"></span>
+
+    <button class="button button-full button-positive " ng-click="changeOriantationLandspace()">Change To Landspace Mode</button><br/>
+<button class="button button-full button-positive " ng-click="changeOriantationPortrait ()">Change To Portrait Mode</button><br/>
+
 
     </ion-content>
 </ion-view>
-
-<script type="text/javascript-lazy">
-// http://stackoverflow.com/questions/12197880/angularjs-how-to-make-angular-load-script-inside-ng-include
-
-//   if (annyang) {
-//       var commands = {
-//         'break play': function() {
-//             angular.element(document.getElementById('test')).scope().sendControlEvent("PLAY");
-//         },
-//         'break pause' : function() {
-//             angular.element(document.getElementById('test')).scope().sendControlEvent("PAUSE");
-//         },
-//         'break forward' : function () {
-//             angular.element(document.getElementById('test')).scope().sendControlEvent("FORWARD");
-//         },
-//         'break back' : function() {
-//             angular.element(document.getElementById('test')).scope().sendControlEvent("BACK");
-//         },
-//         'break repeat' : function() {
-//             angular.element(document.getElementById('test')).scope().sendControlEvent("REPEAT");
-//         }
-//   };
-
-//   // Add our commands to annyang
-//   annyang.addCommands(commands);
-
-//   // Start listening. You can call this here, or attach this call to an event, button, etc.
-//   annyang.start();
-// }
-</script>

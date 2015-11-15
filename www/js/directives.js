@@ -6,60 +6,61 @@ angular.module('breakpoint.directives', ['breakpoint.services'])
 	}
 })
 
-// Youtube Directive, help from:
-// http://blog.oxrud.com/posts/creating-youtube-directive/
+// Youtube Directive, help from: http://blog.oxrud.com/posts/creating-youtube-directive/
 .directive('youtube', function($window, parse) {
   return {
     restrict: "E",
 
     scope: {
       height: "@",
-      width: "@"
+      width: "@",
+      player: "=", // iFrame YT player element
+      current: "=", // Current BP
+      breakpoints: "=", // Array of Parse Breakpoint Objs
+      api_timeoutId: "=" // ID of the timeout event that rechecks yt API load state
     },
 
     template: '<div></div>',
 
     link: function(scope, element) {
 
-        var player; // YT Javascript iframe
-        var breakpoints = []; // Array of Parse Breakpoint Objs
-        var current = 0;
-
         // --------------------------------------------------
         // INITIALIZATION
 
+        // Retrieving the YT iFrame API
+        var tag = document.createElement('script');
+        tag.src = "https://www.youtube.com/iframe_api";
+        var firstScriptTag = document.getElementsByTagName('script')[0];
+        firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
+
         // We wrap the youtube initialization in an event listener because we don't know when parse
-        // will get back to us and let us know videoId and youtubeID
+        // will get back to us and let us know videoId and youtubeID and also because we don't know when
+        // the youtube API has loaded
         scope.$on('INIT', function(event, data) {
-
-            // Initializing the YT Player
-            var tag = document.createElement('script');
-            tag.src = "https://www.youtube.com/iframe_api";
-            var firstScriptTag = document.getElementsByTagName('script')[0];
-            firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
-
-            $window.onYouTubeIframeAPIReady = function() {
-                player = new YT.Player(element.children()[0], {
-                    playerVars: {
-                        autoplay: 0,
-                        html5: 1,
-                        theme: "light",
-                        modesbranding: 0,
-                        color: "white",
-                        iv_load_policy: 3,
-                        showinfo: 1,
-                        controls: 1
-                    },
-                    height: scope.height,
-                    width: scope.width,
-                    videoId: data, 
-                });
-            }
+            scope.current = 0;
+            initPage(data);
         });
+        function initPage(data) {
+            if (typeof(YT) !== "undefined") {
+                resetPlayer(data);
+                resetAnnyang();
+                annyang.start(); // Startup the listener
+            } else { // Youtube API still not loaded, wait a second and try again
+                scope.api_timeoutId = setTimeout(function() {initPage(data);}, 1000);
+            }
+        }
 
         // Loading in Sets and Breakpoints from controller
         scope.$on('LOAD_BPS', function(event, data) {
-            breakpoints = data;
+            scope.breakpoints = data;
+        })
+
+        // An event that is emitted when the videoshow page is 'popped'
+        scope.$on("LEAVE_VIDEOSHOW", function() {
+            window.clearTimeout(scope.api_timeoutId); // Stop this timeout event
+            stopPlayer();
+            annyang.removeCommands(); // Reset annyang so it doesn't use the old player
+            annyang.abort();
         })
 
 
@@ -70,83 +71,123 @@ angular.module('breakpoint.directives', ['breakpoint.services'])
             if (newValue == oldValue) {
                 return;
             }
-            player.setSize(scope.width, scope.height);
+            scope.player.setSize(scope.width, scope.height);
         });
 
 
         // --------------------------------------------------
         // PLAYER EVENT LISTENERS
 
-        scope.$on('STOP', function () {
-            player.seekTo(0);
-            player.stopVideo();
-        });
+        scope.$on('STOP', function () { stopPlayer(); });
+        scope.$on('PLAY', function () { playPlayer(); }); 
+        scope.$on('PAUSE', function () { pausePlayer(); }); 
+        scope.$on('FORWARD', function() { forwardPlayer(); });
+        scope.$on('BACK', function() { backPlayer(); });
+        scope.$on('REPEAT', function() { repeatPlayerSegment(); });
 
-        scope.$on('PLAY', function () {
-            player.playVideo();
-        }); 
+        // --------------------------------------------------
+        // VIDEO METHODS
 
-        scope.$on('PAUSE', function () {
-            player.pauseVideo();
-        }); 
+        function resetAnnyang() {
+            // Setup annyang words to listen for and methods to call for each
+            var commands = {
+                'play': playPlayer,
+                'stop' : pausePlayer,
+                'forward' : forwardPlayer,
+                'back' : backPlayer,
+                'repeat' : repeatPlayerSegment
+            };
+            annyang.addCommands(commands); // Add our commands to annyang
+        }
 
-        scope.$on('FORWARD', function() {
+        function resetPlayer(data) {
+            scope.player = new YT.Player(element.children()[0], {
+                playerVars: {
+                    autoplay: 0,
+                    html5: 1,
+                    theme: "light",
+                    modesbranding: 0,
+                    color: "white",
+                    iv_load_policy: 3,
+                    showinfo: 1,
+                    controls: 1
+                },
+                height: scope.height,
+                width: scope.width,
+                videoId: data, 
+            });
+
+        }
+
+        function stopPlayer() {
+            scope.player.seekTo(0);
+            scope.player.stopVideo();
+        }
+
+        function playPlayer() {
+            scope.player.playVideo();
+        }
+
+        function pausePlayer() {
+            scope.player.pauseVideo();
+        }
+
+        function forwardPlayer() {
             increaseCurrent();
-            player.seekTo(breakpoints[current].get("time"), true);
-        });
+            scope.player.seekTo(scope.breakpoints[scope.current].get("time"), true);
+        }
 
-        scope.$on('BACK', function() {
+        function backPlayer() {
             decreaseCurrent();
-            player.seekTo(breakpoints[current].get("time"), true);
-        });
+            scope.player.seekTo(scope.breakpoints[scope.current].get("time"), true);
+        }
 
-        scope.$on('REPEAT', function(event, data) {
-            var currentTime = player.getCurrentTime();
+        function repeatPlayerSegment() {
+            var currentTime = scope.player.getCurrentTime();
             if (currentIsSynced(currentTime)) {
-                player.seekTo(breakpoints[current].get("time"), true);
+                scope.player.seekTo(scope.breakpoints[scope.current].get("time"), true);
             } else {
                  // Player scrubbed or skipped sections, meaning our current pointer is no longer correct
                 findCurrent(currentTime);
             }
-            player.seekTo(breakpoints[current].get("time"), true);
-        });
-
+            scope.player.seekTo(scope.breakpoints[scope.current].get("time"), true);
+        }
 
         // --------------------------------------------------
         // METHODS
 
         function increaseCurrent() {
-            current++;
-            current = current % breakpoints.length;
+            scope.current++;
+            scope.current = scope.current % scope.breakpoints.length;
         }
         function decreaseCurrent() {
-            current--;
-            if (current < 0) {
-                current = breakpoints.length - 1;
+            scope.current--;
+            if (scope.current < 0) {
+                scope.current = scope.breakpoints.length - 1;
             }
         }
 
         // Given current time, returns true if current is pointing to right BP 
         // (the closest one that is less than current time)
         function currentIsSynced(currentTime) {
-            var currBP = breakpoints[current].get("time");
-            if (current !== breakpoints.length - 1) {
-                var forwardBP = breakpoints[current + 1].get("time");
+            var currBP = scope.breakpoints[scope.current].get("time");
+            if (current !== scope.breakpoints.length - 1) {
+                var forwardBP = scope.breakpoints[scope.current + 1].get("time");
                 return ((currentTime < forwardBP) && (currentTime >= currBP));
             } else {
                 return currentTime >= currBP;
             }
         }
         function findCurrent(currentTime) {
-            for (var i = 0; i < breakpoints.length; i++) {
-                if (i === breakpoints.length - 1) {
-                    current = breakpoints.length - 1;
+            for (var i = 0; i < scope.breakpoints.length; i++) {
+                if (i === scope.breakpoints.length - 1) {
+                    scope.current = scope.breakpoints.length - 1;
                     return;
                 }
-                var bpstart = breakpoints[i].get("time");
-                var bpend = breakpoints[i+1].get("time");
+                var bpstart = scope.breakpoints[i].get("time");
+                var bpend = scope.breakpoints[i+1].get("time");
                 if ((currentTime < bpend) && (currentTime >= bpstart)) {
-                    current = i;
+                    scope.current = i;
                     return;
                 }
             }
@@ -185,45 +226,4 @@ angular.module('breakpoint.directives', ['breakpoint.services'])
       }
     };
 })
-
-// http://stackoverflow.com/questions/12197880/angularjs-how-to-make-angular-load-script-inside-ng-include
-// We call the VideoController which in turn sends an event back down... causing the youtube directive to play
-.directive('annyang', function() {
-    return {
-        restrict: 'E',
-        scope: false,
-        link: function(scope, elem, attr) {
-            var commands = {
-                'break play': function() {
-                    console.log("PLAY");
-                    angular.element(document.getElementById('test')).scope().sendControlEvent("PLAY");
-                },
-                'break pause' : function() {
-                    angular.element(document.getElementById('test')).scope().sendControlEvent("PAUSE");
-                },
-                'break forward' : function () {
-                    angular.element(document.getElementById('test')).scope().sendControlEvent("FORWARD");
-                },
-                'break back' : function() {
-                    angular.element(document.getElementById('test')).scope().sendControlEvent("BACK");
-                },
-                'break repeat' : function() {
-                    angular.element(document.getElementById('test')).scope().sendControlEvent("REPEAT");
-                }
-            };
-            // Add our commands to annyang
-            annyang.addCommands(commands);
-
-            scope.$on('INIT', function() {
-                    // Start listening. You can call this here, or attach this call to an event, button, etc.
-                    // NOTE: LIKELY MOVE THIS INTO... WHEN THE VIDEO IS FULLSCREEN MAYBE??
-                    annyang.start();
-                })
-
-            scope.$on("PAUSE_LISTENER", function() {
-                annyang.abort();
-            })
-
-        }
-    }
-})
+//http://stackoverflow.com/questions/12197880/angularjs-how-to-make-angular-load-script-inside-ng-include

@@ -85,15 +85,33 @@ angular.module('breakpoint.controllers', ['breakpoint.services'])
 
 })
 
-.controller('VideoCtrl', function($rootScope, $scope, $stateParams, parse) {
+.controller('VideoCtrl', function($window, $rootScope, $scope, $stateParams, parse) {
 
     $scope.yt = {
         width: 600, 
         height: 480
     }
 
+document.addEventListener("deviceready", onDeviceReady, false);
+    function onDeviceReady() {
+        console.log("READY!");
+        $scope.changeOriantationLandspace = function() {
+            screen.lockOrientation('landscape');
+        }
+         
+        $scope.changeOriantationPortrait = function() {
+            screen.lockOrientation('portrait');
+        } 
+    }
+
+
+
+
+
+
     // Page has enetered
     $scope.$on('$ionicView.beforeEnter', function(){
+        console.log($window.innerHeight);
         parse.getVideo($stateParams.videoId).then(function(video) {
             $scope.video = video;
             $scope.$broadcast('INIT', video.get("yt_videoId"));
@@ -119,8 +137,8 @@ angular.module('breakpoint.controllers', ['breakpoint.services'])
 
     // When the page is "popped" and we go back
     $scope.$on('$stateChangeStart', function(event) {
-        console.log("CHANGE");
-        $rootScope.$broadcast("PAUSE_LISTENER"); // For some reason this != scope, so...just use rootscope
+        // For some we don't have access to scope, so just use rootscope
+        $rootScope.$broadcast("LEAVE_VIDEOSHOW");
     });
 
     // Handles all events that don't require additional arguments
