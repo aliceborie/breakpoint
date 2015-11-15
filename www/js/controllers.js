@@ -89,7 +89,7 @@ angular.module('breakpoint.controllers', ['breakpoint.services'])
 
     $scope.yt = {
         width: 600, 
-        height: 480
+        height: 480,
     }
 
 document.addEventListener("deviceready", onDeviceReady, false);

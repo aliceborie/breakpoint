@@ -106,11 +106,12 @@ angular.module('breakpoint.directives', ['breakpoint.services'])
                     autoplay: 0,
                     html5: 1,
                     theme: "light",
-                    modesbranding: 0,
+                    modestbranding: 1,
                     color: "white",
                     iv_load_policy: 3,
-                    showinfo: 1,
-                    controls: 1
+                    showinfo: 0,
+                    controls: 0,
+                    iv_load_policy: 3
                 },
                 height: scope.height,
                 width: scope.width,
