@@ -106,7 +106,6 @@ document.addEventListener("deviceready", onDeviceReady, false);
 
     // Page has enetered
     $scope.$on('$ionicView.beforeEnter', function(){
-        console.log($window.innerHeight);
         parse.getVideo($stateParams.videoId).then(function(video) {
             $scope.video = video;
             $scope.$broadcast('INIT', video.get("yt_videoId"));

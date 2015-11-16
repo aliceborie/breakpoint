@@ -44,11 +44,14 @@ angular.module('breakpoint.directives', ['breakpoint.services'])
             initPage(data);
         });
         function initPage(data) {
-            if (typeof(YT) !== "undefined") {
+            if ((typeof(YT) !== "undefined") && (typeof(YT.Player) !== "undefined")) {
+                console.log(YT);
+                console.log(YT.player);
                 resetPlayer(data);
                 resetAnnyang();
                 annyang.start(); // Startup the listener
             } else { // Youtube API still not loaded, wait a second and try again
+                console.log("TRY");
                 scope.api_timeoutId = setTimeout(function() {initPage(data);}, 1000);
             }
         }
