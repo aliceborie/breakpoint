@@ -6,7 +6,11 @@
         {{ breakpoint.time }}
     </div>
 
+    <div id="yt_playoverlay" class="hide">
+        <button ng-click="sendControlEvent('LEAVE_FULLSCREEN')")>LEAVE</button>
+    </div>
     <youtube></youtube>
+
     <button ng-click="sendControlEvent('PLAY')">Send Play</button>
     <button ng-click="sendControlEvent('PAUSE')">Send Pause</button>
     <button ng-click="sendControlEvent('STOP')">Send Stop</button>

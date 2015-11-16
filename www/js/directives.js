@@ -21,7 +21,7 @@ angular.module('breakpoint.directives', ['breakpoint.services'])
     },
 
     template: '<div></div>' + // Youtube replaces this with the iframe
-           '<div id=\'yt_overlay\'>'+
+           '<div id=\'yt_showoverlay\'>'+
                 '<fa name="spinner" spin></fa>'+
            '</div>', // Our overlay
 
@@ -45,8 +45,6 @@ angular.module('breakpoint.directives', ['breakpoint.services'])
         });
         function initPage(data) {
             if ((typeof(YT) !== "undefined") && (typeof(YT.Player) !== "undefined")) {
-                console.log(YT);
-                console.log(YT.player);
                 resetPlayer(data);
                 resetAnnyang();
                 annyang.start(); // Startup the listener
@@ -91,6 +89,7 @@ angular.module('breakpoint.directives', ['breakpoint.services'])
         scope.$on('BACK', function() { backPlayer(); });
         scope.$on('REPEAT', function() { repeatPlayerSegment(); });
         scope.$on('FULLSCREEN', function() { fullscreen(); })
+        scope.$on('LEAVE_FULLSCREEN', function() { leave_fullscreen(); })
 
         // --------------------------------------------------
         // VIDEO METHODS
@@ -163,7 +162,19 @@ angular.module('breakpoint.directives', ['breakpoint.services'])
         }
 
         function fullscreen() {
-            document.getElementsByTagName("youtube")[0].children[0].classList.add("fullscreen");
+            angular.element(document.getElementsByTagName("ion-content")[0]).removeClass("has-header");
+            angular.element(document.getElementsByTagName("ion-nav-bar")[0]).addClass("hide");
+
+            angular.element(document.getElementById("yt_playoverlay")).removeClass("hide");
+            angular.element(document.getElementsByTagName("youtube")[0]).addClass("fullscreen");
+        }
+
+        function leave_fullscreen() {
+            angular.element(document.getElementsByTagName("ion-content")[0]).addClass("has-header");
+            angular.element(document.getElementsByTagName("ion-nav-bar")[0]).removeClass("hide");
+
+            angular.element(document.getElementById("yt_playoverlay")).addClass("hide");
+            angular.element(document.getElementsByTagName("youtube")[0]).removeClass("fullscreen");
         }
 
         // --------------------------------------------------
