@@ -126,5 +126,10 @@ angular.module('breakpoint.controllers', ['breakpoint.services', 'breakpoint.pla
         console.log("init");
     }
 
+    $scope.doRefresh = function() {
+    	$scope.$broadcast('scroll.refreshComplete');
+    	$scope.$apply()
+    }
+
     console.log(testFactory.Hello());
 })
