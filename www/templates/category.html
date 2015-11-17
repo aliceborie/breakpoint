@@ -2,8 +2,10 @@
 	<ion-nav-buttons side="right" class="show">
 		<nav-buttons></nav-buttons>
 	</ion-nav-buttons>
-	
 	<ion-content>
+	    <ion-refresher pulling-text="Pull to refresh" on-refresh="doRefresh()">
+	    </ion-refresher>
+	    
 		<div ng-repeat="video in videos">
 			<a href="#/video/{{video.id}}">
 				<h5>{{ video.attributes.yt_title }}</h5>
