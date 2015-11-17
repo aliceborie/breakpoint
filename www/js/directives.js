@@ -163,7 +163,7 @@ angular.module('breakpoint.directives', ['breakpoint.services'])
         }
 
         function fullscreen() {
-            angular.element(document.getElementsByTagName("ion-content")[0]).removeClass("has-header");
+            angular.element(document.getElementById("videoShow").children[0]).removeClass("has-header");
             angular.element(document.getElementsByTagName("ion-nav-bar")[0]).addClass("hide");
 
             angular.element(document.getElementById("yt_playoverlay")).removeClass("hide");
@@ -171,7 +171,7 @@ angular.module('breakpoint.directives', ['breakpoint.services'])
         }
 
         function leave_fullscreen() {
-            angular.element(document.getElementsByTagName("ion-content")[0]).addClass("has-header");
+            angular.element(document.getElementById("videoShow").children[0]).addClass("has-header");
             angular.element(document.getElementsByTagName("ion-nav-bar")[0]).removeClass("hide");
 
             angular.element(document.getElementById("yt_playoverlay")).addClass("hide");
