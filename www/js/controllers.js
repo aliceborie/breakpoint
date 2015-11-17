@@ -140,6 +140,19 @@ document.addEventListener("deviceready", onDeviceReady, false);
         this.$broadcast(event_name);
     };
 
+
+    // Need to figure this out ... not working yet
+    // For some reason the cordova screen oritentaion plugin works above but not here
+    $scope.fullscreen = function() {
+        screen.lockOrientation('landscape');
+        this.$broadcast("FULLSCREEN");
+    }
+
+    $scope.leave_fullscreen = function() {
+        screen.lockOrientation('portrait');
+        this.$broadcast("LEAVE_FULLSCREEN");
+    }
+
 })
 
 

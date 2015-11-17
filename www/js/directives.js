@@ -116,8 +116,9 @@ angular.module('breakpoint.directives', ['breakpoint.services'])
                     color: "white",
                     iv_load_policy: 3,
                     showinfo: 0,
-                    controls: 1,
-                    iv_load_policy: 3
+                    controls: 0,
+                    iv_load_policy: 3,
+                    playsinline: 1
                 },
                 height: "100%",
                 width: "100%",
@@ -250,4 +251,3 @@ angular.module('breakpoint.directives', ['breakpoint.services'])
       }
     };
 })
-//http://stackoverflow.com/questions/12197880/angularjs-how-to-make-angular-load-script-inside-ng-include
