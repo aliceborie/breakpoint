@@ -155,3 +155,4 @@ angular.module('breakpoint.directives', ['breakpoint.services'])
     }  
   };
 });
+
