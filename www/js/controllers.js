@@ -72,6 +72,7 @@ angular.module('breakpoint.controllers', ['breakpoint.services', 'breakpoint.pla
 		console.log(categories)
 		$scope.categories = categories;
 	})
+
 })
 
 .controller('CategoryCtrl', function($scope, $stateParams, parse) {
@@ -86,7 +87,11 @@ angular.module('breakpoint.controllers', ['breakpoint.services', 'breakpoint.pla
 		console.log(videos);
 		$scope.videos = videos;
 	})
-	
+	$scope.doRefresh = function() {
+    	$scope.$broadcast('scroll.refreshComplete');
+    	$scope.$apply()
+    	console.log(testFactory.Hello());
+    }
 	// getCategory(category);
 	// function getCategory(name) {
 	// 	// hardcoding these until we use Parse 

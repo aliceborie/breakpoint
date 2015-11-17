@@ -2,8 +2,9 @@
 	<ion-nav-buttons side="right" class="show">
 		<nav-buttons></nav-buttons>
 	</ion-nav-buttons>
-	
 	<ion-content>
+    <ion-refresher pulling-text="Pull to refresh" on-refresh="doRefresh()">
+    </ion-refresher>
 		<div ng-repeat="video in videos">
 			<h5>{{ video.attributes.yt_title }}</h5>
 			<iframe width="560" height="315" src="{{trust('https://www.youtube.com/embed/'+video.attributes.yt_videoId)}}" frameborder="0" allowfullscreen></iframe>
