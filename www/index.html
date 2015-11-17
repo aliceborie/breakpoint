@@ -28,7 +28,7 @@
 		<script src="js/directives.js"></script>
 		<script src="js/services.js"></script>
   	</head>
-  	<body ng-app="breakpoint" id="top">
+  		<body ng-app="breakpoint">
 
 		<ion-nav-bar class="bar-stable">
 	        <ion-nav-back-button>
@@ -37,20 +37,12 @@
 
 	    <ion-nav-view>
 	    </ion-nav-view>
-
-	   <!--  <ion-footer-bar class='bar-stable'>
-	    	<button class="button button-icon" ng-click="top()">Back to Top</button>    
- 		</ion-footer-bar> -->
-
- 		<ion-footer-bar align-title="left" class="bar-assertive">
-  <div class="buttons">
-    <button class="button">Left Button</button>
-  </div>
-  <h1 class="title">Title!</h1>
-  <div class="buttons" ng-click="doSomething()">
-    <button class="button">Right Button</button>
-  </div>
-</ion-footer-bar>
-
   	</body>
+  	<div class = "bar bar-footer">
+  		<div class="title">
+  			<button class="button button-icon center" ng-click="toTop()">Back to Top</button>
+  		</div>
+  	</div>
 </html>
+
+

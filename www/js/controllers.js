@@ -88,9 +88,11 @@ angular.module('breakpoint.controllers', ['breakpoint.services', 'breakpoint.pla
 		$scope.videos = videos;
 	})
 	$scope.doRefresh = function() {
+		parse.getVideosForCategory(category).then( function(videos) {
+			$scope.videos = videos;
+		})
     	$scope.$broadcast('scroll.refreshComplete');
-    	$scope.$apply()
-    	console.log(testFactory.Hello());
+    	$scope.$apply();
     }
 	// getCategory(category);
 	// function getCategory(name) {
