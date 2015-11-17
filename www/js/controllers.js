@@ -1,7 +1,7 @@
 
 angular.module('breakpoint.controllers', ['breakpoint.services'])
 
-.controller('AppCtrl', function($scope, $ionicModal, $ionicPopup, $sce) {
+.controller('AppCtrl', function($scope, $ionicModal, $ionicPopup, $sce, $ionicScrollDelegate) {
 	// Opens search popup when search button in nav bar clicked
 	$scope.openSearch = function() {
 		$ionicPopup.show({
@@ -50,6 +50,10 @@ angular.module('breakpoint.controllers', ['breakpoint.services'])
 	$scope.trust = function(URL) {
     	return $sce.trustAsResourceUrl(URL);
   	}
+
+  	$scope.scrollTop = function() {
+    	$ionicScrollDelegate.scrollTop();
+  };
 })
 
 .controller('LandingCtrl', function($scope) {
@@ -68,6 +72,7 @@ angular.module('breakpoint.controllers', ['breakpoint.services'])
 		console.log(categories)
 		$scope.categories = categories;
 	})
+
 })
 
 .controller('CategoryCtrl', function($scope, $stateParams, parse) {
@@ -83,7 +88,31 @@ angular.module('breakpoint.controllers', ['breakpoint.services'])
 		$scope.videos = videos;
 	})
 
+	$scope.doRefresh = function() {
+		parse.getVideosForCategory(category).then( function(videos) {
+			$scope.videos = videos;
+		})
+    	$scope.$broadcast('scroll.refreshComplete');
+    	$scope.$apply();
+    }
+	// getCategory(category);
+	// function getCategory(name) {
+	// 	// hardcoding these until we use Parse 
+	// 	categories = [
+	// 		{id: 1, name: 'Recipes', url: 'recipes'},
+	// 		{id: 2, name: 'Lectures', url: 'lectures'},
+	// 		{id: 3, name: 'Fix It Yourself', url: 'fix-it-yourself'},
+	// 		{id: 4, name: 'Music', url: 'music'},
+	// 	]
+
+	// 	categories.forEach( function(category) {
+	// 		if (category.url == name) {
+	// 			$scope.category = category;
+	// 		}
+	// 	})
+	// }
 })
+
 
 .controller('VideoCtrl', function($window, $rootScope, $scope, $stateParams, parse) {
 
@@ -154,5 +183,4 @@ document.addEventListener("deviceready", onDeviceReady, false);
     }
 
 })
-
 
