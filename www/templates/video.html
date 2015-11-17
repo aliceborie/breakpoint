@@ -1,8 +1,8 @@
 <ion-view ng-view view-title="Yipee!!!" ng-init="init()" >
     <ion-content>
     <!-- ngview -->
-    <ion-refresher pulling-text="Pull to refresh" on-refresh="doRefresh()">
-    </ion-refresher>
+    <!-- <ion-refresher pulling-text="Pull to refresh" on-refresh="doRefresh()">
+    </ion-refresher> -->
     <div ng-repeat="breakpoint in breakpoints">
         {{ breakpoint.time }}
     </div>

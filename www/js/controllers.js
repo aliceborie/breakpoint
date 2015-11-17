@@ -1,7 +1,7 @@
 
 angular.module('breakpoint.controllers', ['breakpoint.services', 'breakpoint.player'])
 
-.controller('AppCtrl', function($scope, $ionicModal, $ionicPopup, $sce) {
+.controller('AppCtrl', function($scope, $ionicModal, $ionicPopup, $sce, $ionicScrollDelegate) {
 	// Opens search popup when search button in nav bar clicked
 	$scope.openSearch = function() {
 		$ionicPopup.show({
@@ -51,9 +51,9 @@ angular.module('breakpoint.controllers', ['breakpoint.services', 'breakpoint.pla
     	return $sce.trustAsResourceUrl(URL);
   	}
 
-  	// $scope.top = function(){
-  	// 	$scope.scrollTop;
-  	// }
+  	$scope.scrollTop = function() {
+    	$ionicScrollDelegate.scrollTop();
+  };
 })
 
 .controller('LandingCtrl', function($scope) {
@@ -133,10 +133,10 @@ angular.module('breakpoint.controllers', ['breakpoint.services', 'breakpoint.pla
         console.log("init");
     }
 
-    $scope.doRefresh = function() {
-    	$scope.$broadcast('scroll.refreshComplete');
-    	$scope.$apply()
-    }
+    // $scope.doRefresh = function() {
+    // 	$scope.$broadcast('scroll.refreshComplete');
+    // 	$scope.$apply()
+    // }
 
     console.log(testFactory.Hello());
 })
