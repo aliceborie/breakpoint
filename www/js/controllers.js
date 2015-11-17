@@ -50,6 +50,10 @@ angular.module('breakpoint.controllers', ['breakpoint.services', 'breakpoint.pla
 	$scope.trust = function(URL) {
     	return $sce.trustAsResourceUrl(URL);
   	}
+
+  	// $scope.top = function(){
+  	// 	$scope.scrollTop;
+  	// }
 })
 
 .controller('LandingCtrl', function($scope) {
