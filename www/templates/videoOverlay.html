@@ -4,6 +4,13 @@
 
 <!-- Overlay that is shown when video is not playing -->
 <div id="yt_showoverlay">
+    <a href="javascript:;" ng-click="fullscreen()">
+        <div style="width:100%;height:100%;"></div>
+    </a>
+</div>
+
+<!-- Overlay that is shown while the video is fullscreened and playing -->
+<div id="yt_playoverlay" class="hide">
     <div id="yt_playcontrols">
         <a href="javascript:;" ng-click="backPlayer()"><fa name="fast-backward" id="yt_back"></fa></a>
         <a href="javascript:;" ng-click="repeatPlayerSegment()"><fa name="repeat" id="yt_repeat"></fa></a>
@@ -11,9 +18,15 @@
         <a href="javascript:;" ng-click=""><fa name="beer" id="yt_bpBrowse"></fa></a>
         <a href="javascript:;" ng-click="forwardPlayer()"><fa name="fast-forward" id="yt_forward"></fa></a>
     </div>
-</div>
 
-<!-- Overlay that is shown while the video is fullscreened and playing -->
-<div id="yt_playoverlay" class="hide">
+    <div id="yt_miniscrubber">
+
+    </div>
+
+    <div id="yt_fullbar">
+        <label ng-bind="currentTime"></label>
+        <label ng-bind="duration"></label>
+    </div>
+
     <button ng-click="leave_fullscreen()">LEAVE</button>
 </div>

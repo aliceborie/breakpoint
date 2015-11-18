@@ -17,6 +17,7 @@ angular.module('breakpoint.directives', ['breakpoint.services'])
       player: "=", // iFrame YT player element
       duration: "=", // Duration of the YT video
       current: "=", // Current BP
+      currentTime: "=", // Current time in formated seconds / mins / etc
       breakpoints: "=", // Array of Parse Breakpoint Objs
       api_timeoutId: "=" // ID of the timeout event that rechecks yt API load state
     },
@@ -164,7 +165,9 @@ angular.module('breakpoint.directives', ['breakpoint.services'])
             scope.player.seekTo(scope.breakpoints[scope.current].get("time"), true);
         }
 
-        function fullscreen() {
+        scope.fullscreen = function fullscreen() {
+            scope.player.playVideo();
+
             angular.element(document.getElementById("videoShow").children[0]).removeClass("has-header");
             angular.element(document.getElementsByTagName("ion-nav-bar")[0]).addClass("hide");
             angular.element(document.getElementsByTagName("ion-footer-bar")[0]).addClass("hide");
@@ -181,6 +184,19 @@ angular.module('breakpoint.directives', ['breakpoint.services'])
             angular.element(document.getElementById("yt_playoverlay")).addClass("hide");
             angular.element(document.getElementsByTagName("youtube")[0]).removeClass("fullscreen");
         }
+
+        scope.getCurrentTime = function getCurrentTime() {
+            return scope.player.getCurrentTime();
+        }
+
+
+
+       
+       // WIP!!!
+       // Trying to get currenttime to update as player goes ... 
+        // scope.$apply(function() {
+        //     scope.currentTime.assign(scope.player.getCurrentTime());
+        // })
 
         // --------------------------------------------------
         // METHODS
