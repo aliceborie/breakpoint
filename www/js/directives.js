@@ -15,6 +15,7 @@ angular.module('breakpoint.directives', ['breakpoint.services'])
       height: "@",
       width: "@",
       player: "=", // iFrame YT player element
+      duration: "=", // Duration of the YT video
       current: "=", // Current BP
       breakpoints: "=", // Array of Parse Breakpoint Objs
       api_timeoutId: "=" // ID of the timeout event that rechecks yt API load state
@@ -122,9 +123,14 @@ angular.module('breakpoint.directives', ['breakpoint.services'])
                 },
                 height: "100%",
                 width: "100%",
-                videoId: data, 
+                videoId: data,
+                events: {
+                    'onReady': onPlayerReady
+                }
             });
-
+        }
+        function onPlayerReady() {
+            scope.duration = scope.player.getDuration();
         }
 
         function stopPlayer() {
