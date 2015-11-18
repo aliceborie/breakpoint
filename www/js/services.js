@@ -35,7 +35,7 @@ angular.module('breakpoint.services', [])
         getVideo: function(videoId) {
             var Video = Parse.Object.extend("Video");
             // get video that matches videoId
-            var query = new Parse.Query(Video).equalTo("objectId", videoId);
+            var query = new Parse.Query(Video).equalTo("objectId", videoId).select(["yt_title"]);
             return query.first();
         },
 
@@ -46,15 +46,15 @@ angular.module('breakpoint.services', [])
             return query.first();
         },
 
-        getSetsForVideo: function(videoId) {
+        getSetsForVideo: function(videoOId) {
             var Set = Parse.Object.extend("Set");
-            var query = new Parse.Query(Set).equalTo("videoId", videoId);
+            var query = new Parse.Query(Set).equalTo("videoOId", videoOId);
             return query.find();
         },
 
         getBreakpointsForSet: function(setId) {
             var Breakpoint = Parse.Object.extend("Breakpoint");
-            var query = new Parse.Query(Breakpoint).equalTo("setId", setId);
+            var query = new Parse.Query(Breakpoint).equalTo("setId", setId).select(["description","time","title"]);
             return query.find();
         },
 

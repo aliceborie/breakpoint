@@ -22,7 +22,7 @@ angular.module('breakpoint.directives', ['breakpoint.services'])
 
     template: '<div></div>' + // Youtube replaces this with the iframe
            '<div id=\'yt_showoverlay\'>'+
-                '<fa name="spinner" spin></fa>'+
+                // '<fa name="spinner" spin></fa>'+ // commented out for class demo on 11/18
            '</div>', // Our overlay
 
     link: function(scope, element) {

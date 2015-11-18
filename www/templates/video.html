@@ -1,30 +1,44 @@
-<ion-view ng-view view-title="Yipee!!!" ng-init="init()" id="videoShow">
+<ion-view ng-view view-title="{{ video.attributes.yt_title }}" ng-init="init()" id="videoShow">
     <ion-content>
     <!-- ngview -->
     <!-- <ion-refresher pulling-text="Pull to refresh" on-refresh="doRefresh()">
     </ion-refresher> -->
-    <div ng-repeat="breakpoint in breakpoints">
-        {{ breakpoint.time }}
-    </div>
+        <!-- <div ng-repeat="breakpoint in breakpoints">
+            {{ breakpoint.attributes.time }}
+        </div> -->
 
-    <div id="yt_playoverlay" class="hide">
-        <button ng-click="sendControlEvent('LEAVE_FULLSCREEN')")>LEAVE</button>
-    </div>
-    <youtube></youtube>
+        <div id="yt_playoverlay" class="hide">
+            <button class="button button-circle button-royal icon ion-close-round" ng-click="sendControlEvent('LEAVE_FULLSCREEN')")><!-- LEAVE --></button>
+        </div>
 
-    <button ng-click="sendControlEvent('PLAY')">Send Play</button>
-    <button ng-click="sendControlEvent('PAUSE')">Send Pause</button>
-    <button ng-click="sendControlEvent('STOP')">Send Stop</button>
-    <button ng-click="sendControlEvent('FORWARD')">Forward</button>
-    <button ng-click="sendControlEvent('BACK')">Backward</button>
-    <button ng-click="sendControlEvent('REPEAT')">Repeat</button>
-    <button ng-click="sendControlEvent('FULLSCREEN')">Fullscreen</button>
+        <youtube></youtube>
 
-    <span ng-bind="user.name"></span>
+        <div id="player-controls">
+            <button class="button button-small button-circle button-assertive icon ion-play" ng-click="sendControlEvent('PLAY')"><!-- Send Play --></button>
+            <button class="button button-small button-circle button-assertive icon ion-pause" ng-click="sendControlEvent('PAUSE')"><!-- Send Pause --></button>
+            <button class="button button-small button-circle button-assertive icon ion-stop" ng-click="sendControlEvent('STOP')"><!-- Send Stop --></button>
+            <button class="button button-small button-circle button-assertive icon ion-ios-skipbackward" ng-click="sendControlEvent('BACK')"><!-- Backward --></button>
+            <button class="button button-small button-circle button-assertive icon ion-ios-skipforward" ng-click="sendControlEvent('FORWARD')"><!-- Forward --></button>
+            <button class="button button-small button-circle button-assertive icon ion-loop" ng-click="sendControlEvent('REPEAT')"><!-- Repeat --></button>
+            
+            </br>
+            <button class="button button-small button-circle button-royal icon ion-arrow-expand" ng-click="sendControlEvent('FULLSCREEN')"><!-- Fullscreen --></button>
 
-    <button class="button button-full button-positive " ng-click="changeOriantationLandspace()">Change To Landspace Mode</button><br/>
-<button class="button button-full button-positive " ng-click="changeOriantationPortrait ()">Change To Portrait Mode</button><br/>
+            <span ng-bind="user.name"></span>
 
+            <button class="button button-small button-circle button-positive icon ion-android-phone-landscape" ng-click="changeOriantationLandspace()"><!-- Change To Landspace Mode --></button>
+            <button class="button button-small button-circle button-positive icon ion-android-phone-portrait" ng-click="changeOriantationPortrait ()"><!-- Change To Portrait Mode --></button>
+        </div>
+
+        <table class="breakpoint-table">
+            <tr ng-repeat="breakpoint in breakpoints">
+                <td class="time-cell">{{ Math.floor(breakpoint.attributes.time / 60) }}:{{ breakpoint.attributes.time % 60 }}</td>
+                <td class="step-description-cell">
+                    <h5> {{ breakpoint.attributes.title }}</h5>
+                    <p> {{ breakpoint.attributes.description }}</p>
+                </td>
+            </tr>
+        </table>
 
     </ion-content>
 </ion-view>

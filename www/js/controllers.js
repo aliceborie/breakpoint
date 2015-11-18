@@ -60,13 +60,6 @@ angular.module('breakpoint.controllers', ['breakpoint.services'])
 })
 
 .controller('BrowseCtrl', function($scope, parse) {
-	// hardcoding these until we use Parse 
-	// $scope.categories = [
-	// 	{id: 1, name: 'Recipes', url: 'recipes'},
-	// 	{id: 2, name: 'Lectures', url: 'lectures'},
-	// 	{id: 3, name: 'Fix It Yourself', url: 'fix-it-yourself'},
-	// 	{id: 4, name: 'Music', url: 'music'},
-	// ]
 
 	parse.getCategories().then( function(categories) {
 		console.log(categories)
@@ -80,11 +73,11 @@ angular.module('breakpoint.controllers', ['breakpoint.services'])
 	var category = $stateParams.categoryName;
 	
 	parse.getCategory(category).then( function(category) {
-		console.log(category);
+		// console.log(category);
 		$scope.category = category;
 	})
 	parse.getVideosForCategory(category).then( function(videos) {
-		console.log(videos);
+		// console.log(videos);
 		$scope.videos = videos;
 	})
 
@@ -95,26 +88,11 @@ angular.module('breakpoint.controllers', ['breakpoint.services'])
     	$scope.$broadcast('scroll.refreshComplete');
     	$scope.$apply();
     }
-	// getCategory(category);
-	// function getCategory(name) {
-	// 	// hardcoding these until we use Parse 
-	// 	categories = [
-	// 		{id: 1, name: 'Recipes', url: 'recipes'},
-	// 		{id: 2, name: 'Lectures', url: 'lectures'},
-	// 		{id: 3, name: 'Fix It Yourself', url: 'fix-it-yourself'},
-	// 		{id: 4, name: 'Music', url: 'music'},
-	// 	]
-
-	// 	categories.forEach( function(category) {
-	// 		if (category.url == name) {
-	// 			$scope.category = category;
-	// 		}
-	// 	})
-	// }
 })
 
 
 .controller('VideoCtrl', function($window, $rootScope, $scope, $stateParams, parse) {
+	$scope.Math = window.Math;
 
 document.addEventListener("deviceready", onDeviceReady, false);
     function onDeviceReady() {
@@ -127,11 +105,6 @@ document.addEventListener("deviceready", onDeviceReady, false);
             screen.lockOrientation('portrait');
         } 
     }
-
-
-
-
-
 
     // Page has enetered
     $scope.$on('$ionicView.beforeEnter', function(){
