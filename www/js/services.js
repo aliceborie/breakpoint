@@ -5,7 +5,7 @@ angular.module('breakpoint.services', [])
 	return {
 		getCategories: function() {
 			var Category = Parse.Object.extend("Category");
-			var query = new Parse.Query(Category).select(["name","url"]);
+			var query = new Parse.Query(Category).select(["name","url","image_url"]);
 			return query.find();
 		},
 
