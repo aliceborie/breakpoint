@@ -6,10 +6,11 @@
 	<ion-content>
 		<div id="categories-grid">
 			<h4>Select category:</h4>
-			<div class="category" ng-repeat="category in categories">
+			<div class="category category-container" ng-repeat="category in categories">
 				<a href="#/browse/{{category.attributes.url}}">
 					<div class="item">
-						{{ category.attributes.name }}
+						<div class="category-overlay"><h2>{{ category.attributes.name }}</h2></div>
+						<img class="category-background" src="{{ category.attributes.image_url }}">
 					</div>
 				</a>
 			</div>

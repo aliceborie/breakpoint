@@ -80,6 +80,13 @@ angular.module('breakpoint.directives', ['breakpoint.services'])
         // --------------------------------------------------
         // PLAYER EVENT LISTENERS
 
+        scope.$on('PLAY', function() { playPlayer(); })
+        scope.$on('PAUSE', function() { pausePlayer(); })
+        scope.$on('STOP', function() { scope.stopPlayer(); })
+        scope.$on('BACK', function() { scope.backPlayer(); })
+        scope.$on('FORWARD', function() { scope.forwardPlayer(); })
+        scope.$on('REPEAT', function() { scope.repeatPlayerSegment(); })
+
         scope.$on('FULLSCREEN', function() { fullscreen(); })
 
         // --------------------------------------------------
