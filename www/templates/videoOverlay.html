@@ -1,0 +1,19 @@
+
+
+<div></div> <!-- Youtube replaces this with the iframe -->
+
+<!-- Overlay that is shown when video is not playing -->
+<div id="yt_showoverlay">
+    <div id="yt_playcontrols">
+        <a href="javascript:;" ng-click="backPlayer()"><fa name="fast-backward" id="yt_back"></fa></a>
+        <a href="javascript:;" ng-click="repeatPlayerSegment()"><fa name="repeat" id="yt_repeat"></fa></a>
+        <a href="javascript:;" ng-click="pausePlayPlayer()"><fa name="pause" id="yt_pauseplay"></fa></a>
+        <a href="javascript:;" ng-click=""><fa name="beer" id="yt_bpBrowse"></fa></a>
+        <a href="javascript:;" ng-click="forwardPlayer()"><fa name="fast-forward" id="yt_forward"></fa></a>
+    </div>
+</div>
+
+<!-- Overlay that is shown while the video is fullscreened and playing -->
+<div id="yt_playoverlay" class="hide">
+    <button ng-click="leave_fullscreen()">LEAVE</button>
+</div>

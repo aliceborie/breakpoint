@@ -73,22 +73,6 @@ iframe {
     width: 100%;
 }
 
-#yt_showoverlay {
-    z-index: 100000000000;
-    position: absolute;
-    top: 0;
-    color: white;
-    font-size:100px;
-}
-
-#yt_playoverlay {
-    z-index: 10;
-    position: absolute;
-    top: 0;
-    color: white;
-    font-size:100px;
-}
-
 .fullscreen {
     margin: 0px;
     padding: 0px;
@@ -108,5 +92,52 @@ iframe {
     left: 0px;
     top: 0px;
     z-index: 5;
+}
+
+#yt_showoverlay, #yt_playoverlay {
+    z-index: 10;
+    position: absolute;
+    top: 0;
+    width: inherit;
+    height: inherit;
+    overflow: hidden;
+}
+
+#yt_showoverlay {
+}
+
+#yt_playoverlay {
+}
+
+#yt_playcontrols { /* Center vertically */
+    position: relative;
+    top: 50%;
+    transform: translateY(-50%);
+    color: white;
+    font-size:20px;
+}
+#yt_playcontrols .fa {
+    position: absolute;
+    width: 20%;
+    text-align: center;
+    left: 0;
+    right: 0;
+}
+
+#yt_back {
+    right: inherit;
+}
+#yt_repeat {
+    margin-left: 20%;
+}
+.fa#yt_pauseplay {
+    margin: 0 auto;
+}
+.fa#yt_bpBrowse {
+    margin-right: 20%;
+    left: inherit;
+}
+.fa#yt_forward {
+    left: inherit;
 }
 

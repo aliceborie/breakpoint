@@ -160,6 +160,7 @@ document.addEventListener("deviceready", onDeviceReady, false);
 
     // When the page is "popped" and we go back
     $scope.$on('$stateChangeStart', function(event) {
+        console.log("ASDF");
         // For some we don't have access to scope, so just use rootscope
         $rootScope.$broadcast("LEAVE_VIDEOSHOW");
     });
