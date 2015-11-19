@@ -15,26 +15,19 @@ angular.module('breakpoint.directives', ['breakpoint.services'])
       height: "@",
       width: "@",
       player: "=", // iFrame YT player element
+      duration: "=", // Duration of the YT video
       current: "=", // Current BP
+      currentTime: "=", // Current time in formated seconds / mins / etc
+      currentTime_timeoutId: "=", // ID of the timeout event that updates current time
       breakpoints: "=", // Array of Parse Breakpoint Objs
       api_timeoutId: "=" // ID of the timeout event that rechecks yt API load state
     },
-
-    template: '<div></div>' + // Youtube replaces this with the iframe
-           '<div id=\'yt_showoverlay\'>'+
-                // '<fa name="spinner" spin></fa>'+ // commented out for class demo on 11/18
-           '</div>', // Our overlay
+    templateUrl: '../templates/videoOverlay.html',
 
     link: function(scope, element) {
 
         // --------------------------------------------------
         // INITIALIZATION
-
-        // Retrieving the YT iFrame API
-        var tag = document.createElement('script');
-        tag.src = "https://www.youtube.com/iframe_api";
-        var firstScriptTag = document.getElementsByTagName('script')[0];
-        firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
 
         // We wrap the youtube initialization in an event listener because we don't know when parse
         // will get back to us and let us know videoId and youtubeID and also because we don't know when
@@ -82,14 +75,14 @@ angular.module('breakpoint.directives', ['breakpoint.services'])
         // --------------------------------------------------
         // PLAYER EVENT LISTENERS
 
-        scope.$on('STOP', function () { stopPlayer(); });
-        scope.$on('PLAY', function () { playPlayer(); }); 
-        scope.$on('PAUSE', function () { pausePlayer(); }); 
-        scope.$on('FORWARD', function() { forwardPlayer(); });
-        scope.$on('BACK', function() { backPlayer(); });
-        scope.$on('REPEAT', function() { repeatPlayerSegment(); });
-        scope.$on('FULLSCREEN', function() { fullscreen(); })
-        scope.$on('LEAVE_FULLSCREEN', function() { leave_fullscreen(); })
+        scope.$on('PLAY', function() { playPlayer(); })
+        scope.$on('PAUSE', function() { pausePlayer(); })
+        scope.$on('STOP', function() { scope.stopPlayer(); })
+        scope.$on('BACK', function() { scope.backPlayer(); })
+        scope.$on('FORWARD', function() { scope.forwardPlayer(); })
+        scope.$on('REPEAT', function() { scope.repeatPlayerSegment(); })
+
+        scope.$on('FULLSCREEN', function() { scope.fullscreen(); })
 
         // --------------------------------------------------
         // VIDEO METHODS
@@ -97,11 +90,11 @@ angular.module('breakpoint.directives', ['breakpoint.services'])
         function resetAnnyang() {
             // Setup annyang words to listen for and methods to call for each
             var commands = {
-                'play': playPlayer,
-                'stop' : pausePlayer,
-                'forward' : forwardPlayer,
-                'back' : backPlayer,
-                'repeat' : repeatPlayerSegment
+                'play': scope.playPlayer,
+                'stop' : scope.pausePlayer,
+                'forward' : scope.forwardPlayer,
+                'back' : scope.backPlayer,
+                'repeat' : scope.repeatPlayerSegment
             };
             annyang.addCommands(commands); // Add our commands to annyang
         }
@@ -122,18 +115,31 @@ angular.module('breakpoint.directives', ['breakpoint.services'])
                 },
                 height: "100%",
                 width: "100%",
-                videoId: data, 
+                videoId: data,
+                events: {
+                    'onReady': onPlayerReady
+                }
             });
-
+        }
+        function onPlayerReady() {
+            scope.duration = scope.player.getDuration();
+            scope.currentTime = scope.player.getCurrentTime();
         }
 
-        function stopPlayer() {
+        scope.stopPlayer = function stopPlayer() {
             scope.player.seekTo(0);
             scope.player.stopVideo();
         }
 
+        scope.pausePlayPlayer = function pausePlayPlayer() {
+            if (scope.player.getPlayerState() !== 1) { // Paused, need to play
+                scope.player.playVideo();
+            } else { // Playing, need to pause
+                scope.player.pauseVideo();
+            }
+        }
+
         function playPlayer() {
-            console.log("PLAY!");
             scope.player.playVideo();
         }
 
@@ -141,17 +147,17 @@ angular.module('breakpoint.directives', ['breakpoint.services'])
             scope.player.pauseVideo();
         }
 
-        function forwardPlayer() {
+        scope.forwardPlayer = function forwardPlayer() {
             increaseCurrent();
             scope.player.seekTo(scope.breakpoints[scope.current].get("time"), true);
         }
 
-        function backPlayer() {
+        scope.backPlayer = function backPlayer() {
             decreaseCurrent();
             scope.player.seekTo(scope.breakpoints[scope.current].get("time"), true);
         }
 
-        function repeatPlayerSegment() {
+        scope.repeatPlayerSegment = function repeatPlayerSegment() {
             var currentTime = scope.player.getCurrentTime();
             if (currentIsSynced(currentTime)) {
                 scope.player.seekTo(scope.breakpoints[scope.current].get("time"), true);
@@ -162,21 +168,42 @@ angular.module('breakpoint.directives', ['breakpoint.services'])
             scope.player.seekTo(scope.breakpoints[scope.current].get("time"), true);
         }
 
-        function fullscreen() {
-            angular.element(document.getElementsByTagName("ion-content")[0]).removeClass("has-header");
+        scope.fullscreen = function fullscreen() {
+            playPlayer();
+
+            angular.element(document.getElementById("videoShow").children[0]).removeClass("has-header");
             angular.element(document.getElementsByTagName("ion-nav-bar")[0]).addClass("hide");
+            angular.element(document.getElementsByTagName("ion-footer-bar")[0]).addClass("hide");
 
             angular.element(document.getElementById("yt_playoverlay")).removeClass("hide");
             angular.element(document.getElementsByTagName("youtube")[0]).addClass("fullscreen");
         }
 
-        function leave_fullscreen() {
-            angular.element(document.getElementsByTagName("ion-content")[0]).addClass("has-header");
+        scope.leave_fullscreen = function leave_fullscreen() {
+            angular.element(document.getElementById("videoShow").children[0]).addClass("has-header");
             angular.element(document.getElementsByTagName("ion-nav-bar")[0]).removeClass("hide");
+            angular.element(document.getElementsByTagName("ion-footer-bar")[0]).removeClass("hide");
 
             angular.element(document.getElementById("yt_playoverlay")).addClass("hide");
             angular.element(document.getElementsByTagName("youtube")[0]).removeClass("fullscreen");
         }
+
+        scope.getCurrentTime = function getCurrentTime() {
+            return scope.player.getCurrentTime();
+        }
+
+
+
+       
+        scope.currentTime_timeoutId = setTimeout(refreshCurrentTime, 500)
+        function refreshCurrentTime() {
+            scope.$apply(function() {
+                console.log("GOOGO");
+                scope.currentTime = scope.player.getCurrentTime();
+            })
+            // scope.currentTime_timeoutId = setTimeout(refreshCurrentTime, 500);
+        }
+
 
         // --------------------------------------------------
         // METHODS
@@ -196,7 +223,7 @@ angular.module('breakpoint.directives', ['breakpoint.services'])
         // (the closest one that is less than current time)
         function currentIsSynced(currentTime) {
             var currBP = scope.breakpoints[scope.current].get("time");
-            if (current !== scope.breakpoints.length - 1) {
+            if (scope.current !== scope.breakpoints.length - 1) {
                 var forwardBP = scope.breakpoints[scope.current + 1].get("time");
                 return ((currentTime < forwardBP) && (currentTime >= currBP));
             } else {
