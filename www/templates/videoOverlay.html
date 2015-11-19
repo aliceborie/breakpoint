@@ -12,11 +12,28 @@
 <!-- Overlay that is shown while the video is fullscreened and playing -->
 <div id="yt_playoverlay" class="hide">
     <div id="yt_playcontrols">
-        <a href="javascript:;" ng-click="backPlayer()"><fa name="fast-backward" id="yt_back"></fa></a>
-        <a href="javascript:;" ng-click="repeatPlayerSegment()"><fa name="repeat" id="yt_repeat"></fa></a>
-        <a href="javascript:;" ng-click="pausePlayPlayer()"><fa name="pause" id="yt_pauseplay"></fa></a>
-        <a href="javascript:;" ng-click=""><fa name="beer" id="yt_bpBrowse"></fa></a>
-        <a href="javascript:;" ng-click="forwardPlayer()"><fa name="fast-forward" id="yt_forward"></fa></a>
+
+
+
+        <span id="yt_back">
+            <button class="button button-small button-circle button-assertive icon ion-ios-skipbackward" ng-click="backPlayer()"><!-- Backward --></button>
+        </span>
+
+        <span id="yt_repeat">
+            <button class="button button-small button-circle button-assertive icon ion-loop" ng-click="repeatPlayerSegment()"><!-- Repeat --></button>
+        </span>
+
+        <span id="yt_pauseplay">
+            <button class="button button-small button-circle button-assertive icon ion-play" ng-click="pausePlayPlayer()" id="yt_pauseplay"><!-- Send Play --></button>
+        </span>
+
+        <span id="yt_bpBrowse">
+            <button class="button button-small button-circle button-assertive icon" ng-click=""><!-- Open the breakpoint browser --></button>
+        </span>
+
+        <span id="yt_forward">
+            <button class="button button-small button-circle button-assertive icon ion-ios-skipforward" ng-click="forwardPlayer()"><!-- Forward --></button>
+        </span>
     </div>
 
     <div id="yt_miniscrubber">
@@ -28,5 +45,5 @@
         <label ng-bind="duration"></label>
     </div>
 
-    <button ng-click="leave_fullscreen()">LEAVE</button>
+    <button class="button button-circle button-royal icon ion-close-round" ng-click="sendControlEvent('LEAVE_FULLSCREEN')")><!-- LEAVE --></button>
 </div>

@@ -87,7 +87,7 @@ angular.module('breakpoint.directives', ['breakpoint.services'])
         scope.$on('FORWARD', function() { scope.forwardPlayer(); })
         scope.$on('REPEAT', function() { scope.repeatPlayerSegment(); })
 
-        scope.$on('FULLSCREEN', function() { fullscreen(); })
+        scope.$on('FULLSCREEN', function() { scope.fullscreen(); })
 
         // --------------------------------------------------
         // VIDEO METHODS
@@ -173,7 +173,7 @@ angular.module('breakpoint.directives', ['breakpoint.services'])
         }
 
         scope.fullscreen = function fullscreen() {
-            scope.player.playVideo();
+            playPlayer();
 
             angular.element(document.getElementById("videoShow").children[0]).removeClass("has-header");
             angular.element(document.getElementsByTagName("ion-nav-bar")[0]).addClass("hide");
