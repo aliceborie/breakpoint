@@ -1,4 +1,4 @@
-angular.module('breakpoint.directives', ['breakpoint.services'])
+angular.module('breakpoint.directives', ['breakpoint.services', 'amliu.timeParser'])
 
 .directive('navButtons', function() {
 	return {
@@ -7,7 +7,7 @@ angular.module('breakpoint.directives', ['breakpoint.services'])
 })
 
 // Youtube Directive, help from: http://blog.oxrud.com/posts/creating-youtube-directive/
-.directive('youtube', function($window, parse) {
+.directive('youtube', function($window, parse, timeParser) {
   return {
     restrict: "E",
 
@@ -17,7 +17,7 @@ angular.module('breakpoint.directives', ['breakpoint.services'])
       player: "=", // iFrame YT player element
       duration: "=", // Duration of the YT video
       current: "=", // Current BP
-      currentTime: "=", // Current time in formated seconds / mins / etc
+      currentTime: "=", // Current time that's been formated into seconds / mins / etc string
       currentTime_timeoutId: "=", // ID of the timeout event that updates current time
       breakpoints: "=", // Array of Parse Breakpoint Objs
       api_timeoutId: "=" // ID of the timeout event that rechecks yt API load state
@@ -129,32 +129,37 @@ angular.module('breakpoint.directives', ['breakpoint.services'])
         scope.stopPlayer = function stopPlayer() {
             scope.player.seekTo(0);
             scope.player.stopVideo();
+            scope.currentTime = timeParser.convertSeconds(scope.player.getCurrentTime());
         }
 
         scope.pausePlayPlayer = function pausePlayPlayer() {
             if (scope.player.getPlayerState() !== 1) { // Paused, need to play
-                scope.player.playVideo();
+                playPlayer();
             } else { // Playing, need to pause
-                scope.player.pauseVideo();
+                pausePlayer();
             }
         }
 
         function playPlayer() {
+            scope.currentTime_timeoutId = setTimeout(refreshCurrentTime, 500);
             scope.player.playVideo();
         }
 
         function pausePlayer() {
+            window.clearTimeout(scope.currentTime_timeoutId);
             scope.player.pauseVideo();
         }
 
         scope.forwardPlayer = function forwardPlayer() {
             increaseCurrent();
             scope.player.seekTo(scope.breakpoints[scope.current].get("time"), true);
+            scope.currentTime = timeParser.convertSeconds(scope.player.getCurrentTime());
         }
 
         scope.backPlayer = function backPlayer() {
             decreaseCurrent();
             scope.player.seekTo(scope.breakpoints[scope.current].get("time"), true);
+            scope.currentTime = timeParser.convertSeconds(scope.player.getCurrentTime());
         }
 
         scope.repeatPlayerSegment = function repeatPlayerSegment() {
@@ -166,11 +171,10 @@ angular.module('breakpoint.directives', ['breakpoint.services'])
                 findCurrent(currentTime);
             }
             scope.player.seekTo(scope.breakpoints[scope.current].get("time"), true);
+            scope.currentTime = timeParser.convertSeconds(scope.player.getCurrentTime());
         }
 
         scope.fullscreen = function fullscreen() {
-            playPlayer();
-
             angular.element(document.getElementById("videoShow").children[0]).removeClass("has-header");
             angular.element(document.getElementsByTagName("ion-nav-bar")[0]).addClass("hide");
             angular.element(document.getElementsByTagName("ion-footer-bar")[0]).addClass("hide");
@@ -192,16 +196,12 @@ angular.module('breakpoint.directives', ['breakpoint.services'])
             return scope.player.getCurrentTime();
         }
 
-
-
-       
-        scope.currentTime_timeoutId = setTimeout(refreshCurrentTime, 500)
         function refreshCurrentTime() {
             scope.$apply(function() {
                 console.log("GOOGO");
-                scope.currentTime = scope.player.getCurrentTime();
+                scope.currentTime = timeParser.convertSeconds(scope.player.getCurrentTime());
             })
-            // scope.currentTime_timeoutId = setTimeout(refreshCurrentTime, 500);
+            scope.currentTime_timeoutId = setTimeout(refreshCurrentTime, 250);
         }
 
 
