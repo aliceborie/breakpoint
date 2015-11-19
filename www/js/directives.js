@@ -18,6 +18,7 @@ angular.module('breakpoint.directives', ['breakpoint.services'])
       duration: "=", // Duration of the YT video
       current: "=", // Current BP
       currentTime: "=", // Current time in formated seconds / mins / etc
+      currentTime_timeoutId: "=", // ID of the timeout event that updates current time
       breakpoints: "=", // Array of Parse Breakpoint Objs
       api_timeoutId: "=" // ID of the timeout event that rechecks yt API load state
     },
@@ -122,6 +123,7 @@ angular.module('breakpoint.directives', ['breakpoint.services'])
         }
         function onPlayerReady() {
             scope.duration = scope.player.getDuration();
+            scope.currentTime = scope.player.getCurrentTime();
         }
 
         scope.stopPlayer = function stopPlayer() {
@@ -193,11 +195,15 @@ angular.module('breakpoint.directives', ['breakpoint.services'])
 
 
        
-       // WIP!!!
-       // Trying to get currenttime to update as player goes ... 
-        // scope.$apply(function() {
-        //     scope.currentTime.assign(scope.player.getCurrentTime());
-        // })
+        scope.currentTime_timeoutId = setTimeout(refreshCurrentTime, 500)
+        function refreshCurrentTime() {
+            scope.$apply(function() {
+                console.log("GOOGO");
+                scope.currentTime = scope.player.getCurrentTime();
+            })
+            // scope.currentTime_timeoutId = setTimeout(refreshCurrentTime, 500);
+        }
+
 
         // --------------------------------------------------
         // METHODS
