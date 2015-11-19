@@ -28,12 +28,6 @@ angular.module('breakpoint.directives', ['breakpoint.services'])
         // --------------------------------------------------
         // INITIALIZATION
 
-        // Retrieving the YT iFrame API
-        var tag = document.createElement('script');
-        tag.src = "https://www.youtube.com/iframe_api";
-        var firstScriptTag = document.getElementsByTagName('script')[0];
-        firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
-
         // We wrap the youtube initialization in an event listener because we don't know when parse
         // will get back to us and let us know videoId and youtubeID and also because we don't know when
         // the youtube API has loaded
