@@ -15,11 +15,14 @@ angular.module('breakpoint.directives', ['breakpoint.services', 'amliu.timeParse
       height: "@",
       width: "@",
       player: "=", // iFrame YT player element
-      duration: "=", // Duration of the YT video
+
+      duration: "=", // Duration of the YT video in seconds
+      duration_formatted: "=", // Duration of video formatted
+
       currentBp: "=", // Current BP
 
       currentTime: "=", // Current time in seconds
-      currentTime_formatted: "=", // Current time that's been formated into seconds / mins / etc string
+      currentTime_formatted: "=", // Current time that's been formated 00:00:00
       currentTime_timeoutId: "=", // ID of the timeout event that updates current time
 
       breakpoints: "=", // Array of Parse Breakpoint Objs
@@ -125,6 +128,7 @@ angular.module('breakpoint.directives', ['breakpoint.services', 'amliu.timeParse
         }
         function onPlayerReady() {
             scope.duration = scope.player.getDuration();
+            scope.duration_formatted = timeParser.convertSeconds(scope.duration);
             scope.currentTime = scope.player.getCurrentTime();
             scope.currentTime_formatted = "00:00"
         }
