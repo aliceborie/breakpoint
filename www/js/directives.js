@@ -199,12 +199,14 @@ angular.module('breakpoint.directives', ['breakpoint.services', 'amliu.timeParse
         }
 
         scope.leave_fullscreen = function leave_fullscreen() {
-            angular.element(document.getElementById("videoShow").children[0]).addClass("has-header");
-            angular.element(document.getElementsByTagName("ion-nav-bar")[0]).removeClass("hide");
-            angular.element(document.getElementsByTagName("ion-footer-bar")[0]).removeClass("hide");
+            angular.element(document.getElementById(scope.videoid).parentNode).removeClass("no-scroll");
 
-            angular.element(document.getElementById("yt_playoverlay")).addClass("hide");
-            angular.element(document.getElementsByTagName("youtube")[0]).removeClass("fullscreen");
+            angular.element(document.getElementsByTagName("ion-view")).addClass("has-header");
+            angular.element(document.getElementsByTagName("ion-nav-bar")).removeClass("hide");
+            angular.element(document.getElementsByTagName("ion-footer-bar")).removeClass("hide");
+
+            angular.element(document.querySelectorAll("youtube#"+scope.videoid+" .yt_playoverlay")).addClass("hide");
+            angular.element(document.querySelector("youtube#"+scope.videoid)).removeClass("fullscreen");
         }
 
         scope.getCurrentTime = function getCurrentTime() {
