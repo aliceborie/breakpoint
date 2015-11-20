@@ -16,9 +16,12 @@ angular.module('breakpoint.directives', ['breakpoint.services', 'amliu.timeParse
       width: "@",
       player: "=", // iFrame YT player element
       duration: "=", // Duration of the YT video
-      current: "=", // Current BP
-      currentTime: "=", // Current time that's been formated into seconds / mins / etc string
+      currentBp: "=", // Current BP
+
+      currentTime: "=", // Current time in seconds
+      currentTime_formatted: "=", // Current time that's been formated into seconds / mins / etc string
       currentTime_timeoutId: "=", // ID of the timeout event that updates current time
+
       breakpoints: "=", // Array of Parse Breakpoint Objs
       api_timeoutId: "=" // ID of the timeout event that rechecks yt API load state
     },
@@ -33,7 +36,7 @@ angular.module('breakpoint.directives', ['breakpoint.services', 'amliu.timeParse
         // will get back to us and let us know videoId and youtubeID and also because we don't know when
         // the youtube API has loaded
         scope.$on('INIT', function(event, data) {
-            scope.current = 0;
+            scope.currentBp = 0;
             initPage(data);
         });
         function initPage(data) {
@@ -70,7 +73,6 @@ angular.module('breakpoint.directives', ['breakpoint.services', 'amliu.timeParse
             }
             scope.player.setSize(scope.width, scope.height);
         });
-
 
         // --------------------------------------------------
         // PLAYER EVENT LISTENERS
@@ -124,12 +126,16 @@ angular.module('breakpoint.directives', ['breakpoint.services', 'amliu.timeParse
         function onPlayerReady() {
             scope.duration = scope.player.getDuration();
             scope.currentTime = scope.player.getCurrentTime();
+            scope.currentTime_formatted = "00:00"
         }
 
         scope.stopPlayer = function stopPlayer() {
             scope.player.seekTo(0);
             scope.player.stopVideo();
-            scope.currentTime = timeParser.convertSeconds(scope.player.getCurrentTime());
+
+            // Stop the current time event firer
+            window.clearTimeout(scope.currentTime_timeoutId);
+            scope.currentTime = scope.player.getCurrentTime();
         }
 
         scope.pausePlayPlayer = function pausePlayPlayer() {
@@ -152,26 +158,26 @@ angular.module('breakpoint.directives', ['breakpoint.services', 'amliu.timeParse
 
         scope.forwardPlayer = function forwardPlayer() {
             increaseCurrent();
-            scope.player.seekTo(scope.breakpoints[scope.current].get("time"), true);
-            scope.currentTime = timeParser.convertSeconds(scope.player.getCurrentTime());
+            scope.player.seekTo(scope.breakpoints[scope.currentBp].get("time"), true);
+            scope.currentTime = scope.player.getCurrentTime();
         }
 
         scope.backPlayer = function backPlayer() {
             decreaseCurrent();
-            scope.player.seekTo(scope.breakpoints[scope.current].get("time"), true);
-            scope.currentTime = timeParser.convertSeconds(scope.player.getCurrentTime());
+            scope.player.seekTo(scope.breakpoints[scope.currentBp].get("time"), true);
+            scope.currentTime = scope.player.getCurrentTime();
         }
 
         scope.repeatPlayerSegment = function repeatPlayerSegment() {
             var currentTime = scope.player.getCurrentTime();
             if (currentIsSynced(currentTime)) {
-                scope.player.seekTo(scope.breakpoints[scope.current].get("time"), true);
+                scope.player.seekTo(scope.breakpoints[scope.currentBp].get("time"), true);
             } else {
                  // Player scrubbed or skipped sections, meaning our current pointer is no longer correct
                 findCurrent(currentTime);
             }
-            scope.player.seekTo(scope.breakpoints[scope.current].get("time"), true);
-            scope.currentTime = timeParser.convertSeconds(scope.player.getCurrentTime());
+            scope.player.seekTo(scope.breakpoints[scope.currentBp].get("time"), true);
+            scope.currentTime = scope.player.getCurrentTime();
         }
 
         scope.fullscreen = function fullscreen() {
@@ -199,32 +205,40 @@ angular.module('breakpoint.directives', ['breakpoint.services', 'amliu.timeParse
         function refreshCurrentTime() {
             scope.$apply(function() {
                 console.log("GOOGO");
-                scope.currentTime = timeParser.convertSeconds(scope.player.getCurrentTime());
+                scope.currentTime = scope.player.getCurrentTime();
+                scope.currentTime_formatted = timeParser.convertSeconds(scope.currentTime);
             })
             scope.currentTime_timeoutId = setTimeout(refreshCurrentTime, 250);
         }
+        
+        scope.$watch("currentTime", function(newValue, oldValue) {
+            console.log(scope.currentTime);
+            if (scope.currentTime > 2) {
+                console.log("AYYYY!!!!");
+            }
+        })
 
 
         // --------------------------------------------------
         // METHODS
 
         function increaseCurrent() {
-            scope.current++;
-            scope.current = scope.current % scope.breakpoints.length;
+            scope.currentBp++;
+            scope.currentBp = scope.currentBp % scope.breakpoints.length;
         }
         function decreaseCurrent() {
-            scope.current--;
-            if (scope.current < 0) {
-                scope.current = scope.breakpoints.length - 1;
+            scope.currentBp--;
+            if (scope.currentBp < 0) {
+                scope.currentBp = scope.breakpoints.length - 1;
             }
         }
 
         // Given current time, returns true if current is pointing to right BP 
         // (the closest one that is less than current time)
         function currentIsSynced(currentTime) {
-            var currBP = scope.breakpoints[scope.current].get("time");
-            if (scope.current !== scope.breakpoints.length - 1) {
-                var forwardBP = scope.breakpoints[scope.current + 1].get("time");
+            var currBP = scope.breakpoints[scope.currentBp].get("time");
+            if (scope.currentBp !== scope.breakpoints.length - 1) {
+                var forwardBP = scope.breakpoints[scope.currentBp + 1].get("time");
                 return ((currentTime < forwardBP) && (currentTime >= currBP));
             } else {
                 return currentTime >= currBP;
@@ -233,13 +247,13 @@ angular.module('breakpoint.directives', ['breakpoint.services', 'amliu.timeParse
         function findCurrent(currentTime) {
             for (var i = 0; i < scope.breakpoints.length; i++) {
                 if (i === scope.breakpoints.length - 1) {
-                    scope.current = scope.breakpoints.length - 1;
+                    scope.currentBp = scope.breakpoints.length - 1;
                     return;
                 }
                 var bpstart = scope.breakpoints[i].get("time");
                 var bpend = scope.breakpoints[i+1].get("time");
                 if ((currentTime < bpend) && (currentTime >= bpstart)) {
-                    scope.current = i;
+                    scope.currentBp = i;
                     return;
                 }
             }
