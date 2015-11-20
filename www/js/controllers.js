@@ -94,6 +94,8 @@ angular.module('breakpoint.controllers', ['breakpoint.services'])
 .controller('VideoCtrl', function($window, $rootScope, $scope, $stateParams, parse) {
 	$scope.Math = window.Math;
 
+    $scope.videoId = $stateParams.videoId;
+
 document.addEventListener("deviceready", onDeviceReady, false);
     function onDeviceReady() {
         console.log("READY!");
@@ -107,11 +109,10 @@ document.addEventListener("deviceready", onDeviceReady, false);
     }
 
     // Page has enetered
-    $scope.$on('$ionicView.beforeEnter', function(){
+    $scope.$on('$ionicView.beforeEnter', function() {
         parse.getVideo($stateParams.videoId).then(function(video) {
             $scope.video = video;
             $scope.$broadcast('INIT', video.get("yt_videoId"));
-
             // Loading sets, breakpoints, sorting breakpoints in order of time
             parse.getSetsForVideo(video.id).then(function(sets) {
                 // For now, just default to first set always
@@ -133,7 +134,6 @@ document.addEventListener("deviceready", onDeviceReady, false);
 
     // When the page is "popped" and we go back
     $scope.$on('$stateChangeStart', function(event) {
-        console.log("ASDF");
         // For some we don't have access to scope, so just use rootscope
         $rootScope.$broadcast("LEAVE_VIDEOSHOW");
     });

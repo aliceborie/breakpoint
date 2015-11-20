@@ -14,6 +14,7 @@ angular.module('breakpoint.directives', ['breakpoint.services', 'amliu.timeParse
     scope: {
       height: "@",
       width: "@",
+      videoid: "@", // Our video ID (not the yt one)
       player: "=", // iFrame YT player element
 
       duration: "=", // Duration of the YT video in seconds
@@ -41,6 +42,7 @@ angular.module('breakpoint.directives', ['breakpoint.services', 'amliu.timeParse
         scope.$on('INIT', function(event, data) {
             scope.currentBp = 0;
             initPage(data);
+            console.log(scope.videoid);
         });
         function initPage(data) {
             if ((typeof(YT) !== "undefined") && (typeof(YT.Player) !== "undefined")) {
@@ -185,12 +187,15 @@ angular.module('breakpoint.directives', ['breakpoint.services', 'amliu.timeParse
         }
 
         scope.fullscreen = function fullscreen() {
-            angular.element(document.getElementById("videoShow").children[0]).removeClass("has-header");
-            angular.element(document.getElementsByTagName("ion-nav-bar")[0]).addClass("hide");
-            angular.element(document.getElementsByTagName("ion-footer-bar")[0]).addClass("hide");
+            // Parent of the youtube tag is the scroller container. We use ID to ensure we grab the currently viewed page
+            angular.element(document.getElementById(scope.videoid).parentNode).addClass("no-scroll");
 
-            angular.element(document.getElementById("yt_playoverlay")).removeClass("hide");
-            angular.element(document.getElementsByTagName("youtube")[0]).addClass("fullscreen");
+            angular.element(document.getElementsByTagName("ion-view")).removeClass("has-header");
+            angular.element(document.getElementsByTagName("ion-nav-bar")).addClass("hide");
+            angular.element(document.getElementsByTagName("ion-footer-bar")).addClass("hide");
+
+            angular.element(document.querySelectorAll("youtube#"+scope.videoid+" .yt_playoverlay")).removeClass("hide");
+            angular.element(document.querySelector("youtube#"+scope.videoid)).addClass("fullscreen");
         }
 
         scope.leave_fullscreen = function leave_fullscreen() {

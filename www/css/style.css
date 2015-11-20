@@ -7,9 +7,10 @@
     margin: 3px;
 }
 
-.hide {
-    display: none;
-}
+.hide { display: none; }
+
+/* Add this to ionic scrolling windows to prevent them from scrolling*/
+.no-scroll { transform: initial !important; }
 
 #logo {
 	width: 70%;
@@ -136,7 +137,7 @@ iframe {
 
 
 
-#yt_showoverlay, #yt_playoverlay {
+.yt_showoverlay, .yt_playoverlay {
     z-index: 10;
     position: absolute;
     top: 0;
@@ -145,39 +146,33 @@ iframe {
     overflow: hidden;
 }
 
-#yt_showoverlay {
-}
-
-#yt_playoverlay {
-}
-
 /* Video Player overlay - middle controls */
-#yt_playcontrols { /* Center vertically */
+.yt_playcontrols { /* Center vertically */
     position: relative;
     top: 50%;
     transform: translateY(-50%);
     color: white;
     font-size:20px;
 }
-#yt_playcontrols span {
+.yt_playcontrols span {
     position: absolute;
     width: 20%;
     text-align: center;
     left: 0;
     right: 0;
 }
-span#yt_back { right: inherit; }
-span#yt_repeat { margin-left: 20%; }
-span#yt_pauseplay { margin: 0 auto; }
-span#yt_bpBrowse {
+span.yt_back { right: inherit; }
+span.yt_repeat { margin-left: 20%; }
+span.yt_pauseplay { margin: 0 auto; }
+span.yt_bpBrowse {
     margin-right: 20%;
     left: inherit;
 }
-span#yt_forward { left: inherit; }
+span.yt_forward { left: inherit; }
 
 
 /* Bottom player controls */
-#yt_fullbar {
+.yt_fullbar {
     color: white;
 }
 
