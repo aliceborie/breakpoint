@@ -33,14 +33,26 @@
         </span>
     </div>
 
+    <!-- The mid-bottom miniscrubber that changes per segment -->
     <div class="yt_miniscrubber">
 
     </div>
 
-    <div class="yt_fullbar">
-        <label ng-bind="currentTime_formatted"></label>
-        <label ng-bind="duration_formatted"></label>
+    <!-- The bottom player elements -->
+    <div class="yt_bottombar">
+        <label class="current_time" ng-bind="currentTime_formatted"></label>
+        <a class="compress" href="javascript:;" ng-click="leave_fullscreen()"><fa name="compress"></fa></a>
+        <label class="duration" ng-bind="duration_formatted"></label>
+        <span class="bottom_player">
+            <ul class="player_breakpoints">
+                <li ng-repeat="breakpoint in breakpoints" id="{{ breakpoint.id }}"></li>
+            </ul>
+            <input type="range" min="0" max="{{ duration }}" step="0.2">
+            <div class="progress"></div>
+        </div>
+
+
 
     </div>
-    <button class="button button-circle button-royal icon ion-close-round" ng-click="leave_fullscreen()")><!-- LEAVE --></button>
+
 </div>

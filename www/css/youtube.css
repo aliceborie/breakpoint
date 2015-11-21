@@ -58,6 +58,13 @@ youtube > iframe {
     overflow: hidden;
 }
 
+.yt_playoverlay {
+    background: linear-gradient(rgba(0, 0, 0, 0.8) 20%, 
+                                rgba(1,1,1,0) 30%, 
+                                rgba(1,1,1,0) 70%, 
+                                rgba(0, 0, 0, 0.8) 80%);
+}
+
 /* Video Player fullscreen overlay - middle controls */
 .yt_playcontrols { /* Center vertically */
     position: relative;
@@ -84,6 +91,101 @@ span.yt_forward { left: inherit; }
 
 
 /* Video Player fullscreen overlay - Bottom player controls */
-.yt_fullbar {
+.yt_bottombar {
     color: white;
+    bottom: 0;
+    position: absolute;
+    width: 100%;
 }
+
+label.current_time {
+    float: left;
+    margin: 5px 15px 10px 20px;
+}
+label.duration {
+    float: right;
+    margin: 5px 15px 10px 15px;
+}
+.yt_bottombar .compress {
+    float: right;
+    color: white;
+    margin: 5px 10px 10px 10px;
+    font-size: 20px;
+}
+
+/* Bottom player styling (it's a range slider) */
+.bottom_player {
+    overflow: hidden;
+    padding-right: 10px;
+    display: block;
+}
+/* Custom color and styling for inputs */
+.bottom_player input {
+    width: 100%;
+    -webkit-appearance: none;
+    background: transparent;
+}
+.bottom_player input::-webkit-slider-thumb {
+    -webkit-appearance: none !important;
+    position: relative;
+    width: 8px;
+    height: 100%;
+}
+.bottom_player input::-webkit-slider-runnable-track {
+    background: #757575; 
+    height: 5px;
+    margin:5px 0;
+}
+.bottom_player input::-webkit-slider-thumb:before {
+    content:"-";
+    font-style: 0;
+    line-height:0;
+    position: absolute;
+    left:-3000px;
+    right:0;
+    top:0;
+    bottom:0;
+    background: #6461eb;
+}
+.bottom_player input::-webkit-slider-thumb:after {
+    content: "";
+    position: absolute;
+    background: #6461eb;
+    border-radius: 50%;
+    border: 7px solid #6461eb;
+    box-shadow: 0px 3px 5px 0px rgba(0,0,0,0.6);
+    z-index: 10;
+    margin-top:-5px;
+}
+.bottom_player input:focus { outline:none; }
+.bottom_player input:hover::-webkit-slider-thumb:after,
+.bottom_player input:focus::-webkit-slider-thumb:after {
+    background: #6461eb;
+}
+.bottom_player input:disabled::-webkit-slider-thumb:before {
+    background-color: #a1151a;
+}
+.bottom_player input:disabled::-webkit-slider-thumb:after {
+    background: #adadad !important;
+}
+
+/* Breakpoint styling */
+ul.player_breakpoints {
+    position: relative;
+}
+ul.player_breakpoints li {
+    height: 10px;
+    position: absolute;
+    background-color: white;
+    width: 3px;
+    z-index: 20;
+    margin-top: 2px;
+}
+
+
+
+
+
+
+
+

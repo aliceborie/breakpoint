@@ -154,6 +154,7 @@ angular.module('breakpoint.directives', ['breakpoint.services', 'amliu.timeParse
 
         function playPlayer() {
             scope.currentTime_timeoutId = setTimeout(refreshCurrentTime, 500);
+            positionBreakpoints();
             scope.player.playVideo();
         }
 
@@ -196,6 +197,7 @@ angular.module('breakpoint.directives', ['breakpoint.services', 'amliu.timeParse
 
             angular.element(document.querySelectorAll("youtube#"+scope.videoid+" .yt_playoverlay")).removeClass("hide");
             angular.element(document.querySelector("youtube#"+scope.videoid)).addClass("fullscreen");
+            positionBreakpoints();
         }
 
         scope.leave_fullscreen = function leave_fullscreen() {
@@ -207,6 +209,7 @@ angular.module('breakpoint.directives', ['breakpoint.services', 'amliu.timeParse
 
             angular.element(document.querySelectorAll("youtube#"+scope.videoid+" .yt_playoverlay")).addClass("hide");
             angular.element(document.querySelector("youtube#"+scope.videoid)).removeClass("fullscreen");
+            positionBreakpoints();
         }
 
         scope.getCurrentTime = function getCurrentTime() {
@@ -267,6 +270,16 @@ angular.module('breakpoint.directives', ['breakpoint.services', 'amliu.timeParse
                     scope.currentBp = i;
                     return;
                 }
+            }
+        }
+
+        // Repositions breakpoints to line up with the video's custom bottom player
+        function positionBreakpoints() {
+            var bottomplayer_width = document.querySelector("youtube#"+scope.videoid+" .bottom_player input").offsetWidth;
+            for (var i = 0; i < scope.breakpoints.length; i++) {
+                var breakpoint = scope.breakpoints[i];
+                var position = Math.floor((breakpoint.get("time") / scope.duration) * bottomplayer_width);
+                var breakpointEl = angular.element(document.querySelector("#"+breakpoint.id)).css("left", position+"px");
             }
         }
 
