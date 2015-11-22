@@ -47,7 +47,7 @@
             <ul class="player_breakpoints">
                 <li ng-repeat="breakpoint in breakpoints" id="{{ breakpoint.id }}"></li>
             </ul>
-            <input type="range" min="0" max="{{ duration }}" step="0.2" ng-model=" currentTime">
+            <input type="range" min="0" max="{{ duration }}" step="0.2" ng-model=" currentTime" ng-change="setToSpot()">
             <div class="progress"></div>
         </div>
 

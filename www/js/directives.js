@@ -188,6 +188,8 @@ angular.module('breakpoint.directives', ['breakpoint.services', 'amliu.timeParse
         }
 
         scope.fullscreen = function fullscreen() {
+            positionBreakpoints();
+
             // Parent of the youtube tag is the scroller container. We use ID to ensure we grab the currently viewed page
             angular.element(document.getElementById(scope.videoid).parentNode).addClass("no-scroll");
 
@@ -224,13 +226,21 @@ angular.module('breakpoint.directives', ['breakpoint.services', 'amliu.timeParse
             })
             scope.currentTime_timeoutId = setTimeout(refreshCurrentTime, 250);
         }
-        
+
+        // Used to watch when 
         scope.$watch("currentTime", function(newValue, oldValue) {
             console.log(scope.currentTime);
             if (scope.currentTime > 2) {
                 console.log("AYYYY!!!!");
             }
         })
+
+        // Used in the bottom player slider to get input from slider and set the video
+        // to that location in seconds
+        scope.setToSpot = function() {
+            scope.player.seekTo(scope.currentTime, true);
+        }
+
 
 
         // --------------------------------------------------
