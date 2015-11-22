@@ -1,4 +1,4 @@
-angular.module('breakpoint.directives', ['breakpoint.services'])
+angular.module('breakpoint.directives', ['breakpoint.services', 'amliu.timeParser'])
 
 .directive('navButtons', function() {
 	return {
@@ -7,18 +7,25 @@ angular.module('breakpoint.directives', ['breakpoint.services'])
 })
 
 // Youtube Directive, help from: http://blog.oxrud.com/posts/creating-youtube-directive/
-.directive('youtube', function($window, parse) {
+.directive('youtube', function($window, parse, timeParser) {
   return {
     restrict: "E",
 
     scope: {
       height: "@",
       width: "@",
+      videoid: "@", // Our video ID (not the yt one)
       player: "=", // iFrame YT player element
-      duration: "=", // Duration of the YT video
-      current: "=", // Current BP
-      currentTime: "=", // Current time in formated seconds / mins / etc
+
+      duration: "=", // Duration of the YT video in seconds
+      duration_formatted: "=", // Duration of video formatted
+
+      currentBp: "=", // Current BP
+
+      currentTime: "=", // Current time in seconds
+      currentTime_formatted: "=", // Current time that's been formated 00:00:00
       currentTime_timeoutId: "=", // ID of the timeout event that updates current time
+
       breakpoints: "=", // Array of Parse Breakpoint Objs
       api_timeoutId: "=" // ID of the timeout event that rechecks yt API load state
     },
@@ -33,8 +40,9 @@ angular.module('breakpoint.directives', ['breakpoint.services'])
         // will get back to us and let us know videoId and youtubeID and also because we don't know when
         // the youtube API has loaded
         scope.$on('INIT', function(event, data) {
-            scope.current = 0;
+            scope.currentBp = 0;
             initPage(data);
+            console.log(scope.videoid);
         });
         function initPage(data) {
             if ((typeof(YT) !== "undefined") && (typeof(YT.Player) !== "undefined")) {
@@ -70,7 +78,6 @@ angular.module('breakpoint.directives', ['breakpoint.services'])
             }
             scope.player.setSize(scope.width, scope.height);
         });
-
 
         // --------------------------------------------------
         // PLAYER EVENT LISTENERS
@@ -123,108 +130,129 @@ angular.module('breakpoint.directives', ['breakpoint.services'])
         }
         function onPlayerReady() {
             scope.duration = scope.player.getDuration();
+            scope.duration_formatted = timeParser.convertSeconds(scope.duration);
             scope.currentTime = scope.player.getCurrentTime();
+            scope.currentTime_formatted = "00:00"
         }
 
         scope.stopPlayer = function stopPlayer() {
             scope.player.seekTo(0);
             scope.player.stopVideo();
+
+            // Stop the current time event firer
+            window.clearTimeout(scope.currentTime_timeoutId);
+            scope.currentTime = scope.player.getCurrentTime();
         }
 
         scope.pausePlayPlayer = function pausePlayPlayer() {
             if (scope.player.getPlayerState() !== 1) { // Paused, need to play
-                scope.player.playVideo();
+                playPlayer();
             } else { // Playing, need to pause
-                scope.player.pauseVideo();
+                pausePlayer();
             }
         }
 
         function playPlayer() {
+            scope.currentTime_timeoutId = setTimeout(refreshCurrentTime, 500);
+            positionBreakpoints();
             scope.player.playVideo();
         }
 
         function pausePlayer() {
+            window.clearTimeout(scope.currentTime_timeoutId);
             scope.player.pauseVideo();
         }
 
         scope.forwardPlayer = function forwardPlayer() {
             increaseCurrent();
-            scope.player.seekTo(scope.breakpoints[scope.current].get("time"), true);
+            scope.player.seekTo(scope.breakpoints[scope.currentBp].get("time"), true);
+            scope.currentTime = scope.player.getCurrentTime();
         }
 
         scope.backPlayer = function backPlayer() {
             decreaseCurrent();
-            scope.player.seekTo(scope.breakpoints[scope.current].get("time"), true);
+            scope.player.seekTo(scope.breakpoints[scope.currentBp].get("time"), true);
+            scope.currentTime = scope.player.getCurrentTime();
         }
 
         scope.repeatPlayerSegment = function repeatPlayerSegment() {
             var currentTime = scope.player.getCurrentTime();
             if (currentIsSynced(currentTime)) {
-                scope.player.seekTo(scope.breakpoints[scope.current].get("time"), true);
+                scope.player.seekTo(scope.breakpoints[scope.currentBp].get("time"), true);
             } else {
                  // Player scrubbed or skipped sections, meaning our current pointer is no longer correct
                 findCurrent(currentTime);
             }
-            scope.player.seekTo(scope.breakpoints[scope.current].get("time"), true);
+            scope.player.seekTo(scope.breakpoints[scope.currentBp].get("time"), true);
+            scope.currentTime = scope.player.getCurrentTime();
         }
 
         scope.fullscreen = function fullscreen() {
-            playPlayer();
+            // Parent of the youtube tag is the scroller container. We use ID to ensure we grab the currently viewed page
+            angular.element(document.getElementById(scope.videoid).parentNode).addClass("no-scroll");
 
-            angular.element(document.getElementById("videoShow").children[0]).removeClass("has-header");
-            angular.element(document.getElementsByTagName("ion-nav-bar")[0]).addClass("hide");
-            angular.element(document.getElementsByTagName("ion-footer-bar")[0]).addClass("hide");
+            angular.element(document.getElementsByTagName("ion-view")).removeClass("has-header");
+            angular.element(document.getElementsByTagName("ion-nav-bar")).addClass("hide");
+            angular.element(document.getElementsByTagName("ion-footer-bar")).addClass("hide");
 
-            angular.element(document.getElementById("yt_playoverlay")).removeClass("hide");
-            angular.element(document.getElementsByTagName("youtube")[0]).addClass("fullscreen");
+            angular.element(document.querySelectorAll("youtube#"+scope.videoid+" .yt_playoverlay")).removeClass("hide");
+            angular.element(document.querySelector("youtube#"+scope.videoid)).addClass("fullscreen");
+            positionBreakpoints();
         }
 
         scope.leave_fullscreen = function leave_fullscreen() {
-            angular.element(document.getElementById("videoShow").children[0]).addClass("has-header");
-            angular.element(document.getElementsByTagName("ion-nav-bar")[0]).removeClass("hide");
-            angular.element(document.getElementsByTagName("ion-footer-bar")[0]).removeClass("hide");
+            angular.element(document.getElementById(scope.videoid).parentNode).removeClass("no-scroll");
 
-            angular.element(document.getElementById("yt_playoverlay")).addClass("hide");
-            angular.element(document.getElementsByTagName("youtube")[0]).removeClass("fullscreen");
+            angular.element(document.getElementsByTagName("ion-view")).addClass("has-header");
+            angular.element(document.getElementsByTagName("ion-nav-bar")).removeClass("hide");
+            angular.element(document.getElementsByTagName("ion-footer-bar")).removeClass("hide");
+
+            angular.element(document.querySelectorAll("youtube#"+scope.videoid+" .yt_playoverlay")).addClass("hide");
+            angular.element(document.querySelector("youtube#"+scope.videoid)).removeClass("fullscreen");
+            positionBreakpoints();
         }
 
         scope.getCurrentTime = function getCurrentTime() {
             return scope.player.getCurrentTime();
         }
 
-
-
-       
-        scope.currentTime_timeoutId = setTimeout(refreshCurrentTime, 500)
         function refreshCurrentTime() {
             scope.$apply(function() {
                 console.log("GOOGO");
                 scope.currentTime = scope.player.getCurrentTime();
+                scope.currentTime_formatted = timeParser.convertSeconds(scope.currentTime);
             })
-            // scope.currentTime_timeoutId = setTimeout(refreshCurrentTime, 500);
+            scope.currentTime_timeoutId = setTimeout(refreshCurrentTime, 250);
         }
+        
+        scope.$watch("currentTime", function(newValue, oldValue) {
+            console.log(scope.currentTime);
+            if (scope.currentTime > 2) {
+                console.log("AYYYY!!!!");
+            }
+        })
 
 
         // --------------------------------------------------
         // METHODS
 
         function increaseCurrent() {
-            scope.current++;
-            scope.current = scope.current % scope.breakpoints.length;
+            scope.currentBp++;
+            scope.currentBp = scope.currentBp % scope.breakpoints.length;
         }
         function decreaseCurrent() {
-            scope.current--;
-            if (scope.current < 0) {
-                scope.current = scope.breakpoints.length - 1;
+            scope.currentBp--;
+            if (scope.currentBp < 0) {
+                scope.currentBp = scope.breakpoints.length - 1;
             }
         }
 
         // Given current time, returns true if current is pointing to right BP 
         // (the closest one that is less than current time)
         function currentIsSynced(currentTime) {
-            var currBP = scope.breakpoints[scope.current].get("time");
-            if (scope.current !== scope.breakpoints.length - 1) {
-                var forwardBP = scope.breakpoints[scope.current + 1].get("time");
+            var currBP = scope.breakpoints[scope.currentBp].get("time");
+            if (scope.currentBp !== scope.breakpoints.length - 1) {
+                var forwardBP = scope.breakpoints[scope.currentBp + 1].get("time");
                 return ((currentTime < forwardBP) && (currentTime >= currBP));
             } else {
                 return currentTime >= currBP;
@@ -233,15 +261,25 @@ angular.module('breakpoint.directives', ['breakpoint.services'])
         function findCurrent(currentTime) {
             for (var i = 0; i < scope.breakpoints.length; i++) {
                 if (i === scope.breakpoints.length - 1) {
-                    scope.current = scope.breakpoints.length - 1;
+                    scope.currentBp = scope.breakpoints.length - 1;
                     return;
                 }
                 var bpstart = scope.breakpoints[i].get("time");
                 var bpend = scope.breakpoints[i+1].get("time");
                 if ((currentTime < bpend) && (currentTime >= bpstart)) {
-                    scope.current = i;
+                    scope.currentBp = i;
                     return;
                 }
+            }
+        }
+
+        // Repositions breakpoints to line up with the video's custom bottom player
+        function positionBreakpoints() {
+            var bottomplayer_width = document.querySelector("youtube#"+scope.videoid+" .bottom_player input").offsetWidth;
+            for (var i = 0; i < scope.breakpoints.length; i++) {
+                var breakpoint = scope.breakpoints[i];
+                var position = Math.floor((breakpoint.get("time") / scope.duration) * bottomplayer_width);
+                var breakpointEl = angular.element(document.querySelector("#"+breakpoint.id)).css("left", position+"px");
             }
         }
 

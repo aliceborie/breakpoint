@@ -3,47 +3,56 @@
 <div></div> <!-- Youtube replaces this with the iframe -->
 
 <!-- Overlay that is shown when video is not playing -->
-<div id="yt_showoverlay">
+<div class="yt_showoverlay">
     <a href="javascript:;" ng-click="fullscreen()">
         <div style="width:100%;height:100%;"></div>
     </a>
 </div>
 
 <!-- Overlay that is shown while the video is fullscreened and playing -->
-<div id="yt_playoverlay" class="hide">
-    <div id="yt_playcontrols">
-
-
-
-        <span id="yt_back">
+<div class="yt_playoverlay hide">
+    <div class="yt_playcontrols">
+        <span class="yt_back">
             <button class="button button-small button-circle button-assertive icon ion-ios-skipbackward" ng-click="backPlayer()"><!-- Backward --></button>
         </span>
 
-        <span id="yt_repeat">
+        <span class="yt_repeat">
             <button class="button button-small button-circle button-assertive icon ion-loop" ng-click="repeatPlayerSegment()"><!-- Repeat --></button>
         </span>
 
-        <span id="yt_pauseplay">
-            <button class="button button-small button-circle button-assertive icon ion-play" ng-click="pausePlayPlayer()" id="yt_pauseplay"><!-- Send Play --></button>
+        <span class="yt_pauseplay">
+            <button class="button button-small button-circle button-assertive icon ion-play" ng-click="pausePlayPlayer()"><!-- Send Play --></button>
         </span>
 
-        <span id="yt_bpBrowse">
+        <span class="yt_bpBrowse">
             <button class="button button-small button-circle button-assertive icon" ng-click=""><!-- Open the breakpoint browser --></button>
         </span>
 
-        <span id="yt_forward">
+        <span class="yt_forward">
             <button class="button button-small button-circle button-assertive icon ion-ios-skipforward" ng-click="forwardPlayer()"><!-- Forward --></button>
         </span>
     </div>
 
-    <div id="yt_miniscrubber">
+    <!-- The mid-bottom miniscrubber that changes per segment -->
+    <div class="yt_miniscrubber">
 
     </div>
 
-    <div id="yt_fullbar">
-        <label ng-bind="currentTime"></label>
-        <label ng-bind="duration"></label>
+    <!-- The bottom player elements -->
+    <div class="yt_bottombar">
+        <label class="current_time" ng-bind="currentTime_formatted"></label>
+        <a class="compress" href="javascript:;" ng-click="leave_fullscreen()"><fa name="compress"></fa></a>
+        <label class="duration" ng-bind="duration_formatted"></label>
+        <span class="bottom_player">
+            <ul class="player_breakpoints">
+                <li ng-repeat="breakpoint in breakpoints" id="{{ breakpoint.id }}"></li>
+            </ul>
+            <input type="range" min="0" max="{{ duration }}" step="0.2" ng-model=" currentTime">
+            <div class="progress"></div>
+        </div>
+
+
+
     </div>
 
-    <button class="button button-circle button-royal icon ion-close-round" ng-click="sendControlEvent('LEAVE_FULLSCREEN')")><!-- LEAVE --></button>
 </div>
