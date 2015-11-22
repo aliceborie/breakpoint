@@ -39,13 +39,6 @@ angular.module('breakpoint.services', [])
 			return query.first()
 		},
 
-		getParentCategory: function(categoryUrl) {
-			var Category = Parse.Object.extend("Category");
-			// get category that matches url 
-			var query = new Parse.Query(Category).equalTo("parent", categoryUrl);
-			return query.first()
-		},
-
         getVideo: function(videoId) {
             var Video = Parse.Object.extend("Video");
             // get video that matches videoId

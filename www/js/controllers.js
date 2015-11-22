@@ -78,7 +78,6 @@ angular.module('breakpoint.controllers', ['breakpoint.services'])
 
 .controller('CategoryCtrl', function($scope, $stateParams, parse) {
 	// get category name from params so can know which category 
-	console.log("hello",$stateParams);
 	var category = $stateParams.subcategory;
 	var parent = $stateParams.categoryName;
 	parse.getCategory(category).then( function(category) {
