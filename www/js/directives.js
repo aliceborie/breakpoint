@@ -239,6 +239,7 @@ angular.module('breakpoint.directives', ['breakpoint.services', 'amliu.timeParse
         // to that location in seconds
         scope.setToSpot = function() {
             scope.player.seekTo(scope.currentTime, true);
+            positionPlayedSegments(); // TODO -> MOVE THIS OUT LATER. Could probably do better in the watch above
         }
 
 
@@ -291,6 +292,15 @@ angular.module('breakpoint.directives', ['breakpoint.services', 'amliu.timeParse
                 var position = Math.floor((breakpoint.get("time") / scope.duration) * bottomplayer_width);
                 var breakpointEl = angular.element(document.querySelector("#"+breakpoint.id)).css("left", position+"px");
             }
+        }
+
+        // Repositions the darker violet bar that indicates already played/passed segments
+        function positionPlayedSegments() {
+            var bottomplayer_width = document.querySelector("youtube#"+scope.videoid+" .bottom_player input").offsetWidth;
+            findCurrent(scope.currentTime);
+            var breakpoint = scope.breakpoints[scope.currentBp];
+            var playedWidth = Math.floor( (breakpoint.get("time") / scope.duration) * bottomplayer_width);
+            angular.element(document.querySelector("youtube#"+scope.videoid+" .bottom_player .played")).css("width", playedWidth+"px");
         }
 
     }  

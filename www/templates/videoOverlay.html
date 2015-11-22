@@ -44,6 +44,7 @@
         <a class="compress" href="javascript:;" ng-click="leave_fullscreen()"><fa name="compress"></fa></a>
         <label class="duration" ng-bind="duration_formatted"></label>
         <span class="bottom_player">
+            <div class="played"></div>
             <ul class="player_breakpoints">
                 <li ng-repeat="breakpoint in breakpoints" id="{{ breakpoint.id }}"></li>
             </ul>
