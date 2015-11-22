@@ -5,9 +5,16 @@ angular.module('breakpoint.services', [])
 	return {
 		getCategories: function() {
 			var Category = Parse.Object.extend("Category");
-			var query = new Parse.Query(Category).select(["name","url","image_url"]);
+			var query = new Parse.Query(Category).select(["name","url","image_url"]).equalTo("hierarchy",1);
 			return query.find();
 		},
+
+		getSubcategories: function(category) {
+			var Category = Parse.Object.extend("Category");
+			var query = new Parse.Query(Category).select(["name","url","image_url"]).equalTo("parent",category);
+			return query.find();
+		},
+
 
 		getVideosForCategory: function(categoryUrl) {
 			var Category = Parse.Object.extend("Category");
@@ -29,6 +36,13 @@ angular.module('breakpoint.services', [])
 			var Category = Parse.Object.extend("Category");
 			// get category that matches url 
 			var query = new Parse.Query(Category).equalTo("url", categoryUrl);
+			return query.first()
+		},
+
+		getParentCategory: function(categoryUrl) {
+			var Category = Parse.Object.extend("Category");
+			// get category that matches url 
+			var query = new Parse.Query(Category).equalTo("parent", categoryUrl);
 			return query.first()
 		},
 
