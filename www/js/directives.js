@@ -20,7 +20,7 @@ angular.module('breakpoint.directives', ['breakpoint.services', 'amliu.timeParse
       duration: "=", // Duration of the YT video in seconds
       duration_formatted: "=", // Duration of video formatted
 
-      currentBp: "=", // Current BP
+      currentBp: "=", // Current BP as an index in the BP array
 
       currentTime: "=", // Current time in seconds
       currentTime_formatted: "=", // Current time that's been formated 00:00:00
@@ -164,13 +164,13 @@ angular.module('breakpoint.directives', ['breakpoint.services', 'amliu.timeParse
         }
 
         scope.forwardPlayer = function forwardPlayer() {
-            increaseCurrent();
+            increaseCurrent(scope.player.getCurrentTime());
             scope.player.seekTo(scope.breakpoints[scope.currentBp].get("time"), true);
             scope.currentTime = scope.player.getCurrentTime();
         }
 
         scope.backPlayer = function backPlayer() {
-            decreaseCurrent();
+            decreaseCurrent(scope.player.getCurrentTime());
             scope.player.seekTo(scope.breakpoints[scope.currentBp].get("time"), true);
             scope.currentTime = scope.player.getCurrentTime();
         }
@@ -229,10 +229,19 @@ angular.module('breakpoint.directives', ['breakpoint.services', 'amliu.timeParse
 
         // Used to watch when 
         scope.$watch("currentTime", function(newValue, oldValue) {
-            console.log(scope.currentTime);
-            if (scope.currentTime > 2) {
-                console.log("AYYYY!!!!");
+            console.log(scope.currentBp);
+            console.log(scope.breakpoints[scope.currentBp + 1].get("time"));
+            if (scope.currentBp >= scope.breakpoints.length - 1) { // On the last segment
+
+            } else {
+                if (scope.currentTime > scope.breakpoints[scope.currentBp + 1].get("time")) {
+                    console.log("Passed a breapoint!");
+                }
             }
+        })
+
+        scope.$watch("currentBp", function(newValue, oldValue) {
+            console.log("Changed BP");
         })
 
         // Used in the bottom player slider to get input from slider and set the video
@@ -247,11 +256,15 @@ angular.module('breakpoint.directives', ['breakpoint.services', 'amliu.timeParse
         // --------------------------------------------------
         // METHODS
 
-        function increaseCurrent() {
+        function increaseCurrent(currentTime) {
+            if (currentTime < scope.breakpoints[0].get("time")) {
+                scope.currentBp = 0;
+                return;
+            }
             scope.currentBp++;
             scope.currentBp = scope.currentBp % scope.breakpoints.length;
         }
-        function decreaseCurrent() {
+        function decreaseCurrent(currentTime) {
             scope.currentBp--;
             if (scope.currentBp < 0) {
                 scope.currentBp = scope.breakpoints.length - 1;
@@ -269,7 +282,12 @@ angular.module('breakpoint.directives', ['breakpoint.services', 'amliu.timeParse
                 return currentTime >= currBP;
             }
         }
+
         function findCurrent(currentTime) {
+            if (currentTime < scope.breakpoints[0].get("time")) {
+                scope.currentBp = 0;
+                return;
+            }
             for (var i = 0; i < scope.breakpoints.length; i++) {
                 if (i === scope.breakpoints.length - 1) {
                     scope.currentBp = scope.breakpoints.length - 1;

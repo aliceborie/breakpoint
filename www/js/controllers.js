@@ -1,5 +1,5 @@
 
-angular.module('breakpoint.controllers', ['breakpoint.services'])
+angular.module('breakpoint.controllers', ['breakpoint.services', 'amliu.timeParser'])
 
 .controller('AppCtrl', function($scope, $ionicModal, $ionicPopup, $sce, $ionicScrollDelegate) {
 	// Opens search popup when search button in nav bar clicked
@@ -91,8 +91,9 @@ angular.module('breakpoint.controllers', ['breakpoint.services'])
 })
 
 
-.controller('VideoCtrl', function($window, $rootScope, $scope, $stateParams, parse) {
-	$scope.Math = window.Math;
+.controller('VideoCtrl', function($window, $rootScope, $scope, $stateParams, parse, timeParser) {
+
+    $scope.timeParser = timeParser;
 
     $scope.videoId = $stateParams.videoId;
 
