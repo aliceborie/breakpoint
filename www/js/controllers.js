@@ -93,9 +93,9 @@ angular.module('breakpoint.controllers', ['breakpoint.services', 'amliu.timePars
 
 .controller('VideoCtrl', function($window, $rootScope, $scope, $stateParams, parse, timeParser) {
 
-    $scope.timeParser = timeParser;
-
-    $scope.videoId = $stateParams.videoId;
+$scope.timeParser = timeParser;
+$scope.videoId = $stateParams.videoId;
+$scope.playMode = "PM_PUSH";
 
 document.addEventListener("deviceready", onDeviceReady, false);
     function onDeviceReady() {
@@ -143,6 +143,13 @@ document.addEventListener("deviceready", onDeviceReady, false);
     $scope.sendControlEvent = function (event_name) {
         this.$broadcast(event_name);
     };
+
+    $scope.changePlayMode = function() {
+        console.log($scope.playMode);
+        var selectEl = document.querySelector(".player-controls#"+$scope.videoId+" .playmode select");
+        var newPlaymode = selectEl.selectedOptions[0].value;
+        $rootScope.$broadcast("CHANGE_PLAYMODE", newPlaymode);
+    }
 
 
     // Need to figure this out ... not working yet

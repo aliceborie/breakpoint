@@ -28,6 +28,30 @@ youtube > iframe {
     text-align: center;
 }
 
+/* Before fullscreen, the playmode selector */
+.playmode {
+    padding: 10px;
+    max-width: 80%;
+    margin: 0 auto;
+}
+.playmode label {
+    float: left;
+    margin-right: 10px;
+    font-size: 16px;
+    font-weight: bold;
+}
+.playmode span {
+    display: block;
+    overflow: hidden;
+}
+.playmode select {
+    width: 100%;
+}
+
+
+
+
+
 .fullscreen {
     margin: 0px;
     padding: 0px;

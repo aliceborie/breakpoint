@@ -30,6 +30,11 @@ angular.module('breakpoint.directives', ['breakpoint.services', 'amliu.timeParse
       currentTime_formatted: "=", // Current time that's been formated 00:00:00
       currentTime_timeoutId: "=", // ID of the timeout event that updates current time
 
+      playMode: "=", // What does the player do when a breakpoint is hit?
+      // "PM_PUSH" -> Keep going through BP
+      // "PM_PAUSE" -> Pause when BP hit
+      // "PM_REPEAT" -> Repeat segment when BP hit
+
       breakpoints: "=", // Array of Parse Breakpoint Objs
       api_timeoutId: "=" // ID of the timeout event that rechecks yt API load state
     },
@@ -44,6 +49,7 @@ angular.module('breakpoint.directives', ['breakpoint.services', 'amliu.timeParse
         // will get back to us and let us know videoId and youtubeID and also because we don't know when
         // the youtube API has loaded
         scope.$on('INIT', function(event, data) {
+            scope.playMode = "PM_PUSH";
             initPage(data);
         });
         function initPage(data) {
@@ -64,12 +70,17 @@ angular.module('breakpoint.directives', ['breakpoint.services', 'amliu.timeParse
             resetCurrentBpStartEnd();
         })
 
-        // An event that is emitted when the videoshow page is 'popped'
+        // An event that is emitted when the videoshow page is 'popped' by pressing back
         scope.$on("LEAVE_VIDEOSHOW", function() {
             window.clearTimeout(scope.api_timeoutId); // Stop this timeout event
             stopPlayer();
             annyang.removeCommands(); // Reset annyang so it doesn't use the old player
             annyang.abort();
+        })
+
+        scope.$on("CHANGE_PLAYMODE", function(event, data) {
+            scope.playMode = data;
+            console.log(scope.playMode);
         })
 
 
@@ -340,7 +351,7 @@ angular.module('breakpoint.directives', ['breakpoint.services', 'amliu.timeParse
         }
 
 
-    }  
+    }
   };
 })
 
