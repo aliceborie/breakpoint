@@ -38,7 +38,7 @@
         <label class="current_time" ng-bind="currentBp_start_formatted"></label>
         <label class="duration" ng-bind="currentBp_end_formatted"></label>
         <span class="miniscrubber">
-            <input type="range" min="{{ currentBp_start }}" max="{{ currentBp_end }}" step="0.1" ng-model="currentTime" ng-change="setToSpot()">
+            <input type="range" min="{{ currentBp_start }}" max="{{ currentBp_end }}" step="0.1" ng-model="currentTime" ng-change="setToSpot()" ng-mousedown="draggingSlider = true" ng-mouseleave="draggingSlider = false">
         </span>
     </div>
 
@@ -52,7 +52,7 @@
             <ul class="player_breakpoints">
                 <li ng-repeat="breakpoint in breakpoints" id="{{ breakpoint.id }}"></li>
             </ul>
-            <input type="range" min="0" max="{{ duration }}" step="0.2" ng-model="currentTime" ng-change="setToSpot()">
+            <input type="range" min="0" max="{{ duration }}" step="0.2" ng-model="currentTime" ng-change="setToSpot()" ng-mousedown="draggingSlider = true" ng-mouseleave="draggingSlider = false">
             <div class="progress"></div>
         </div>
 

@@ -30,6 +30,7 @@ angular.module('breakpoint.directives', ['breakpoint.services', 'amliu.timeParse
       currentTime_formatted: "=", // Current time that's been formated 00:00:00
       currentTime_timeoutId: "=", // ID of the timeout event that updates current time
 
+      draggingSlider: "=", // Set to true if the user is using the slider to skip around the video
       playMode: "=", // What does the player do when a breakpoint is hit?
       // "PM_PUSH" -> Keep going through BP
       // "PM_PAUSE" -> Pause when BP hit
@@ -194,10 +195,8 @@ angular.module('breakpoint.directives', ['breakpoint.services', 'amliu.timeParse
 
         scope.repeatPlayerSegment = function repeatPlayerSegment() {
             var currentTime = scope.player.getCurrentTime();
-            if (currentIsSynced(currentTime)) {
-                scope.player.seekTo(scope.breakpoints[scope.currentBp].get("time"), true);
-            } else {
-                 // Player scrubbed or skipped sections, meaning our current pointer is no longer correct
+            if (!currentIsSynced(currentTime)) {
+                // Player scrubbed or skipped sections, meaning our current pointer is no longer correct
                 findCurrent(currentTime);
             }
             scope.player.seekTo(scope.breakpoints[scope.currentBp].get("time"), true);
@@ -247,8 +246,24 @@ angular.module('breakpoint.directives', ['breakpoint.services', 'amliu.timeParse
         // We watch the current time and, whenever the next BP is passed, we reset the current BP
         scope.$watch("currentTime", function(newValue, oldValue) {
             if (!currentIsSynced(scope.currentTime)) {
-                // If the current time is ever out of sync with the current BP, resync
-                findCurrent(scope.currentTime);
+                // If the current time is ever out of sync with the current BP, we've passed a BP
+                if (scope.draggingSlider) {
+                    // If we're currently messing with the slider, we don't want the video to pause and stuff
+                    findCurrent(scope.currentTime);
+                } else {
+                    switch(scope.playMode) { // PLAYMODES!
+                        case "PM_PUSH": // Just keep going past the breakpoint
+                            findCurrent(scope.currentTime);
+                            break;
+                        case "PM_PAUSE": // Pause when a breakpoint is hit
+                            findCurrent(scope.currentTime);
+                            pausePlayer();
+                            break;
+                        case "PM_REPEAT": // Repeat the segment again
+                            scope.player.seekTo(scope.breakpoints[scope.currentBp].get("time"), true);
+                            break;
+                    }
+                }
             }
         })
 
@@ -290,6 +305,9 @@ angular.module('breakpoint.directives', ['breakpoint.services', 'amliu.timeParse
         // (the closest one that is less than current time)
         function currentIsSynced(currentTime) {
             var currBP = scope.breakpoints[scope.currentBp].get("time");
+            if (scope.currentBp === 0 && currentTime < scope.breakpoints[scope.currentBp].get("time")) {
+                return true;
+            }
             if (scope.currentBp !== (scope.breakpoints.length - 1)) {
                 var forwardBP = scope.breakpoints[scope.currentBp + 1].get("time");
                 return ((currentTime < forwardBP) && (currentTime >= currBP));
@@ -302,7 +320,7 @@ angular.module('breakpoint.directives', ['breakpoint.services', 'amliu.timeParse
         function findCurrent(currentTime) {
             if (currentTime < scope.breakpoints[0].get("time")) {
                 scope.currentBp = 0;
-                return;
+                return; // If we're in that section before the 1st BP, just return true (we count it as part of 1st segment)
             }
             for (var i = 0; i < scope.breakpoints.length; i++) {
                 if (i === scope.breakpoints.length - 1) {
