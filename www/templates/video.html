@@ -30,7 +30,7 @@
 
         <table class="breakpoint-table">
             <tr ng-repeat="breakpoint in breakpoints">
-                <td class="time-cell">{{ Math.floor(breakpoint.attributes.time / 60) }}:{{ breakpoint.attributes.time % 60 }}</td>
+                <td class="time-cell">{{ timeParser.convertSeconds(breakpoint.attributes.time) }}</td>
                 <td class="step-description-cell">
                     <h5> {{ breakpoint.attributes.title }}</h5>
                     <p> {{ breakpoint.attributes.description }}</p>

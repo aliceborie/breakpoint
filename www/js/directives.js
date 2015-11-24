@@ -20,7 +20,7 @@ angular.module('breakpoint.directives', ['breakpoint.services', 'amliu.timeParse
       duration: "=", // Duration of the YT video in seconds
       duration_formatted: "=", // Duration of video formatted
 
-      currentBp: "=", // Current BP
+      currentBp: "=", // Current BP as an index in the BP array
 
       currentTime: "=", // Current time in seconds
       currentTime_formatted: "=", // Current time that's been formated 00:00:00
@@ -42,7 +42,6 @@ angular.module('breakpoint.directives', ['breakpoint.services', 'amliu.timeParse
         scope.$on('INIT', function(event, data) {
             scope.currentBp = 0;
             initPage(data);
-            console.log(scope.videoid);
         });
         function initPage(data) {
             if ((typeof(YT) !== "undefined") && (typeof(YT.Player) !== "undefined")) {
@@ -164,13 +163,15 @@ angular.module('breakpoint.directives', ['breakpoint.services', 'amliu.timeParse
         }
 
         scope.forwardPlayer = function forwardPlayer() {
-            increaseCurrent();
+            findCurrent(scope.player.getCurrentTime());
+            increaseCurrent(scope.player.getCurrentTime());
             scope.player.seekTo(scope.breakpoints[scope.currentBp].get("time"), true);
             scope.currentTime = scope.player.getCurrentTime();
         }
 
         scope.backPlayer = function backPlayer() {
-            decreaseCurrent();
+            findCurrent(scope.player.getCurrentTime());
+            decreaseCurrent(scope.player.getCurrentTime());
             scope.player.seekTo(scope.breakpoints[scope.currentBp].get("time"), true);
             scope.currentTime = scope.player.getCurrentTime();
         }
@@ -188,6 +189,8 @@ angular.module('breakpoint.directives', ['breakpoint.services', 'amliu.timeParse
         }
 
         scope.fullscreen = function fullscreen() {
+            positionBreakpoints();
+
             // Parent of the youtube tag is the scroller container. We use ID to ensure we grab the currently viewed page
             angular.element(document.getElementById(scope.videoid).parentNode).addClass("no-scroll");
 
@@ -224,23 +227,40 @@ angular.module('breakpoint.directives', ['breakpoint.services', 'amliu.timeParse
             })
             scope.currentTime_timeoutId = setTimeout(refreshCurrentTime, 250);
         }
-        
+
+        // We watch the current time and, whenever the next BP is passed, we reset the current BP
         scope.$watch("currentTime", function(newValue, oldValue) {
-            console.log(scope.currentTime);
-            if (scope.currentTime > 2) {
-                console.log("AYYYY!!!!");
+            if (!currentIsSynced(scope.currentTime)) {
+                // If the current time is ever out of sync with the current BP, resync
+                findCurrent(scope.currentTime);
             }
         })
+
+        // Watch the current BP. When it changes, reset the dark purple "played segment" overlay
+        scope.$watch("currentBp", function(newValue, oldValue) {
+            positionPlayedSegments();
+        })
+
+        // Used in the bottom player slider to get input from slider and set the video
+        // to that location in seconds
+        scope.setToSpot = function() {
+            scope.player.seekTo(scope.currentTime, true);
+        }
+
 
 
         // --------------------------------------------------
         // METHODS
 
-        function increaseCurrent() {
-            scope.currentBp++;
-            scope.currentBp = scope.currentBp % scope.breakpoints.length;
+        function increaseCurrent(currentTime) {
+            if (currentTime < scope.breakpoints[0].get("time")) {
+                scope.currentBp = 0;
+            } else {
+                scope.currentBp++;
+                scope.currentBp = scope.currentBp % scope.breakpoints.length;
+            }
         }
-        function decreaseCurrent() {
+        function decreaseCurrent(currentTime) {
             scope.currentBp--;
             if (scope.currentBp < 0) {
                 scope.currentBp = scope.breakpoints.length - 1;
@@ -251,14 +271,20 @@ angular.module('breakpoint.directives', ['breakpoint.services', 'amliu.timeParse
         // (the closest one that is less than current time)
         function currentIsSynced(currentTime) {
             var currBP = scope.breakpoints[scope.currentBp].get("time");
-            if (scope.currentBp !== scope.breakpoints.length - 1) {
+            if (scope.currentBp !== (scope.breakpoints.length - 1)) {
                 var forwardBP = scope.breakpoints[scope.currentBp + 1].get("time");
                 return ((currentTime < forwardBP) && (currentTime >= currBP));
             } else {
                 return currentTime >= currBP;
             }
         }
+
+        // Given the current time, locates the closest breakpoint to set as the current BP
         function findCurrent(currentTime) {
+            if (currentTime < scope.breakpoints[0].get("time")) {
+                scope.currentBp = 0;
+                return;
+            }
             for (var i = 0; i < scope.breakpoints.length; i++) {
                 if (i === scope.breakpoints.length - 1) {
                     scope.currentBp = scope.breakpoints.length - 1;
@@ -283,36 +309,16 @@ angular.module('breakpoint.directives', ['breakpoint.services', 'amliu.timeParse
             }
         }
 
+        // Repositions the darker violet bar that indicates already played/passed segments
+        function positionPlayedSegments() {
+            var bottomplayer_width = document.querySelector("youtube#"+scope.videoid+" .bottom_player input").offsetWidth;
+            var breakpoint = scope.breakpoints[scope.currentBp];
+            var playedWidth = Math.floor( (breakpoint.get("time") / scope.duration) * bottomplayer_width);
+            angular.element(document.querySelector("youtube#"+scope.videoid+" .bottom_player .played")).css("width", playedWidth+"px");
+        }
+
     }  
   };
 })
 
-// Allow use of script tag on partials
-// https://gist.github.com/subudeepak/9617483#file-angular-loadscript-js
-// Use: <script type="text/javascript-lazy"></script>
-.directive('script', function() {
-    return {
-      restrict: 'E',
-      scope: false,
-      link: function(scope, elem, attr) 
-      {
-        if (attr.type==='text/javascript-lazy') 
-        {
-          var s = document.createElement("script");
-          s.type = "text/javascript";                
-          var src = elem.attr('src');
-          if(src!==undefined)
-          {
-              s.src = src;
-          }
-          else
-          {
-              var code = elem.text();
-              s.text = code;
-          }
-          document.head.appendChild(s);
-          elem.remove();
-        }
-      }
-    };
-})
+
