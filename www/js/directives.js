@@ -22,7 +22,9 @@ angular.module('breakpoint.directives', ['breakpoint.services', 'amliu.timeParse
 
       currentBp: "=", // Current BP as an index in the BP array
       currentBp_start: "=", // Start time of the curent BP in seconds
+      currentBp_start_formatted: "=", // Same time, formatted
       currentBp_end: "=", // End time of the current BP in seconds
+      currentBp_end_formatted: "=", // End time of segment, formated
 
       currentTime: "=", // Current time in seconds
       currentTime_formatted: "=", // Current time that's been formated 00:00:00
@@ -308,11 +310,13 @@ angular.module('breakpoint.directives', ['breakpoint.services', 'amliu.timeParse
         // Resets the currentBp_start and currentBp_end variables
         function resetCurrentBpStartEnd() {
             scope.currentBp_start = scope.breakpoints[scope.currentBp].get("time");
+            scope.currentBp_start_formatted = timeParser.convertSeconds(scope.currentBp_start);
             if (scope.currentBp === scope.breakpoints.length - 1) {
                 scope.currentBp_end = scope.duration;
             } else {
                 scope.currentBp_end = scope.breakpoints[scope.currentBp + 1].get("time");
             }
+            scope.currentBp_end_formatted = timeParser.convertSeconds(scope.currentBp_end);
             document.querySelector(".yt_miniscrubber input").min = scope.currentBp_start;
             document.querySelector(".yt_miniscrubber input").max = scope.currentBp_end;
         }

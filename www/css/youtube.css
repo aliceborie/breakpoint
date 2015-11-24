@@ -97,14 +97,13 @@ span.yt_forward { left: inherit; }
     position: absolute;
     width: 100%;
 }
-
 label.current_time {
     float: left;
     margin: 5px 15px 10px 20px;
 }
 label.duration {
     float: right;
-    margin: 5px 15px 10px 15px;
+    margin: 5px 15px 10px 5px;
 }
 .yt_bottombar .compress {
     float: right;
@@ -113,22 +112,25 @@ label.duration {
     font-size: 20px;
 }
 
-/* Bottom player and mini scrubber styling (it's a range slider) */
-.bottom_player {
-    overflow: hidden;
-    padding-right: 10px;
-    display: block;
-}
 .yt_miniscrubber {
+    color: white;
     position: absolute;
     bottom: 0;
     width: 60%;
     overflow: hidden;
     margin: 0 auto;
-    margin-bottom: 50px;
+    margin-bottom: 40px;
     left: 0;
     right: 0;
     padding-right: 10px;
+}
+
+/* Bottom player and mini scrubber styling (it's a range slider) */
+span.bottom_player, span.miniscrubber{
+    overflow: hidden;
+    padding-right: 10px;
+    display: block;
+    margin-top: 5px;
 }
 /* Custom color and styling for inputs */
 .bottom_player input, .yt_miniscrubber input { width: 100%; }
