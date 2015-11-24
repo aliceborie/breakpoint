@@ -113,31 +113,43 @@ label.duration {
     font-size: 20px;
 }
 
-/* Bottom player styling (it's a range slider) */
+/* Bottom player and mini scrubber styling (it's a range slider) */
 .bottom_player {
     overflow: hidden;
     padding-right: 10px;
     display: block;
 }
+.yt_miniscrubber {
+    position: absolute;
+    bottom: 0;
+    width: 60%;
+    overflow: hidden;
+    margin: 0 auto;
+    margin-bottom: 50px;
+    left: 0;
+    right: 0;
+    padding-right: 10px;
+}
 /* Custom color and styling for inputs */
-.bottom_player input {
-    width: 100%;
-    -webkit-appearance: none;
+.bottom_player input, .yt_miniscrubber input { width: 100%; }
+
+.bottom_player input, .yt_miniscrubber input {
+    -webkit-appearance: none; /* Remove the default slider "track" */
     background: transparent;
 }
-.bottom_player input::-webkit-slider-thumb {
-    -webkit-appearance: none !important;
+.bottom_player input::-webkit-slider-thumb, .yt_miniscrubber input::-webkit-slider-thumb {
+    -webkit-appearance: none !important; /* Remove the default slider button */
     position: relative;
     width: 8px;
     height: 100%;
 }
-.bottom_player input::-webkit-slider-runnable-track {
-    background: #757575; 
+.bottom_player input::-webkit-slider-runnable-track, .yt_miniscrubber input::-webkit-slider-runnable-track {
+    background: #757575; /* Creating our own slider "track" */
     height: 5px;
     margin:5px 0;
 }
-.bottom_player input::-webkit-slider-thumb:before {
-    content:"-";
+.bottom_player input::-webkit-slider-thumb:before, .yt_miniscrubber input::-webkit-slider-thumb:before {
+    content:"-"; /* Adding an element that will act as our slider's thumb */
     font-style: 0;
     line-height:0;
     position: absolute;
@@ -147,8 +159,8 @@ label.duration {
     bottom:0;
     background: #6461eb;
 }
-.bottom_player input::-webkit-slider-thumb:after {
-    content: "";
+.bottom_player input::-webkit-slider-thumb:after, .yt_miniscrubber input::-webkit-slider-thumb:after {
+    content: ""; /* Now styling the element added before to look like a purple circle */
     position: absolute;
     background: #6461eb;
     border-radius: 50%;
@@ -157,15 +169,17 @@ label.duration {
     z-index: 10;
     margin-top:-5px;
 }
-.bottom_player input:focus { outline:none; }
-.bottom_player input:hover::-webkit-slider-thumb:after,
-.bottom_player input:focus::-webkit-slider-thumb:after {
-    background: #6461eb;
-}
-.bottom_player input:disabled::-webkit-slider-thumb:before {
+/* Removing outlines and default behavior on focus, hover */
+.bottom_player input:focus, .yt_miniscrubber input:focus { outline:none; }
+.bottom_player input:hover::-webkit-slider-thumb:after, .bottom_player input:focus::-webkit-slider-thumb:after,
+.yt_miniscrubber input:hover::-webkit-slider-thumb:after, .yt_miniscrubber input:focus::-webkit-slider-thumb:after
+{ background: #6461eb; }
+.bottom_player input:disabled::-webkit-slider-thumb:before,
+.yt_miniscrubber input:disabled::-webkit-slider-thumb:before, {
     background-color: #a1151a;
 }
-.bottom_player input:disabled::-webkit-slider-thumb:after {
+.bottom_player input:disabled::-webkit-slider-thumb:after,
+.yt_miniscrubber input:disabled::-webkit-slider-thumb:after {
     background: #adadad !important;
 }
 

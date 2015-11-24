@@ -21,6 +21,8 @@ angular.module('breakpoint.directives', ['breakpoint.services', 'amliu.timeParse
       duration_formatted: "=", // Duration of video formatted
 
       currentBp: "=", // Current BP as an index in the BP array
+      currentBp_start: "=", // Start time of the curent BP in seconds
+      currentBp_end: "=", // End time of the current BP in seconds
 
       currentTime: "=", // Current time in seconds
       currentTime_formatted: "=", // Current time that's been formated 00:00:00
@@ -40,7 +42,6 @@ angular.module('breakpoint.directives', ['breakpoint.services', 'amliu.timeParse
         // will get back to us and let us know videoId and youtubeID and also because we don't know when
         // the youtube API has loaded
         scope.$on('INIT', function(event, data) {
-            scope.currentBp = 0;
             initPage(data);
         });
         function initPage(data) {
@@ -56,7 +57,9 @@ angular.module('breakpoint.directives', ['breakpoint.services', 'amliu.timeParse
 
         // Loading in Sets and Breakpoints from controller
         scope.$on('LOAD_BPS', function(event, data) {
+            scope.currentBp = 0;
             scope.breakpoints = data;
+            resetCurrentBpStartEnd();
         })
 
         // An event that is emitted when the videoshow page is 'popped'
@@ -237,8 +240,11 @@ angular.module('breakpoint.directives', ['breakpoint.services', 'amliu.timeParse
         })
 
         // Watch the current BP. When it changes, reset the dark purple "played segment" overlay
+        // and reset the start and end points and DOM values of the miniscrubber
         scope.$watch("currentBp", function(newValue, oldValue) {
             positionPlayedSegments();
+            resetCurrentBpStartEnd();
+            document.querySelector("youtube#"+scope.videoid+" .yt_miniscrubber input").value = scope.currentTime;
         })
 
         // Used in the bottom player slider to get input from slider and set the video
@@ -299,6 +305,18 @@ angular.module('breakpoint.directives', ['breakpoint.services', 'amliu.timeParse
             }
         }
 
+        // Resets the currentBp_start and currentBp_end variables
+        function resetCurrentBpStartEnd() {
+            scope.currentBp_start = scope.breakpoints[scope.currentBp].get("time");
+            if (scope.currentBp === scope.breakpoints.length - 1) {
+                scope.currentBp_end = scope.duration;
+            } else {
+                scope.currentBp_end = scope.breakpoints[scope.currentBp + 1].get("time");
+            }
+            document.querySelector(".yt_miniscrubber input").min = scope.currentBp_start;
+            document.querySelector(".yt_miniscrubber input").max = scope.currentBp_end;
+        }
+
         // Repositions breakpoints to line up with the video's custom bottom player
         function positionBreakpoints() {
             var bottomplayer_width = document.querySelector("youtube#"+scope.videoid+" .bottom_player input").offsetWidth;
@@ -316,6 +334,7 @@ angular.module('breakpoint.directives', ['breakpoint.services', 'amliu.timeParse
             var playedWidth = Math.floor( (breakpoint.get("time") / scope.duration) * bottomplayer_width);
             angular.element(document.querySelector("youtube#"+scope.videoid+" .bottom_player .played")).css("width", playedWidth+"px");
         }
+
 
     }  
   };

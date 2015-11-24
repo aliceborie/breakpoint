@@ -35,7 +35,7 @@
 
     <!-- The mid-bottom miniscrubber that changes per segment -->
     <div class="yt_miniscrubber">
-
+        <input type="range" min="{{ currentBp_start }}" max="{{ currentBp_end }}" step="0.1" ng-model=" currentTime" ng-change="setToSpot()">
     </div>
 
     <!-- The bottom player elements -->
