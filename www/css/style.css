@@ -7,9 +7,10 @@
     margin: 3px;
 }
 
-.hide {
-    display: none;
-}
+.hide { display: none; }
+
+/* Add this to ionic scrolling windows to prevent them from scrolling*/
+.no-scroll { transform: initial !important; }
 
 #logo {
 	width: 70%;
@@ -95,91 +96,11 @@ iframe.sample-video {
 }
 
 
-/* Custom YT Overlay */
-
-youtube {
-    display: block;
-    width: 500px;
-    height: 500px;
-}
-
-iframe {
-    width: 100%;
-}
-
-.fullscreen {
-    margin: 0px;
-    padding: 0px;
-    border: 0px;
-    border-image-source: initial;
-    border-image-slice: initial;
-    border-image-width: initial;
-    border-image-outset: initial;
-    border-image-repeat: initial;
-    position: fixed;
-    min-width: 0px;
-    max-width: none;
-    min-height: 0px;
-    max-height: none;
-    width: 100%;
-    height: 100vh;
-    left: 0px;
-    top: 0px;
-    z-index: 5;
-}
 
 
 
 
 
-
-
-
-
-#yt_showoverlay, #yt_playoverlay {
-    z-index: 10;
-    position: absolute;
-    top: 0;
-    width: 100%;
-    height: 100%;
-    overflow: hidden;
-}
-
-#yt_showoverlay {
-}
-
-#yt_playoverlay {
-}
-
-/* Video Player overlay - middle controls */
-#yt_playcontrols { /* Center vertically */
-    position: relative;
-    top: 50%;
-    transform: translateY(-50%);
-    color: white;
-    font-size:20px;
-}
-#yt_playcontrols span {
-    position: absolute;
-    width: 20%;
-    text-align: center;
-    left: 0;
-    right: 0;
-}
-span#yt_back { right: inherit; }
-span#yt_repeat { margin-left: 20%; }
-span#yt_pauseplay { margin: 0 auto; }
-span#yt_bpBrowse {
-    margin-right: 20%;
-    left: inherit;
-}
-span#yt_forward { left: inherit; }
-
-
-/* Bottom player controls */
-#yt_fullbar {
-    color: white;
-}
 
 
 
@@ -230,23 +151,6 @@ span#yt_forward { left: inherit; }
     padding: 8px;
 }
 
-/* Resizing youtube player on video page */
-
-youtube {
-    width: 100%;
-    position: relative;
-    padding-bottom: 56.25%; /* 16:9 aspect ratio */
-    height: 0;
-}
-
-youtube > iframe {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-
-}
 
 .breakpoint-table {
     width: 100%;
@@ -278,12 +182,4 @@ youtube > iframe {
 .icon {
     font-size: 4px;
 }
-
-#player-controls {
-    margin-top: 15px;
-    margin-right: auto;
-    margin-left: auto;
-    text-align: center;
-}
-
 
