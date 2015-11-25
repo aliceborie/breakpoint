@@ -59,20 +59,51 @@ angular.module('breakpoint.controllers', ['breakpoint.services'])
 .controller('LandingCtrl', function($scope) {
 })
 
-.controller('BrowseCtrl', function($scope, parse) {
+.controller('BrowseCtrl', function($scope, parse){
 
-	parse.getCategories().then( function(categories) {
-		console.log(categories)
+	parse.getCategories().then(function(categories){
 		$scope.categories = categories;
+		console.log("CHILDREN",$scope.categories);
 	})
-
+	// $scope.categories = [];
+	// parse.getCategories().then(function(categories){
+	// 	console.log("categories = ",categories);
+	// 	for (var each in categories){
+	// 		var name = categories[each].attributes.url;
+	// 		console.log("EACH=",each);
+	// 		// console.log("every=",categories[each]);
+	// 		// console.log("name=",categories[each].attributes.url);
+	// 		// parse.getSubcategories(name).then(function(a){
+	// 		// 	console.log("HERE NAME=",name);
+	// 		// 	// if (a !== [])
+	// 		// 		console.log("hello",name,a);
+	// 		// 		$scope.categories[each] = categories[each];
+	// 		// })
+	// 		if ((parse.getSubcategories(name)) === [])
+	// 			console.log("hi",name);
+	// 		else
+	// 			console.log(name,parse.getSubcategories(name))
+	// 			console.log("herro");
+	// 		console.log("all",$scope.categories);
+	// 	}
+	// 	// $scope.categories = categories;
+	// 	// console.log("CHILDREN",$scope.categories);
+	// })
 })
 
 .controller('SubcategoryCtrl', function($scope, $stateParams, parse){
 	var category = $stateParams.categoryName;
 	parse.getSubcategories(category).then(function(subcategories){
+		console.log("category",category);
 		$scope.subcategories = subcategories;
+		console.log("SUBCATEGORIES=", $scope.subcategories);
+
+
 	})
+	// parse.subcategories(category).then(function(subcategories){
+	// 	$scope.subcategories = subcategories;
+	// 	console.log("HELOOOOOOOOOOO=", $scope.subcategories);
+	// })
 })
 
 
@@ -87,6 +118,7 @@ angular.module('breakpoint.controllers', ['breakpoint.services'])
 	parse.getVideosForCategory(category).then( function(videos) {
 		// console.log(videos);
 		$scope.videos = videos;
+		console.log("VIDEOS=",$scope.videos);
 	})
 
 	$scope.doRefresh = function() {

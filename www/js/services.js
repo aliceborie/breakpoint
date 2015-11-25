@@ -5,16 +5,52 @@ angular.module('breakpoint.services', [])
 	return {
 		getCategories: function() {
 			var Category = Parse.Object.extend("Category");
-			var query = new Parse.Query(Category).select(["name","url","image_url"]).equalTo("hierarchy",1);
+			var query = new Parse.Query(Category).select(["name","url", "image_url","id"]).equalTo("hierarchy",1).exists("children");
+			//var query = new Parse.Query(Category).equalTo("hierarchy",1);
+			
 			return query.find();
+			// return query.first().then(function(category){
+			// 	var Category = Parse.Object.extend("Category");
+			// 	var query = new Parse.Query(Category)
+			// 	query.exists("children")
+			// 	query.equalTo("parent",category)
+			// 	query.exists("videos")
+			// 	return query.first().then(function(){
+			// 		var Category = Parse.Object.extend("Category");
+			// 		var query = new Parse.Query(Category)
+			// 		query.select(["name","url", "image_url","id"])
+			// 		return query.find();
+			// 	})
+			// })
 		},
 
 		getSubcategories: function(category) {
 			var Category = Parse.Object.extend("Category");
-			var query = new Parse.Query(Category).select(["name","url","image_url"]).equalTo("parent",category);
+			// var query = new Parse.Query(Category).select(["name","url","image_url","id"]).equalTo("parent",category);
+			// return query.find();
+
+			var query = new Parse.Query(Category).equalTo("parent",category).exists("videos").select(["name","url","image_url","id"]);
 			return query.find();
 		},
 
+		checkSubcategories: function(category){
+			var Category = Parse.Object.extend("Category");
+			var query = new Parse.Query(Category).equalTo("url",category).exists("videos").select(["name","url","image_url","id"]);
+			return query.find();
+		},
+
+		getChildren: function(){
+			var Category = Parse.Object.extend("Category");
+			//var query = new Parse.Query(Category).select(["name","url", "image_url","id"]).equalTo("hierarchy",1).exists("children");
+			//return query.find();
+			var query = new Parse.Query(Category).select("children").equalTo("hierarchy",1).exists("children");
+			return query.first().then(function(category){
+				var Category = Parse.Object.extend("Category");
+				var category = category;
+				var query = new Parse.Query(Category).equalTo("parent",category).exists("videos").select(["name","url","image_url","id"]);
+				return query.find();
+			})
+		},
 
 		getVideosForCategory: function(categoryUrl) {
 			var Category = Parse.Object.extend("Category");
