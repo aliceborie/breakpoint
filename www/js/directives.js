@@ -269,10 +269,12 @@ angular.module('breakpoint.directives', ['breakpoint.services', 'amliu.timeParse
 
         // Watch the current BP. When it changes, reset the dark purple "played segment" overlay
         // and reset the start and end points and DOM values of the miniscrubber
+        // Also show the notification thing
         scope.$watch("currentBp", function(newValue, oldValue) {
             positionPlayedSegments();
             resetCurrentBpStartEnd();
             document.querySelector("youtube#"+scope.videoid+" .yt_miniscrubber input").value = scope.currentTime;
+            playNotification();
         })
 
         // Used in the bottom player slider to get input from slider and set the video
@@ -366,6 +368,19 @@ angular.module('breakpoint.directives', ['breakpoint.services', 'amliu.timeParse
             var breakpoint = scope.breakpoints[scope.currentBp];
             var playedWidth = Math.floor( (breakpoint.get("time") / scope.duration) * bottomplayer_width);
             angular.element(document.querySelector("youtube#"+scope.videoid+" .bottom_player .played")).css("width", playedWidth+"px");
+        }
+
+        // Plays the notification animation and updates the notification text too
+        function playNotification() {
+            var notifEl = document.querySelector("youtube#"+scope.videoid+" .yt_notifications");
+
+            angular.element(notifEl).removeClass("slideInOut");
+
+            // To reapply the animation, we have to trigger a "reflow" between removing and adding classes
+            // https://css-tricks.com/restart-css-animation/
+            notifEl.offsetWidth = notifEl.offsetWidth;
+
+            angular.element(notifEl).addClass("slideInOut");
         }
 
 

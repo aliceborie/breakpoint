@@ -111,6 +111,10 @@ span.yt_bpBrowse {
     margin-right: 20%;
     left: inherit;
 }
+span.yt_bpBrowse img {
+    max-width: 80%;
+    margin-top: 25%;
+}
 span.yt_forward { left: inherit; }
 
 
@@ -233,8 +237,51 @@ ul.player_breakpoints li {
 
 
 
+/* Notification styling */
+.yt_notifications {
+    min-width: 250px;
+    position:  absolute;
+    z-index: 10;
+    padding: 5px;
+    right: 0;
+    color: white;
+    background-color: #6461eb;
+    margin-top: 80px;
+    box-shadow: 0px 3px 5px 0px rgba(0,0,0,0.3);
+    opacity: 0;
+}
+.yt_notifications span {
+    display: block;
+    padding: 5px;
+}
+.yt_notifications span.bp_progress {
+    font-weight: bold;
+    border-bottom: 1px solid #F4D1FF;
+}
+.yt_notifications span.bp_title {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
 
-
-
+.slideInOut { animation: slideInOut 4s; }
+@keyframes slideInOut {
+    0% {
+        opacity: 0;
+        transform: translateX(100%); /* Starts offscreen */
+    }
+    15% {
+        transform: initial;
+        opacity: 1;
+    }
+    85% {
+        transform: initial;
+        opacity: 1;
+    }
+    100% {
+        opacity: 0;
+        transform: translateX(100%);
+    }
+}
 
 

@@ -25,7 +25,7 @@
         </span>
 
         <span class="yt_bpBrowse">
-            <button class="button button-small button-circle button-assertive icon" ng-click=""><!-- Open the breakpoint browser --></button>
+            <button class="button button-small button-circle button-assertive icon" ng-click=""><img src="img/skipBP_w.png"><!-- Open the breakpoint browser --></button>
         </span>
 
         <span class="yt_forward">
@@ -55,9 +55,12 @@
             <input type="range" min="0" max="{{ duration }}" step="0.2" ng-model="currentTime" ng-change="setToSpot()" ng-mousedown="draggingSlider = true" ng-mouseleave="draggingSlider = false">
             <div class="progress"></div>
         </div>
-
-
-
     </div>
 
+</div>
+
+<!-- Usually hidden, but contains the notifications that appear in the video -->
+<div class="yt_notifications">
+    <span class="bp_progress">Progress: {{ currentBp +1 }} / {{ breakpoints.length }}</span>
+    <span class="bp_title">{{ breakpoints[currentBp].attributes.title }}</span>
 </div>
