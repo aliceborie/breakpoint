@@ -289,7 +289,9 @@ ul.player_breakpoints li {
 }
 
 /* BP Browsing styling */
+.browsing .bp_browser { display: block; }
 .bp_browser {
+    display: none;
     height: 250px;
     top: 30%;
     position: absolute;
@@ -330,4 +332,16 @@ ul.player_breakpoints li {
     position: absolute;
     top: 0;
     left: 0;
+}
+.bp_browser .chosen_bp {
+    position: absolute;
+    width: 0;
+    height: 0;
+    border-left: 10px solid transparent;
+    border-right: 10px solid transparent;
+    border-top: 20px solid #3a1e94;
+    top: -5px;
+    margin: 0 auto;
+    left: 0;
+    right: 0;
 }

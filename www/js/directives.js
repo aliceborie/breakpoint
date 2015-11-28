@@ -232,6 +232,12 @@ angular.module('breakpoint.directives', ['breakpoint.services', 'amliu.timeParse
             positionBreakpoints();
         }
 
+        scope.showHide_BpBrowser = function() {
+            angular.element(document.querySelector("youtube#"+scope.videoid+" .yt_playoverlay")).toggleClass("browsing");
+            document.querySelector("youtube#"+scope.videoid+" .chosen_bp").scrollIntoView();
+            // TODO :: The scrollIntoView gets it visible, but doesn't attempt to center on it
+        }
+
         scope.jumpToBp = function(bpIndex) {
             scope.currentBp = bpIndex;
             scope.player.seekTo(scope.breakpoints[scope.currentBp].get("time"), true);

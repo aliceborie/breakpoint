@@ -11,7 +11,7 @@
 
 <!-- Overlay that is shown while the video is fullscreened and playing -->
 <!-- If the browse BP overlay is open, it gets one more class "browsing" that affects styling of children -->
-<div class="yt_playoverlay hide browsing">
+<div class="yt_playoverlay hide">
 
     <!-- The main play controls - back, repeat, pause/play, browse, forward -->
     <div class="yt_playcontrols">
@@ -28,7 +28,7 @@
         </span>
 
         <span class="yt_bpBrowse">
-            <button class="button button-small button-circle button-assertive icon" ng-click=""><img src="img/skipBP_w.png"><!-- Open the breakpoint browser --></button>
+            <button class="button button-small button-circle button-assertive icon" ng-click="showHide_BpBrowser()"><img src="img/skipBP_w.png"><!-- Open the breakpoint browser --></button>
         </span>
 
         <span class="yt_forward">
@@ -41,6 +41,7 @@
         <ul>
             <li ng-repeat="breakpoint in breakpoints" ng-class-odd="'odd'" ng-class-even="'even'">
                 <div class="tickmark"></div>
+                <div class="chosen_bp" ng-if="$index === currentBp"></div>
                 <a href="javascript:;" class="bp_start" ng-click="jumpToBp($index)">Starts at {{parseTime(breakpoint.attributes.time)}}</a>
                 <span style="display:block;">{{breakpoint.attributes.title}}</span>
                 <p>
