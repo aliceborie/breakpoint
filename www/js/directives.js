@@ -7,7 +7,7 @@ angular.module('breakpoint.directives', ['breakpoint.services', 'amliu.timeParse
 })
 
 // Youtube Directive, help from: http://blog.oxrud.com/posts/creating-youtube-directive/
-.directive('youtube', function($window, parse, timeParser) {
+.directive('youtube', function($window, $interval, parse, timeParser) {
   return {
     restrict: "E",
 
@@ -28,7 +28,7 @@ angular.module('breakpoint.directives', ['breakpoint.services', 'amliu.timeParse
 
       currentTime: "=", // Current time in seconds
       currentTime_formatted: "=", // Current time that's been formated 00:00:00
-      currentTime_timeoutId: "=", // ID of the timeout event that updates current time
+      currentTime_intervalPromise: "=", // A promise used to clear the currentTime $interval watcher
 
       draggingSlider: "=", // Set to true if the user is using the slider to skip around the video
       playMode: "=", // What does the player do when a breakpoint is hit?
@@ -69,6 +69,7 @@ angular.module('breakpoint.directives', ['breakpoint.services', 'amliu.timeParse
             scope.currentBp = 0;
             scope.breakpoints = data;
             resetCurrentBpStartEnd();
+            positionBreakpoints();
         })
 
         // An event that is emitted when the videoshow page is 'popped' by pressing back
@@ -155,8 +156,7 @@ angular.module('breakpoint.directives', ['breakpoint.services', 'amliu.timeParse
             scope.player.seekTo(0);
             scope.player.stopVideo();
 
-            // Stop the current time event firer
-            window.clearTimeout(scope.currentTime_timeoutId);
+            $interval.cancel(scope.currentTime_intervalPromise);
             scope.currentTime = scope.player.getCurrentTime();
         }
 
@@ -169,13 +169,14 @@ angular.module('breakpoint.directives', ['breakpoint.services', 'amliu.timeParse
         }
 
         function playPlayer() {
-            scope.currentTime_timeoutId = setTimeout(refreshCurrentTime, 500);
+            $interval.cancel(scope.currentTime_intervalPromise);
+            scope.currentTime_intervalPromise = $interval(refreshCurrentTime, 250);
             positionBreakpoints();
             scope.player.playVideo();
         }
 
         function pausePlayer() {
-            window.clearTimeout(scope.currentTime_timeoutId);
+            $interval.cancel(scope.currentTime_intervalPromise);
             scope.player.pauseVideo();
         }
 
@@ -243,27 +244,25 @@ angular.module('breakpoint.directives', ['breakpoint.services', 'amliu.timeParse
             return scope.player.getCurrentTime();
         }
 
+        // Used in any instance where we skip between breakpoints (forward, backward, repeat, browse)
+        // Refreshes the current time interval and variables
         function refreshCurrentTime_watcher() {
-            window.clearTimeout(scope.currentTime_timeoutId);
+            $interval.cancel(scope.currentTime_intervalPromise);
+            scope.currentTime = scope.breakpoints[scope.currentBp].get("time");
+            scope.currentTime_formatted = timeParser.convertSeconds(scope.currentTime);
+
+            document.querySelector("youtube#"+scope.videoid+" .bottom_player input").value = scope.currentTime;
+
             if (scope.player.getPlayerState() !== 0 && scope.player.getPlayerState() !== 2) {
                 // Only restart the current time watcher if the player is not stopped (0) or paused (2)
-                scope.currentTime_timeoutId = setTimeout(refreshCurrentTime, 500);
+                scope.currentTime_intervalPromise = $interval(refreshCurrentTime, 250);
             }
-            scope.$apply(function() {
-                scope.currentTime = scope.player.getCurrentTime();
-                scope.currentTime_formatted = timeParser.convertSeconds(scope.currentTime);
-            })
         }
         function refreshCurrentTime() {
-            scope.$apply(function() {
-                console.log("GOOGO");
-                scope.currentTime = scope.player.getCurrentTime();
-                scope.currentTime_formatted = timeParser.convertSeconds(scope.currentTime);
-            })
-            scope.currentTime_timeoutId = setTimeout(refreshCurrentTime, 250);
+            console.log("GOOGO");
+            scope.currentTime = scope.player.getCurrentTime();
+            scope.currentTime_formatted = timeParser.convertSeconds(scope.currentTime);
         }
-
-
 
         // We watch the current time and, whenever the next BP is passed, we reset the current BP
         scope.$watch("currentTime", function(newValue, oldValue) {
@@ -370,8 +369,8 @@ angular.module('breakpoint.directives', ['breakpoint.services', 'amliu.timeParse
                 scope.currentBp_end = scope.breakpoints[scope.currentBp + 1].get("time");
             }
             scope.currentBp_end_formatted = timeParser.convertSeconds(scope.currentBp_end);
-            document.querySelector(".yt_miniscrubber input").min = scope.currentBp_start;
-            document.querySelector(".yt_miniscrubber input").max = scope.currentBp_end;
+            document.querySelector("youtube#"+scope.videoid+" .yt_miniscrubber input").min = scope.currentBp_start;
+            document.querySelector("youtube#"+scope.videoid+" .yt_miniscrubber input").max = scope.currentBp_end;
         }
 
         // Repositions breakpoints to line up with the video's custom bottom player

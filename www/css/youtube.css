@@ -131,7 +131,9 @@ span.yt_forward { left: inherit; }
 }
 label.current_time {
     float: left;
-    margin: 5px 15px 10px 20px;
+    width: 50px;
+    margin: 5px 15px 10px 15px;
+    text-align: right;
 }
 label.duration {
     float: right;
