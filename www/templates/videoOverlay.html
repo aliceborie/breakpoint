@@ -10,7 +10,10 @@
 </div>
 
 <!-- Overlay that is shown while the video is fullscreened and playing -->
-<div class="yt_playoverlay hide">
+<!-- If the browse BP overlay is open, it gets one more class "browsing" that affects styling of children -->
+<div class="yt_playoverlay hide browsing">
+
+    <!-- The main play controls - back, repeat, pause/play, browse, forward -->
     <div class="yt_playcontrols">
         <span class="yt_back">
             <button class="button button-small button-circle button-assertive icon ion-ios-skipbackward" ng-click="backPlayer()"><!-- Backward --></button>
@@ -31,6 +34,20 @@
         <span class="yt_forward">
             <button class="button button-small button-circle button-assertive icon ion-ios-skipforward" ng-click="forwardPlayer()"><!-- Forward --></button>
         </span>
+    </div>
+
+    <!-- The breakpoint browse window -->
+    <div class="bp_browser">
+        <ul>
+            <li ng-repeat="breakpoint in breakpoints" ng-class-odd="'odd'" ng-class-even="'even'">
+                <div class="tickmark"></div>
+                <a href="javascript:;" class="bp_start" ng-click="jumpToBp($index)">Starts at {{parseTime(breakpoint.attributes.time)}}</a>
+                <span style="display:block;">{{breakpoint.attributes.title}}</span>
+                <p>
+                    {{breakpoint.attributes.description}}
+                </p>
+            </li>
+        </ul>
     </div>
 
     <!-- The mid-bottom miniscrubber that changes per segment -->

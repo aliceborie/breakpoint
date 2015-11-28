@@ -151,7 +151,7 @@ angular.module('breakpoint.directives', ['breakpoint.services', 'amliu.timeParse
             scope.currentTime_formatted = "00:00"
         }
 
-        scope.stopPlayer = function stopPlayer() {
+        scope.stopPlayer = function() {
             scope.player.seekTo(0);
             scope.player.stopVideo();
 
@@ -160,7 +160,7 @@ angular.module('breakpoint.directives', ['breakpoint.services', 'amliu.timeParse
             scope.currentTime = scope.player.getCurrentTime();
         }
 
-        scope.pausePlayPlayer = function pausePlayPlayer() {
+        scope.pausePlayPlayer = function() {
             if (scope.player.getPlayerState() !== 1) { // Paused, need to play
                 playPlayer();
             } else { // Playing, need to pause
@@ -179,33 +179,34 @@ angular.module('breakpoint.directives', ['breakpoint.services', 'amliu.timeParse
             scope.player.pauseVideo();
         }
 
-        scope.forwardPlayer = function forwardPlayer() {
+        scope.forwardPlayer = function() {
             findCurrent(scope.player.getCurrentTime());
             increaseCurrent(scope.player.getCurrentTime());
+
             scope.player.seekTo(scope.breakpoints[scope.currentBp].get("time"), true);
-            scope.currentTime = scope.player.getCurrentTime();
+            refreshCurrentTime_watcher();
         }
 
-        scope.backPlayer = function backPlayer() {
+        scope.backPlayer = function() {
             findCurrent(scope.player.getCurrentTime());
             decreaseCurrent(scope.player.getCurrentTime());
+
             scope.player.seekTo(scope.breakpoints[scope.currentBp].get("time"), true);
-            scope.currentTime = scope.player.getCurrentTime();
+            refreshCurrentTime_watcher();
         }
 
-        scope.repeatPlayerSegment = function repeatPlayerSegment() {
+        scope.repeatPlayerSegment = function() {
             var currentTime = scope.player.getCurrentTime();
             if (!currentIsSynced(currentTime)) {
                 // Player scrubbed or skipped sections, meaning our current pointer is no longer correct
                 findCurrent(currentTime);
             }
+
             scope.player.seekTo(scope.breakpoints[scope.currentBp].get("time"), true);
-            scope.currentTime = scope.player.getCurrentTime();
+            refreshCurrentTime_watcher();
         }
 
-        scope.fullscreen = function fullscreen() {
-            positionBreakpoints();
-
+        scope.fullscreen = function() {
             // Parent of the youtube tag is the scroller container. We use ID to ensure we grab the currently viewed page
             angular.element(document.getElementById(scope.videoid).parentNode).addClass("no-scroll");
 
@@ -218,7 +219,7 @@ angular.module('breakpoint.directives', ['breakpoint.services', 'amliu.timeParse
             positionBreakpoints();
         }
 
-        scope.leave_fullscreen = function leave_fullscreen() {
+        scope.leave_fullscreen = function() {
             angular.element(document.getElementById(scope.videoid).parentNode).removeClass("no-scroll");
 
             angular.element(document.getElementsByTagName("ion-view")).addClass("has-header");
@@ -230,10 +231,29 @@ angular.module('breakpoint.directives', ['breakpoint.services', 'amliu.timeParse
             positionBreakpoints();
         }
 
+        scope.jumpToBp = function(bpIndex) {
+            scope.currentBp = bpIndex;
+            scope.player.seekTo(scope.breakpoints[scope.currentBp].get("time"), true);
+
+            // We need to start the current time watcher just in case because 
+            refreshCurrentTime_watcher();
+        }
+
         scope.getCurrentTime = function getCurrentTime() {
             return scope.player.getCurrentTime();
         }
 
+        function refreshCurrentTime_watcher() {
+            window.clearTimeout(scope.currentTime_timeoutId);
+            if (scope.player.getPlayerState() !== 0 && scope.player.getPlayerState() !== 2) {
+                // Only restart the current time watcher if the player is not stopped (0) or paused (2)
+                scope.currentTime_timeoutId = setTimeout(refreshCurrentTime, 500);
+            }
+            scope.$apply(function() {
+                scope.currentTime = scope.player.getCurrentTime();
+                scope.currentTime_formatted = timeParser.convertSeconds(scope.currentTime);
+            })
+        }
         function refreshCurrentTime() {
             scope.$apply(function() {
                 console.log("GOOGO");
@@ -242,6 +262,8 @@ angular.module('breakpoint.directives', ['breakpoint.services', 'amliu.timeParse
             })
             scope.currentTime_timeoutId = setTimeout(refreshCurrentTime, 250);
         }
+
+
 
         // We watch the current time and, whenever the next BP is passed, we reset the current BP
         scope.$watch("currentTime", function(newValue, oldValue) {
@@ -381,6 +403,11 @@ angular.module('breakpoint.directives', ['breakpoint.services', 'amliu.timeParse
             notifEl.offsetWidth = notifEl.offsetWidth;
 
             angular.element(notifEl).addClass("slideInOut");
+        }
+
+        // Provides access to the timeParser second parse method
+        scope.parseTime = function(time){
+            return timeParser.convertSeconds(time);
         }
 
 

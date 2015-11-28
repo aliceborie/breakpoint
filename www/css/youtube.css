@@ -97,6 +97,10 @@ youtube > iframe {
     color: white;
     font-size:20px;
 }
+.browsing .yt_playcontrols {
+    top: 0;
+    margin-top:10px;
+}
 .yt_playcontrols span {
     position: absolute;
     width: 20%;
@@ -235,8 +239,6 @@ ul.player_breakpoints li {
     margin-top: 2px;
 }
 
-
-
 /* Notification styling */
 .yt_notifications {
     min-width: 250px;
@@ -284,4 +286,46 @@ ul.player_breakpoints li {
     }
 }
 
-
+/* BP Browsing styling */
+.bp_browser {
+    height: 250px;
+    top: 30%;
+    position: absolute;
+    width: 100%;
+}
+.bp_browser ul {
+    height: 100%;
+    overflow-x: scroll;
+    overflow-y: hidden;
+    width: 100%;
+    white-space: nowrap;
+}
+.bp_browser li {
+    height: 100%;
+    vertical-align: top;
+    position: relative;
+    padding: 15px;
+    padding-top: 30px;
+    display: inline-block;
+    width: 35%;
+    border-top: 5px solid #6461eb;
+}
+.bp_browser li.even { background: white; }
+.bp_browser li.odd { background: #ECECEC; }
+.bp_browser .bp_start {
+    font-weight: bold;
+    color: #6461eb;
+    font-size: 16px;
+}
+.bp_browser li p {
+    margin-top: 10px;
+    white-space: initial;
+}
+.bp_browser .tickmark {
+    width: 5px;
+    height: 10px;
+    background-color: #6461eb;
+    position: absolute;
+    top: 0;
+    left: 0;
+}
