@@ -1,0 +1,27 @@
+<ion-view view-title="Search">
+  <ion-nav-buttons side="right" class="show">
+    <nav-buttons></nav-buttons>
+  </ion-nav-buttons>
+  <ion-content>
+    <ion-refresher pulling-text="Pull to refresh" on-refresh="doRefresh()">
+    </ion-refresher>
+      
+    <div class="list card" ng-repeat="video in videos">
+      <div class="item item-text-wrap">
+        <div class="row">
+          <div class="col col-40">
+            <img style="width:100%;" ng-src="{{video.snippet.thumbnails.high.url}}">
+          </div>
+          <div class="col col-60">
+            <h2>{{video.snippet.title}}</h2>
+            <p>YT id: {{video.id.videoId}}</p>
+          </div>
+        </div>
+      </div>
+      <!-- <div class="item item-image">
+        <img ng-src="{{video.snippet.thumbnails.high.url}}">
+      </div> -->
+    </div>
+
+  </ion-content>
+</ion-view>

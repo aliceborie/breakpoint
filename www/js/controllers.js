@@ -1,8 +1,10 @@
 
 angular.module('breakpoint.controllers', ['breakpoint.services', 'amliu.timeParser'])
 
-.controller('AppCtrl', function($scope, $ionicModal, $ionicPopup, $sce, $ionicScrollDelegate) {
+.controller('AppCtrl', function($scope, $ionicModal, $ionicPopup, $sce, $ionicScrollDelegate, $state) {
 	// Opens search popup when search button in nav bar clicked
+	$scope.search = {};
+
 	$scope.openSearch = function() {
 		$ionicPopup.show({
 			title: 'Search',
@@ -19,7 +21,10 @@ angular.module('breakpoint.controllers', ['breakpoint.services', 'amliu.timePars
 				text: '<i class="icon ion-search">',
 				type: 'button-royal',
 				onTap: function(e) {
-					return true;
+					// Perform search 
+					$state.go('app.search',{q: $scope.search.value});
+					// Clear search value 
+					$scope.search = {};
 				}, 
 			}]
 		}).then(function(popup) {
@@ -47,6 +52,7 @@ angular.module('breakpoint.controllers', ['breakpoint.services', 'amliu.timePars
 		$scope.closeLogin();
 	}
 
+	// Use to trust concatenated URLs in templates (ex: youtube.com/+video_id)
 	$scope.trust = function(URL) {
     	return $sce.trustAsResourceUrl(URL);
   	}
@@ -97,6 +103,16 @@ angular.module('breakpoint.controllers', ['breakpoint.services', 'amliu.timePars
 })
 
 
+.controller('SearchCtrl', function($scope, $http, $stateParams, youtubeData) {
+	$scope.videos = [];
+
+	youtubeData.search($stateParams.q).success(function(response) {
+		angular.forEach(response.items, function(item) {
+			$scope.videos.push(item);
+		})
+	})
+})
+
 .controller('VideoCtrl', function($window, $rootScope, $scope, $stateParams, parse, timeParser) {
 
     $scope.timeParser = timeParser;
@@ -141,13 +157,13 @@ document.addEventListener("deviceready", onDeviceReady, false);
 
     // When the page is "popped" and we go back
     $scope.$on('$stateChangeStart', function(event) {
-        // For some we don't have access to scope, so just use rootscope
-        $rootScope.$broadcast("LEAVE_VIDEOSHOW");
+      // For some we don't have access to scope, so just use rootscope
+      $rootScope.$broadcast("LEAVE_VIDEOSHOW");
     });
 
     // Handles all events that don't require additional arguments
     $scope.sendControlEvent = function (event_name) {
-        this.$broadcast(event_name);
+      this.$broadcast(event_name);
     };
 
 
@@ -159,8 +175,8 @@ document.addEventListener("deviceready", onDeviceReady, false);
     }
 
     $scope.leave_fullscreen = function() {
-        screen.lockOrientation('portrait');
-        this.$broadcast("LEAVE_FULLSCREEN");
+      screen.lockOrientation('portrait');
+      this.$broadcast("LEAVE_FULLSCREEN");
     }
 
 })

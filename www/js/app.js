@@ -52,6 +52,12 @@ angular.module('breakpoint', ['ionic', 'breakpoint.controllers', 'breakpoint.dir
 		controller: 'SubcategoryCtrl'
 	})
 
+	.state('app.search', {
+		url: '/search?q',
+		templateUrl: 'templates/search.html',
+		controller: 'SearchCtrl'
+	})
+
     .state('video', {
         url: "/video/:videoId",
         templateUrl: 'templates/video.html',
