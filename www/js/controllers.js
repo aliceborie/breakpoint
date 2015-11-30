@@ -2,9 +2,12 @@
 angular.module('breakpoint.controllers', ['breakpoint.services', 'amliu.timeParser'])
 
 .controller('AppCtrl', function($scope, $ionicModal, $ionicPopup, $sce, $ionicScrollDelegate, $state) {
-	// Opens search popup when search button in nav bar clicked
-	$scope.search = {};
+	$scope.goToCategories = function() {
+		$state.go('app.browse')
+	}
 
+	$scope.search = {};
+	// Opens search popup when search button in nav bar clicked
 	$scope.openSearch = function() {
 		$ionicPopup.show({
 			title: 'Search',
