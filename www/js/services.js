@@ -5,9 +5,16 @@ angular.module('breakpoint.services', [])
 	return {
 		getCategories: function() {
 			var Category = Parse.Object.extend("Category");
-			var query = new Parse.Query(Category).select(["name","url","image_url"]);
+			var query = new Parse.Query(Category).select(["name","url", "image_url","id","children"]).equalTo("hierarchy",1).exists("videos");
+			return query.find();			
+		},
+
+		getSubcategories: function(category) {
+			var Category = Parse.Object.extend("Category");
+			var query = new Parse.Query(Category).equalTo("parent",category).exists("videos").select(["name","url","image_url","id"]);
 			return query.find();
 		},
+
 
 		getVideosForCategory: function(categoryUrl) {
 			var Category = Parse.Object.extend("Category");

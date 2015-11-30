@@ -1,0 +1,25 @@
+<ion-view view-title="Subcategories">
+	<ion-nav-buttons side="right" class="show">
+		<nav-buttons></nav-buttons>
+	</ion-nav-buttons>
+	
+	<ion-content>
+		<div id="categories-grid">
+			<h4>Select Subcategory:</h4>
+			<div class="category category-container" ng-repeat="subcategory in subcategories">
+				<a href="#/browse/{{subcategory.attributes.parent}}/{{subcategory.attributes.url}}">
+					<div class="item">
+						<div class="category-overlay"><h2>{{ subcategory.attributes.name }}</h2></div>
+						<img class="category-background" src="{{ subcategory.attributes.image_url }}">
+					</div>
+				</a>
+			</div>
+		</div>
+		<div id="search">
+			<label class="item item-input with-button">
+				<input type="text" placeholder="Search">
+				<button class="button button-royal "><i class="icon ion-search"></i></button>
+			</label>
+		</div>
+	</ion-content>
+</ion-view>

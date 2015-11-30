@@ -59,25 +59,31 @@ angular.module('breakpoint.controllers', ['breakpoint.services', 'amliu.timePars
 .controller('LandingCtrl', function($scope) {
 })
 
-.controller('BrowseCtrl', function($scope, parse) {
+.controller('BrowseCtrl', function($scope, parse){
 
-	parse.getCategories().then( function(categories) {
-		console.log(categories)
+	parse.getCategories().then(function(categories){
 		$scope.categories = categories;
+		})
 	})
 
+
+.controller('SubcategoryCtrl', function($scope, $stateParams, parse){
+	var category = $stateParams.categoryName;
+	parse.getSubcategories(category).then(function(subcategories){
+		$scope.subcategories = subcategories;
+	})
+	
 })
+
 
 .controller('CategoryCtrl', function($scope, $stateParams, parse) {
 	// get category name from params so can know which category 
-	var category = $stateParams.categoryName;
-	
+	var category = $stateParams.subcategory;
+	var parent = $stateParams.categoryName;
 	parse.getCategory(category).then( function(category) {
-		// console.log(category);
 		$scope.category = category;
 	})
 	parse.getVideosForCategory(category).then( function(videos) {
-		// console.log(videos);
 		$scope.videos = videos;
 	})
 

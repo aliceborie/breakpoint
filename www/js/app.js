@@ -41,9 +41,15 @@ angular.module('breakpoint', ['ionic', 'breakpoint.controllers', 'breakpoint.dir
 	})
 
 	.state('app.category', {
-		url: '/browse/:categoryName',
+		url: '/browse/:categoryName/:subcategory',
 		templateUrl: 'templates/category.html',
 		controller: 'CategoryCtrl'
+	})
+
+	.state('app.subcategory', {
+		url: '/browse/:categoryName',
+		templateUrl: 'templates/subcategory.html',
+		controller: 'SubcategoryCtrl'
 	})
 
     .state('video', {
