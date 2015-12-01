@@ -58,7 +58,7 @@ angular.module('breakpoint', ['ionic', 'breakpoint.controllers', 'breakpoint.dir
 		controller: 'SearchCtrl'
 	})
 
-    .state('video', {
+    .state('app.video', {
         url: "/video/:youtubeVideoId",
         templateUrl: 'templates/video.html',
         controller: 'VideoCtrl'
