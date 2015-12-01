@@ -15,7 +15,6 @@ angular.module('breakpoint.services', [])
       return query.find();
     },
 
-
     getVideosForCategory: function(categoryUrl) {
       var Category = Parse.Object.extend("Category");
       // get category that matches url 
@@ -39,31 +38,44 @@ angular.module('breakpoint.services', [])
       return query.first()
     },
 
-        getVideo: function(videoId) {
-            var Video = Parse.Object.extend("Video");
-            // get video that matches videoId
-            var query = new Parse.Query(Video).equalTo("objectId", videoId).select(["yt_title", "yt_videoId"]);
-            return query.first();
-        },
+    getVideo: function(videoId) {
+      var Video = Parse.Object.extend("Video");
+      // get video that matches videoId
+      var query = new Parse.Query(Video).equalTo("objectId", videoId).select(["yt_title", "yt_videoId"]);
+      return query.first();
+    },
 
-        getVideoWithYT: function(videoId) {
-            var Video = Parse.Object.extend("Video");
-            // get video that matches yt_videoId
-            var query = new Parse.Query(Video).equalTo("yt_videoId", yt_videoId);
-            return query.first();
-        },
+    getYTVideoIDs: function() {
+      var Video = Parse.Object.extend("Video");
+      var query = new Parse.Query(Video).select(["yt_videoId"]);
+      return query.find().then(function(videos) {
+        var YTVideoIDs = []
+        angular.forEach(videos, function(video) {
+          YTVideoIDs.push(video.attributes.yt_videoId)
+        })
+        // console.log(YTVideoIDs)
+        return YTVideoIDs;
+      })
+    },
 
-        getSetsForVideo: function(videoOId) {
-            var Set = Parse.Object.extend("Set");
-            var query = new Parse.Query(Set).equalTo("videoOId", videoOId);
-            return query.find();
-        },
+    getVideoWithYT: function(videoId) {
+      var Video = Parse.Object.extend("Video");
+      // get video that matches yt_videoId
+      var query = new Parse.Query(Video).equalTo("yt_videoId", yt_videoId);
+      return query.first();
+    },
 
-        getBreakpointsForSet: function(setId) {
-            var Breakpoint = Parse.Object.extend("Breakpoint");
-            var query = new Parse.Query(Breakpoint).equalTo("setId", setId).select(["description","time","title"]);
-            return query.find();
-        },
+    getSetsForVideo: function(videoOId) {
+      var Set = Parse.Object.extend("Set");
+      var query = new Parse.Query(Set).equalTo("videoOId", videoOId);
+      return query.find();
+    },
+
+    getBreakpointsForSet: function(setId) {
+      var Breakpoint = Parse.Object.extend("Breakpoint");
+      var query = new Parse.Query(Breakpoint).equalTo("setId", setId).select(["description","time","title"]);
+      return query.find();
+    },
   }
 })
 

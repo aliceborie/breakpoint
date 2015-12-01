@@ -106,13 +106,19 @@ angular.module('breakpoint.controllers', ['breakpoint.services', 'amliu.timePars
 })
 
 
-.controller('SearchCtrl', function($scope, $http, $stateParams, youtubeData) {
+.controller('SearchCtrl', function($scope, $http, $stateParams, youtubeData, parse) {
 	$scope.videos = [];
 
 	youtubeData.search($stateParams.q).success(function(response) {
-		angular.forEach(response.items, function(item) {
-			$scope.videos.push(item);
-		})
+		parse.getYTVideoIDs().then(function(breakpointedVideos) {
+			angular.forEach(response.items, function(video) {
+				// Check to see if video is already breakpointed by checking 
+				// for inclusion of youtube video ID in breakpointed videos
+				// if it doesn't exist in breakpointedVideos indexOf evaluates to -1
+				video.isBreakpointed = (breakpointedVideos.indexOf(video.id.videoId) !== -1);
+				$scope.videos.push(video);
+			})
+		}); 
 	})
 })
 
