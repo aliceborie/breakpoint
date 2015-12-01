@@ -59,16 +59,16 @@ angular.module('breakpoint', ['ionic', 'breakpoint.controllers', 'breakpoint.dir
 	})
 
     .state('video', {
-        url: "/video/:videoId",
+        url: "/video/:youtubeVideoId",
         templateUrl: 'templates/video.html',
         controller: 'VideoCtrl'
     })
 
-    // .state('create', {
-    //     url: "/create/:videoId",
-    //     templateUrl: 'templates/create.html',
-    //     controller: 'CreateVideoCtrl'
-    // })
+    .state('app.create', {
+        url: "/create/:youtubeVideoId",
+        templateUrl: 'templates/create_breakpoint_video.html',
+        controller: 'CreateBreakpointVideoCtrl'
+    })
 
 	// if none of the above states are matched, use landing page as the fallback
 	$urlRouterProvider.otherwise('/');

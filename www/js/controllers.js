@@ -124,69 +124,79 @@ angular.module('breakpoint.controllers', ['breakpoint.services', 'amliu.timePars
 
 .controller('VideoCtrl', function($window, $rootScope, $scope, $stateParams, parse, timeParser) {
 
-    $scope.timeParser = timeParser;
+  $scope.timeParser = timeParser;
 
-    $scope.videoId = $stateParams.videoId;
+  // $scope.videoId = $stateParams.videoId;
+  parse.getVideo($stateParams.youtubeVideoId).then(function(video) {
+    $scope.videoId = video.id;
+  })
+  
+  $scope.youtubeVideoId = $stateParams.youtubeVideoId;
 
-document.addEventListener("deviceready", onDeviceReady, false);
-    function onDeviceReady() {
-        console.log("READY!");
-        $scope.changeOriantationLandspace = function() {
-            screen.lockOrientation('landscape');
-        }
-         
-        $scope.changeOriantationPortrait = function() {
-            screen.lockOrientation('portrait');
-        } 
-    }
+  document.addEventListener("deviceready", onDeviceReady, false);
+  function onDeviceReady() {
+      console.log("READY!");
+      $scope.changeOriantationLandspace = function() {
+          screen.lockOrientation('landscape');
+      }
+       
+      $scope.changeOriantationPortrait = function() {
+          screen.lockOrientation('portrait');
+      } 
+  }
 
-    // Page has enetered
-    $scope.$on('$ionicView.beforeEnter', function() {
-        parse.getVideo($stateParams.videoId).then(function(video) {
-            $scope.video = video;
-            $scope.$broadcast('INIT', video.get("yt_videoId"));
-            // Loading sets, breakpoints, sorting breakpoints in order of time
-            parse.getSetsForVideo(video.id).then(function(sets) {
-                // For now, just default to first set always
-                parse.getBreakpointsForSet(sets[0].id).then(function(set_breakpoints) {
-                    $scope.breakpoints = set_breakpoints;
-                    $scope.breakpoints.sort(function(a, b) {
-                        if (a.get("time") < b.get("time"))
-                            return -1;
-                        if (a.get("time") > b.get("time"))
-                            return 1;
-                        return 0;
-                    })
-                    // Pass sorted breakpoints into the youtube directive too
-                    $scope.$broadcast('LOAD_BPS', $scope.breakpoints);
-                })
-            })
-        })
-    });
+  // Page has entered
+  $scope.$on('$ionicView.beforeEnter', function() {
+      parse.getVideo($stateParams.youtubeVideoId).then(function(video) {
+          $scope.video = video;
+          // $scope.$broadcast('INIT', video.get("yt_videoId"));
+          $scope.$broadcast('INIT', $stateParams.youtubeVideoId);
+          // Loading sets, breakpoints, sorting breakpoints in order of time
+          parse.getSetsForVideo(video.id).then(function(sets) {
+              // For now, just default to first set always
+              parse.getBreakpointsForSet(sets[0].id).then(function(set_breakpoints) {
+                  $scope.breakpoints = set_breakpoints;
+                  $scope.breakpoints.sort(function(a, b) {
+                      if (a.get("time") < b.get("time"))
+                          return -1;
+                      if (a.get("time") > b.get("time"))
+                          return 1;
+                      return 0;
+                  })
+                  // Pass sorted breakpoints into the youtube directive too
+                  $scope.$broadcast('LOAD_BPS', $scope.breakpoints);
+              })
+          })
+      })
+  });
 
-    // When the page is "popped" and we go back
-    $scope.$on('$stateChangeStart', function(event) {
-      // For some we don't have access to scope, so just use rootscope
-      $rootScope.$broadcast("LEAVE_VIDEOSHOW");
-    });
+  // When the page is "popped" and we go back
+  $scope.$on('$stateChangeStart', function(event) {
+    // For some we don't have access to scope, so just use rootscope
+    $rootScope.$broadcast("LEAVE_VIDEOSHOW");
+  });
 
-    // Handles all events that don't require additional arguments
-    $scope.sendControlEvent = function (event_name) {
-      this.$broadcast(event_name);
-    };
+  // Handles all events that don't require additional arguments
+  $scope.sendControlEvent = function (event_name) {
+    this.$broadcast(event_name);
+  };
 
 
-    // Need to figure this out ... not working yet
-    // For some reason the cordova screen oritentaion plugin works above but not here
-    $scope.fullscreen = function() {
-        screen.lockOrientation('landscape');
-        this.$broadcast("FULLSCREEN");
-    }
+  // Need to figure this out ... not working yet
+  // For some reason the cordova screen oritentaion plugin works above but not here
+  $scope.fullscreen = function() {
+      screen.lockOrientation('landscape');
+      this.$broadcast("FULLSCREEN");
+  }
 
-    $scope.leave_fullscreen = function() {
-      screen.lockOrientation('portrait');
-      this.$broadcast("LEAVE_FULLSCREEN");
-    }
+  $scope.leave_fullscreen = function() {
+    screen.lockOrientation('portrait');
+    this.$broadcast("LEAVE_FULLSCREEN");
+  }
+
+})
+
+.controller('CreateBreakpointVideoCtrl', function($scope, $stateParams) {
 
 })
 

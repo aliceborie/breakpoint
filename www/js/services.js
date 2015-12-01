@@ -38,10 +38,10 @@ angular.module('breakpoint.services', [])
       return query.first()
     },
 
-    getVideo: function(videoId) {
+    getVideo: function(youtubeVideoId) {
       var Video = Parse.Object.extend("Video");
       // get video that matches videoId
-      var query = new Parse.Query(Video).equalTo("objectId", videoId).select(["yt_title", "yt_videoId"]);
+      var query = new Parse.Query(Video).equalTo("yt_videoId", youtubeVideoId).select(["yt_title", "yt_videoId"]);
       return query.first();
     },
 

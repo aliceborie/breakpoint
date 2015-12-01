@@ -16,7 +16,9 @@
             <h2>{{video.snippet.title}}</h2>
             <p>YT id: {{video.id.videoId}}</p>
             <p ng-if="video.isBreakpointed">Video is breakpointed.</p>
-            <p ng-if="!video.isBreakpointed">Video is not breakpointed.</p>
+            <a ng-if="video.isBreakpointed" href="#/video/{{video.id.videoId}}">See breakpointed video.</a>
+            <a ng-if="!video.isBreakpointed" href="#/create/{{video.id.videoId}}">Video is not breakpointed.</a>
+            <!-- <p ng-if="!video.isBreakpointed">Video is not breakpointed.</p> -->
           </div>
         </div>
       </div>
