@@ -120,6 +120,17 @@ angular.module('breakpoint.controllers', ['breakpoint.services', 'amliu.timePars
 			})
 		}); 
 	})
+
+	$scope.all = true;
+	$scope.breakpointed = true;
+
+	$scope.showAll = function() {
+		$scope.all = true;
+	}
+
+	$scope.showBreakpointed = function() {
+		$scope.all = false;
+	}
 })
 
 .controller('VideoCtrl', function($window, $rootScope, $scope, $stateParams, parse, timeParser) {

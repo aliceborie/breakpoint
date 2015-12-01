@@ -6,7 +6,30 @@
     <ion-refresher pulling-text="Pull to refresh" on-refresh="doRefresh()">
     </ion-refresher>
       
-    <div class="list card" ng-repeat="video in videos">
+    <div class="button-bar">
+      <a class="button button-royal" ng-click="showBreakpointed()">Show Breakpointed Videos</a>
+      <a class="button button-dark" ng-click="showAll()">Show All Videos</a>
+    </div>  
+    
+    <div class="list" ng-repeat="video in videos">
+      <div ng-repeat="video in videos">
+        <a ng-show="all || breakpointed" ng-if="video.isBreakpointed" href="#/video/{{video.id.videoId}}" class="item item-thumbnail-left item-text-wrap" href="#">
+          <img style="width:100%;" ng-src="{{video.snippet.thumbnails.high.url}}">
+          <h2>{{video.snippet.title}}</h2>
+          <p>YT id: {{video.id.videoId}}</p>
+          <p>Video is breakpointed.</p>
+        </a>
+
+        <a ng-show="all" ng-if="!video.isBreakpointed" href="#/create/{{video.id.videoId}}" class="item item-thumbnail-left item-text-wrap" href="#">
+          <img style="width:100%;" ng-src="{{video.snippet.thumbnails.high.url}}">
+          <h2>{{video.snippet.title}}</h2>
+          <p>YT id: {{video.id.videoId}}</p>
+          <p>Video is not breakpointed.</p>
+        </a>
+      </div>
+    </div>
+
+    <!-- <div class="list card" ng-repeat="video in videos">
       <div class="item item-text-wrap">
         <div class="row">
           <div class="col col-40">
@@ -24,7 +47,7 @@
       <!-- <div class="item item-image">
         <img ng-src="{{video.snippet.thumbnails.high.url}}">
       </div> -->
-    </div>
+    <!-- </div> -->
 
   </ion-content>
 </ion-view>
