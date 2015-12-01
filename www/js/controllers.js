@@ -208,6 +208,7 @@ angular.module('breakpoint.controllers', ['breakpoint.services', 'amliu.timePars
 })
 
 .controller('CreateBreakpointVideoCtrl', function($scope, $stateParams) {
+	$scope.youtubeVideoId = $stateParams.youtubeVideoId 
 
 })
 

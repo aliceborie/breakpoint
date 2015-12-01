@@ -5,5 +5,9 @@
   <ion-content>
     <ion-refresher pulling-text="Pull to refresh" on-refresh="doRefresh()">
     </ion-refresher>
+
+    <div class="full-width-video">
+    	<iframe src="{{trust('https://www.youtube.com/embed/'+youtubeVideoId+'?showinfo=0&modestbranding=1&controls=0')}}" frameborder="0" allowfullscreen></iframe>
+    </div>
   </ion-content>
 </ion-view>
