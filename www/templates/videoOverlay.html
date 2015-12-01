@@ -59,22 +59,21 @@
             <input type="range" min="{{ currentBp_start }}" max="{{ currentBp_end }}" step="0.1" ng-model="currentTime" ng-change="setToSpot()" ng-mousedown="draggingSlider = true" ng-mouseleave="draggingSlider = false">
         </span>
     </div>
+</div>
 
-    <!-- The bottom player elements -->
-    <div class="yt_bottombar">
-        <label class="current_time" ng-bind="currentTime_formatted"></label>
-        <a class="compress" href="javascript:;" ng-click="leave_fullscreen()"><fa name="compress"></fa></a>
-        <label class="duration" ng-bind="duration_formatted"></label>
-        <span class="bottom_player">
-            <div class="played"></div>
-            <ul class="player_breakpoints">
-                <li ng-repeat="breakpoint in breakpoints" id="{{ breakpoint.id }}"></li>
-            </ul>
-            <input type="range" min="0" max="{{ duration }}" step="0.2" ng-model="currentTime" ng-change="setToSpot()" ng-mousedown="draggingSlider = true" ng-mouseleave="draggingSlider = false">
-            <div class="progress"></div>
-        </div>
+<!-- The bottom player elements -->
+<div class="yt_bottombar">
+    <label class="current_time" ng-bind="currentTime_formatted"></label>
+    <a class="compress" href="javascript:;" ng-click="leave_fullscreen()"><fa name="compress"></fa></a>
+    <label class="duration" ng-bind="duration_formatted"></label>
+    <span class="bottom_player">
+        <div class="played"></div>
+        <ul class="player_breakpoints">
+            <li ng-repeat="breakpoint in breakpoints" id="{{ breakpoint.id }}"></li>
+        </ul>
+        <input type="range" min="0" max="{{ duration }}" step="0.2" ng-model="currentTime" ng-change="setToSpot()" ng-mousedown="draggingSlider = true" ng-mouseleave="draggingSlider = false">
+        <div class="progress"></div>
     </div>
-
 </div>
 
 <!-- Usually hidden, but contains the notifications that appear in the video -->
