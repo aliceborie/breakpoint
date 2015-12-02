@@ -23,8 +23,11 @@
             <button class="button button-small button-circle button-assertive icon ion-loop" ng-click="repeatPlayerSegment()"><!-- Repeat --></button>
         </span>
 
-        <span class="yt_pauseplay">
-            <button class="button button-small button-circle button-assertive icon ion-play" ng-click="pausePlayPlayer()"><!-- Send Play --></button>
+        <span class="yt_pauseplay"> <!-- Send Play -->
+            <button class="button button-small button-circle button-assertive" ng-click="pausePlayPlayer()">
+                <fa ng-if="!isPaused" name="pause"></fa>
+                <fa ng-if="isPaused" name="play"></fa>
+            </button>
         </span>
 
         <span class="yt_bpBrowse">

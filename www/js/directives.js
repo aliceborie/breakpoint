@@ -18,6 +18,7 @@ angular.module('breakpoint.directives', ['breakpoint.services', 'amliu.timeParse
       player: "=", // iFrame YT player element
 
       isFullscreened: "=",
+      isPaused: "=",
 
       duration: "=", // Duration of the YT video in seconds
       duration_formatted: "=", // Duration of video formatted
@@ -151,8 +152,10 @@ angular.module('breakpoint.directives', ['breakpoint.services', 'amliu.timeParse
             scope.duration = scope.player.getDuration();
             scope.duration_formatted = timeParser.convertSeconds(scope.duration);
             scope.currentTime = scope.player.getCurrentTime();
-            scope.currentTime_formatted = "00:00"
+            scope.currentTime_formatted = "00:00";
+
             scope.isFullscreened = false;
+            scope.isPaused = true;
 
             document.querySelector("youtube[id='"+scope.videoid+"'] .bottom_player input").value = scope.currentTime;
             positionBreakpoints();
@@ -161,6 +164,7 @@ angular.module('breakpoint.directives', ['breakpoint.services', 'amliu.timeParse
         scope.stopPlayer = function() {
             scope.player.seekTo(0);
             scope.player.stopVideo();
+            scope.isPaused = true;
 
             $interval.cancel(scope.currentTime_intervalPromise);
             scope.currentTime = scope.player.getCurrentTime();
@@ -179,11 +183,13 @@ angular.module('breakpoint.directives', ['breakpoint.services', 'amliu.timeParse
             scope.currentTime_intervalPromise = $interval(refreshCurrentTime, 250);
             positionBreakpoints();
             scope.player.playVideo();
+            scope.isPaused = false;
         }
 
         function pausePlayer() {
             $interval.cancel(scope.currentTime_intervalPromise);
             scope.player.pauseVideo();
+            scope.isPaused = true;
         }
 
         scope.forwardPlayer = function() {
@@ -232,7 +238,7 @@ angular.module('breakpoint.directives', ['breakpoint.services', 'amliu.timeParse
 
         scope.leave_fullscreen = function() {
             scope.isFullscreened = false;
-            
+
             angular.element(document.getElementById(scope.videoid).parentNode).removeClass("no-scroll");
 
             angular.element(document.getElementsByTagName("ion-view")).addClass("has-header");

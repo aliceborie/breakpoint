@@ -110,6 +110,12 @@
 span.yt_back { right: inherit; }
 span.yt_repeat { margin-left: 20%; }
 span.yt_pauseplay { margin: 0 auto; }
+span.yt_pauseplay span.fa {
+    font-size: 15px;
+    margin-top: -8px;
+}
+span.yt_pauseplay span.fa[name="play"] { margin-left: 15px; }
+span.yt_pauseplay span.fa[name="pause"] { margin-left: 12px; }
 span.yt_bpBrowse {
     margin-right: 20%;
     left: inherit;
@@ -347,15 +353,22 @@ ul.player_breakpoints li {
 }
 
 
-
+.fadedOut { opacity: 0; }
+.fadedIn { opacity: 1; }
 .fadeIn {
     animation: fadeIn 0.25s;
+    opacity: 1;
 }
 @keyframes fadeIn {
-    0% {
-        opacity: 0;
-    }
-    100% {
-        opacity: 1;
-    }
+    0% { opacity: 0; }
+    100% { opacity: 1; }
 }
+.fadeOut {
+    animation: fadeOut 0.25s;
+    opacity: 0;
+}
+@keyframes fadeIn {
+    0% { opacity: 1; }
+    100% { opacity: 0; }
+}
+
