@@ -9,5 +9,40 @@
     <div class="full-width-video">
     	<iframe src="{{trust('https://www.youtube.com/embed/'+youtubeVideoId+'?showinfo=0&modestbranding=1&controls=0')}}" frameborder="0" allowfullscreen></iframe>
     </div>
+
+    <div id="instructions" ng-show="showInstructions">
+    	<p>This video hasn't been breakpointed yet! If you think this video would benefit from some breakpoints add it to our growing collection of Breakpointed videos.</p>
+    	<div class="text-center">
+    		<button class="button button-royal center" ng-click="activateShowCreateForm()">Breakpoint Video</button>
+    	</div>
+    </div>
+
+    <div id="create-form" ng-show="showCreateForm">
+   		<form ng-submit="createVideo(video)">
+   			<div class="list">
+   				<label class="item item-input">
+    				<span class="input-label">Title</span>
+    				<input type="text" ng-model="video.title" placeholder="{{defaultVideoName}}">
+ 	 			</label>
+ 	 			<label class="item item-input item-select">
+ 	 				<div class="input-label">Category</div>
+	 	 			<select ng-model="video.category" ng-change="categoryChanged(video.category)">
+	 	 				<option></option>
+	 	 				<option ng-repeat="category in categories">{{category}}</option>
+	 	 			</select>
+ 	 			</label>
+ 	 			<label class="item item-input item-select">
+ 	 				<div class="input-label">Subcategory for {{ video.category }}</div>
+	 	 			<select ng-model="video.subcategory">
+	 	 				<option ng-repeat="subcategory in subcategories">{{subcategory}}</option>
+	 	 			</select>
+ 	 			</label>
+   			</div>
+	    	<div class="text-center padding">
+	    		<button type="submit" class="button button-royal">Create</button>
+	    		<button class="button button-royal center" ng-click="activateShowInstructions()">Cancel</button>
+	    	</div>
+    	</form>
+    </div>
   </ion-content>
 </ion-view>

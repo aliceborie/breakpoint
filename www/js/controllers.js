@@ -207,8 +207,50 @@ angular.module('breakpoint.controllers', ['breakpoint.services', 'amliu.timePars
 
 })
 
-.controller('CreateBreakpointVideoCtrl', function($scope, $stateParams) {
-	$scope.youtubeVideoId = $stateParams.youtubeVideoId 
+.controller('CreateBreakpointVideoCtrl', function($scope, $stateParams, parse) {
+	$scope.youtubeVideoId = $stateParams.youtubeVideoId;
+
+	$scope.showInstructions = true;
+	$scope.showCreateForm = false;
+
+	$scope.activateShowInstructions = function() {
+		$scope.showInstructions = true;
+		$scope.showCreateForm = false;
+	} 
+
+	$scope.activateShowCreateForm = function() {
+		$scope.showInstructions = false;
+		$scope.showCreateForm = true;
+	}
+
+	$scope.defaultVideoName = "Youtube Title";
+
+	parse.getCategories().then(function(parseCategoryObjects) {
+		$scope.categories = []
+		angular.forEach(parseCategoryObjects, function(parseCategoryObject) {
+			$scope.categories.push(parseCategoryObject.attributes.name)
+		})
+	})
+
+	// $scope.category = '';
+	$scope.video = {};
+
+	$scope.categoryChanged = function(selectedCategory) {
+		$scope.video.category = selectedCategory;
+		$scope.video.subcategory = '';
+		parse.getSubcategories(angular.lowercase(selectedCategory)).then(function(parseSubcategoryObjects) {
+			$scope.subcategories = [];
+			angular.forEach(parseSubcategoryObjects, function(parseSubcategoryObject) {
+				$scope.$apply(function() {
+					$scope.subcategories.push(parseSubcategoryObject.attributes.name);
+				})
+			})
+		})
+	}
+
+	$scope.createVideo = function(video) {
+		console.log(video);
+	}
 
 })
 
