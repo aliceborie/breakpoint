@@ -10,9 +10,7 @@
             {{ breakpoint.attributes.time }}
         </div> -->
 
-
-
-        <youtube id="{{ videoId }}" videoid="{{ videoId }}"></youtube>
+        <youtube class="full-width-video" id="{{ videoId }}" videoid="{{ videoId }}"></youtube>
 
         <div class="player-controls" id="{{ videoId }}">
             <button class="button button-small button-circle button-assertive icon ion-play" ng-click="sendControlEvent('PLAY')"><!-- Send Play --></button>

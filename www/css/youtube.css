@@ -2,7 +2,7 @@
 /* Any and all styles related to the youtube player or its controls */
 
 /* Resizing youtube player on video page */
-youtube {
+.full-width-video {
     display: block;
     width: 100%;
     position: relative;
@@ -10,13 +10,12 @@ youtube {
     height: 0;
 }
 
-youtube > iframe {
+.full-width-video > iframe {
     position: absolute;
     top: 0;
     left: 0;
     width: 100%;
     height: 100%;
-
 }
 
 
