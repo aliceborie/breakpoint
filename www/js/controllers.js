@@ -166,7 +166,8 @@ angular.module('breakpoint.controllers', ['breakpoint.services', 'amliu.timePars
           // Loading sets, breakpoints, sorting breakpoints in order of time
           parse.getSetsForVideo(video.id).then(function(sets) {
               // For now, just default to first set always
-              parse.getBreakpointsForSet(sets[0].id).then(function(set_breakpoints) {
+              if (sets[0]) {
+              	parse.getBreakpointsForSet(sets[0].id).then(function(set_breakpoints) {
                   $scope.breakpoints = set_breakpoints;
                   $scope.breakpoints.sort(function(a, b) {
                       if (a.get("time") < b.get("time"))
@@ -177,7 +178,8 @@ angular.module('breakpoint.controllers', ['breakpoint.services', 'amliu.timePars
                   })
                   // Pass sorted breakpoints into the youtube directive too
                   $scope.$broadcast('LOAD_BPS', $scope.breakpoints);
-              })
+              	})
+              } 
           })
       })
   });

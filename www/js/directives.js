@@ -56,8 +56,9 @@ angular.module('breakpoint.directives', ['breakpoint.services', 'amliu.timeParse
         function initPage(data) {
             if ((typeof(YT) !== "undefined") && (typeof(YT.Player) !== "undefined")) {
                 resetPlayer(data);
-                resetAnnyang();
-                annyang.start(); // Startup the listener
+                // UNCOMMENT THE NEXT TWO LINES IF WANT TO ENABLE ANNYANG
+                // resetAnnyang();
+                // annyang.start(); // Startup the listener
             } else { // Youtube API still not loaded, wait a second and try again
                 console.log("TRY");
                 scope.api_timeoutId = setTimeout(function() {initPage(data);}, 1000);
@@ -181,30 +182,36 @@ angular.module('breakpoint.directives', ['breakpoint.services', 'amliu.timeParse
         }
 
         scope.forwardPlayer = function() {
-            findCurrent(scope.player.getCurrentTime());
-            increaseCurrent(scope.player.getCurrentTime());
+            if (typeof scope.breakpoints != 'undefined') {
+                findCurrent(scope.player.getCurrentTime());
+                increaseCurrent(scope.player.getCurrentTime());
 
-            scope.player.seekTo(scope.breakpoints[scope.currentBp].get("time"), true);
-            refreshCurrentTime_watcher();
+                scope.player.seekTo(scope.breakpoints[scope.currentBp].get("time"), true);
+                refreshCurrentTime_watcher();
+            }
         }
 
         scope.backPlayer = function() {
-            findCurrent(scope.player.getCurrentTime());
-            decreaseCurrent(scope.player.getCurrentTime());
+            if (typeof scope.breakpoints != 'undefined') {
+                findCurrent(scope.player.getCurrentTime());
+                decreaseCurrent(scope.player.getCurrentTime());
 
-            scope.player.seekTo(scope.breakpoints[scope.currentBp].get("time"), true);
-            refreshCurrentTime_watcher();
+                scope.player.seekTo(scope.breakpoints[scope.currentBp].get("time"), true);
+                refreshCurrentTime_watcher();
+            }
         }
 
         scope.repeatPlayerSegment = function() {
-            var currentTime = scope.player.getCurrentTime();
-            if (!currentIsSynced(currentTime)) {
-                // Player scrubbed or skipped sections, meaning our current pointer is no longer correct
-                findCurrent(currentTime);
-            }
+            if (typeof scope.breakpoints != 'undefined') {
+                var currentTime = scope.player.getCurrentTime();
+                if (!currentIsSynced(currentTime)) {
+                    // Player scrubbed or skipped sections, meaning our current pointer is no longer correct
+                    findCurrent(currentTime);
+                }
 
-            scope.player.seekTo(scope.breakpoints[scope.currentBp].get("time"), true);
-            refreshCurrentTime_watcher();
+                scope.player.seekTo(scope.breakpoints[scope.currentBp].get("time"), true);
+                refreshCurrentTime_watcher();
+            }
         }
 
         scope.fullscreen = function() {
@@ -267,6 +274,7 @@ angular.module('breakpoint.directives', ['breakpoint.services', 'amliu.timeParse
         function refreshCurrentTime() {
             console.log("GOOGO");
             scope.currentTime = scope.player.getCurrentTime();
+            console.log(scope.currentTime);
             scope.currentTime_formatted = timeParser.convertSeconds(scope.currentTime);
         }
 
@@ -316,13 +324,16 @@ angular.module('breakpoint.directives', ['breakpoint.services', 'amliu.timeParse
         // METHODS
 
         function increaseCurrent(currentTime) {
-            if (currentTime < scope.breakpoints[0].get("time")) {
-                scope.currentBp = 0;
-            } else {
-                scope.currentBp++;
-                scope.currentBp = scope.currentBp % scope.breakpoints.length;
+            if (typeof scope.breakpoints != 'undefined') {
+                if (currentTime < scope.breakpoints[0].get("time")) {
+                    scope.currentBp = 0;
+                } else {
+                    scope.currentBp++;
+                    scope.currentBp = scope.currentBp % scope.breakpoints.length;
+                }
             }
         }
+
         function decreaseCurrent(currentTime) {
             scope.currentBp--;
             if (scope.currentBp < 0) {
@@ -349,20 +360,22 @@ angular.module('breakpoint.directives', ['breakpoint.services', 'amliu.timeParse
 
         // Given the current time, locates the closest breakpoint to set as the current BP
         function findCurrent(currentTime) {
-            if (currentTime < scope.breakpoints[0].get("time")) {
-                scope.currentBp = 0;
-                return; // If we're in that section before the 1st BP, just return true (we count it as part of 1st segment)
-            }
-            for (var i = 0; i < scope.breakpoints.length; i++) {
-                if (i === scope.breakpoints.length - 1) {
-                    scope.currentBp = scope.breakpoints.length - 1;
-                    return;
+            if (typeof scope.breakpoints != 'undefined') {
+                if (currentTime < scope.breakpoints[0].get("time")) {
+                    scope.currentBp = 0;
+                    return; // If we're in that section before the 1st BP, just return true (we count it as part of 1st segment)
                 }
-                var bpstart = scope.breakpoints[i].get("time");
-                var bpend = scope.breakpoints[i+1].get("time");
-                if ((currentTime < bpend) && (currentTime >= bpstart)) {
-                    scope.currentBp = i;
-                    return;
+                for (var i = 0; i < scope.breakpoints.length; i++) {
+                    if (i === scope.breakpoints.length - 1) {
+                        scope.currentBp = scope.breakpoints.length - 1;
+                        return;
+                    }
+                    var bpstart = scope.breakpoints[i].get("time");
+                    var bpend = scope.breakpoints[i+1].get("time");
+                    if ((currentTime < bpend) && (currentTime >= bpstart)) {
+                        scope.currentBp = i;
+                        return;
+                    }
                 }
             }
         }
@@ -386,18 +399,20 @@ angular.module('breakpoint.directives', ['breakpoint.services', 'amliu.timeParse
         // Repositions breakpoints to line up with the video's custom bottom player
         // NOTE: Since IDs may start with a number, we need to select via [id=...]
         function positionBreakpoints() {
-            var bottomplayer_width = document.querySelector("youtube[id='"+scope.videoid+"'] .bottom_player input").offsetWidth;
-            for (var i = 0; i < scope.breakpoints.length; i++) {
-                var breakpoint = scope.breakpoints[i];
-                var position = Math.floor((breakpoint.get("time") / scope.duration) * bottomplayer_width);
-                var breakpointEl = angular.element(document.querySelector("[id='"+breakpoint.id+"']")).css("left", position+"px");
+            if (typeof scope.breakpoints != 'undefined') {
+                var bottomplayer_width = document.querySelector("youtube[id='"+scope.videoid+"'] .bottom_player input").offsetWidth;
+                for (var i = 0; i < scope.breakpoints.length; i++) {
+                    var breakpoint = scope.breakpoints[i];
+                    var position = Math.floor((breakpoint.get("time") / scope.duration) * bottomplayer_width);
+                    var breakpointEl = angular.element(document.querySelector("[id='"+breakpoint.id+"']")).css("left", position+"px");
+                }
             }
         }
 
         // Repositions the darker violet bar that indicates already played/passed segments
         function positionPlayedSegments() {
             if (typeof scope.breakpoints != 'undefined') {
-                 var bottomplayer_width = document.querySelector("youtube[id='"+scope.videoid+"'] .bottom_player input").offsetWidth;
+                var bottomplayer_width = document.querySelector("youtube[id='"+scope.videoid+"'] .bottom_player input").offsetWidth;
                 var breakpoint = scope.breakpoints[scope.currentBp];
                 var playedWidth = Math.floor( (breakpoint.get("time") / scope.duration) * bottomplayer_width);
                 angular.element(document.querySelector("youtube[id='"+scope.videoid+"'] .bottom_player .played")).css("width", playedWidth+"px");
