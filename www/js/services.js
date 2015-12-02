@@ -3,6 +3,46 @@ angular.module('breakpoint.services', [])
 .service('parse', function() {
   Parse.initialize("YTjJBDfZmA8fdIC3gEZT9p7n2fp7lkg6tHYBMZ6N", "uLeLdclSTyOxKiJvO8B3CAaY8y0stiZWVlEJpG3q");
   return {
+    createVideo: function(videoDetails) {
+      var Video = Parse.Object.extend("Video");
+      var video = new Video();
+      video.set("yt_title", videoDetails.title);
+      video.set("yt_videoId", videoDetails.youtubeVideoId);
+      video.categories = []
+
+      var Category = Parse.Object.extend("Category");
+      var categoryQuery = new Parse.Query(Category);
+      categoryQuery.equalTo("name",videoDetails.category);
+      var subcategoryQuery = new Parse.Query(Category);
+      subcategoryQuery.equalTo("name",videoDetails.subcategory);
+      // get ID for category and add it to categories array for video
+      categoryQuery.first().then(function(category) {
+        video.categories.push(category.id);
+        return subcategoryQuery.first()
+      // get ID for subcategory and add it to categories array for video, then save the video
+      }).then(function(subcategory) {
+        video.categories.push(subcategory.id)
+        video.set("categories", video.categories);
+        return video.save();
+      // once the video is saved, add it to the videos array for all the categories its in 
+      }).then(function(video) {
+        angular.forEach(video.categories, function(category) {
+          var query = new Parse.Query(Category);
+          query.get(category, {
+            success: function(category) {
+              category.addUnique("videos", video.id);
+              category.save();
+            },
+            error: function(error) {
+              console.log(error)
+            }
+          }); // query.get
+        }) // forEach
+      }, function(error) {
+        console.log(error);
+      })
+    },
+
     getCategories: function() {
       var Category = Parse.Object.extend("Category");
       var query = new Parse.Query(Category).select(["name","url", "image_url","id","children"]).equalTo("hierarchy",1).exists("videos");

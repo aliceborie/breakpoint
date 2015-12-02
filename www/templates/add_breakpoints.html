@@ -1,0 +1,14 @@
+<ion-view view-title="Add Breakpoints to Video">
+  <ion-nav-buttons side="right" class="show">
+    <nav-buttons></nav-buttons>
+  </ion-nav-buttons>
+  <ion-content>
+    <p class="padding">Thanks for adding this video to our breakpointed videos! Now add a couple breakpoints to it.</p>
+    
+    <breakpointer class="full-width-video" videoid="{{youtubeVideoId}}"></breakpointer>
+
+    <div class="text-center padding" class="player-controls">
+		  <button class="button button-assertive" ng-click="getCurrentTime()">Get Current Time</button>
+    </div>
+  </ion-content>
+</ion-view>
