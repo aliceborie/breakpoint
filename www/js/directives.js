@@ -150,6 +150,9 @@ angular.module('breakpoint.directives', ['breakpoint.services', 'amliu.timeParse
             scope.duration_formatted = timeParser.convertSeconds(scope.duration);
             scope.currentTime = scope.player.getCurrentTime();
             scope.currentTime_formatted = "00:00"
+
+            document.querySelector("youtube[id='"+scope.videoid+"'] .bottom_player input").value = scope.currentTime;
+            positionBreakpoints();
         }
 
         scope.stopPlayer = function() {
@@ -386,11 +389,13 @@ angular.module('breakpoint.directives', ['breakpoint.services', 'amliu.timeParse
         // Repositions breakpoints to line up with the video's custom bottom player
         // NOTE: Since IDs may start with a number, we need to select via [id=...]
         function positionBreakpoints() {
-            var bottomplayer_width = document.querySelector("youtube[id='"+scope.videoid+"'] .bottom_player input").offsetWidth;
-            for (var i = 0; i < scope.breakpoints.length; i++) {
-                var breakpoint = scope.breakpoints[i];
-                var position = Math.floor((breakpoint.get("time") / scope.duration) * bottomplayer_width);
-                var breakpointEl = angular.element(document.querySelector("[id='"+breakpoint.id+"']")).css("left", position+"px");
+            if (typeof scope.breakpoints != 'undefined') {
+                var bottomplayer_width = document.querySelector("youtube[id='"+scope.videoid+"'] .bottom_player input").offsetWidth;
+                for (var i = 0; i < scope.breakpoints.length; i++) {
+                    var breakpoint = scope.breakpoints[i];
+                    var position = Math.floor((breakpoint.get("time") / scope.duration) * bottomplayer_width);
+                    var breakpointEl = angular.element(document.querySelector("[id='"+breakpoint.id+"']")).css("left", position+"px");
+                }
             }
         }
 
