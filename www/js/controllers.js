@@ -263,8 +263,20 @@ angular.module('breakpoint.controllers', ['breakpoint.services', 'amliu.timePars
 
 	$scope.createVideo = function(video) {
 		parse.createVideo(video);
-		$state.go('app.video',{youtubeVideoId: $scope.video.youtubeVideoId});
+		$state.go('app.addBreakpoints',{youtubeVideoId: $scope.video.youtubeVideoId});
 	}
+})
 
+.controller('AddBreakpointsCtrl', function($scope, $stateParams, parse) {
+	$scope.youtubeVideoId = $stateParams.youtubeVideoId
+
+	parse.getVideo($scope.youtubeVideoId).then(function(video) {
+        $scope.video = video;
+    });
+
+    // Gets current time from player
+  	$scope.getCurrentTime = function() {
+    	this.$broadcast('getCurrentTime');
+  	};	
 })
 

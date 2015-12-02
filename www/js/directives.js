@@ -39,7 +39,7 @@ angular.module('breakpoint.directives', ['breakpoint.services', 'amliu.timeParse
       breakpoints: "=", // Array of Parse Breakpoint Objs
       api_timeoutId: "=" // ID of the timeout event that rechecks yt API load state
     },
-    templateUrl: '../templates/videoOverlay.html',
+    templateUrl: '../directives/videoOverlay.html',
 
     link: function(scope, element) {
 
@@ -77,8 +77,9 @@ angular.module('breakpoint.directives', ['breakpoint.services', 'amliu.timeParse
         scope.$on("LEAVE_VIDEOSHOW", function() {
             window.clearTimeout(scope.api_timeoutId); // Stop this timeout event
             scope.stopPlayer();
-            annyang.removeCommands(); // Reset annyang so it doesn't use the old player
-            annyang.abort();
+            // UNCOMMENT THE NEXT TWO LINES IF WANT TO ENABLE ANNYANG
+            // annyang.removeCommands(); // Reset annyang so it doesn't use the old player
+            // annyang.abort();
         })
 
         scope.$on("CHANGE_PLAYMODE", function(event, data) {
@@ -442,4 +443,64 @@ angular.module('breakpoint.directives', ['breakpoint.services', 'amliu.timeParse
   };
 })
 
+.directive('breakpointer', function($window, $interval) {
+  return {
+    restrict: "E",
+
+    scope: {
+      videoid:  "@",
+      player: "=", // iFrame YT player element  
+    },
+
+    templateUrl: '../directives/breakpointer.html',
+
+    link: function(scope, element) {
+      var tag = document.createElement('script');
+      tag.src = "https://www.youtube.com/iframe_api";
+      var firstScriptTag = document.getElementsByTagName('script')[0];
+      firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
+      
+      initPage();
+      function initPage() {
+        if ((typeof(YT) !== "undefined") && (typeof(YT.Player) !== "undefined")) {
+          setPlayer();
+        } else { // Youtube API still not loaded, wait a second and try again
+          console.log("try again");
+          setTimeout(function() {initPage();}, 1000);
+        }
+      }
+
+      function setPlayer() {
+        scope.player = new YT.Player(element.children()[0], {
+          height: 390,
+          width: 640,
+          videoId: scope.videoid,
+          playerVars: {
+            autoplay: 0,
+            html5: 1,
+            theme: "light",
+            modestbranding: 1,
+            color: "white",
+            iv_load_policy: 3,
+            showinfo: 0,
+            iv_load_policy: 3,
+            playsinline: 1
+          },
+        });
+      }
+
+      // PLAYER EVENT LISTENERS
+      scope.$on('getCurrentTime', function() { getCurrentTime(); })
+
+      function getCurrentTime() {
+        console.log(scope.player.getCurrentTime())
+      }
+
+      // scope.getCurrentTime = function() {
+      //   console.log(scope.player.getCurrentTime())
+      // }
+
+    }
+  }
+});
 

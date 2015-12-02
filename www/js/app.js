@@ -70,6 +70,12 @@ angular.module('breakpoint', ['ionic', 'breakpoint.controllers', 'breakpoint.dir
         controller: 'CreateBreakpointVideoCtrl'
     })
 
+    .state('app.addBreakpoints', {
+        url: "/add-breakpoints/:youtubeVideoId",
+        templateUrl: 'templates/add_breakpoints.html',
+        controller: 'AddBreakpointsCtrl'
+    })
+
 	// if none of the above states are matched, use landing page as the fallback
 	$urlRouterProvider.otherwise('/');
 })
