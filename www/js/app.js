@@ -52,10 +52,22 @@ angular.module('breakpoint', ['ionic', 'breakpoint.controllers', 'breakpoint.dir
 		controller: 'SubcategoryCtrl'
 	})
 
-    .state('video', {
-        url: "/video/:videoId",
+	.state('app.search', {
+		url: '/search?q',
+		templateUrl: 'templates/search.html',
+		controller: 'SearchCtrl'
+	})
+
+    .state('app.video', {
+        url: "/video/:youtubeVideoId",
         templateUrl: 'templates/video.html',
         controller: 'VideoCtrl'
+    })
+
+    .state('app.create', {
+        url: "/create/:youtubeVideoId",
+        templateUrl: 'templates/create_breakpoint_video.html',
+        controller: 'CreateBreakpointVideoCtrl'
     })
 
 	// if none of the above states are matched, use landing page as the fallback

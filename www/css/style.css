@@ -95,25 +95,6 @@ iframe.sample-video {
     font-weight: 450;
 }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 /* Video grid and overlay on browse category pages */
 
 .video-grid {
@@ -155,6 +136,7 @@ iframe.sample-video {
 .breakpoint-table {
     width: 100%;
     margin-top: 20px;
+    margin-bottom: 70px;
     font-size: 120%;
 }
 
