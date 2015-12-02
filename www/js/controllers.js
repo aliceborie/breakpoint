@@ -207,14 +207,13 @@ angular.module('breakpoint.controllers', ['breakpoint.services', 'amliu.timePars
 
 })
 
-.controller('CreateBreakpointVideoCtrl', function($scope, $stateParams, parse, youtubeData) {
-	$scope.youtubeVideoId = $stateParams.youtubeVideoId;
-
+.controller('CreateBreakpointVideoCtrl', function($scope, $stateParams, $state, parse, youtubeData) {
 	$scope.video = {};
 
-	youtubeData.getVideo($scope.youtubeVideoId).success(function(response) {
+	$scope.video.youtubeVideoId = $stateParams.youtubeVideoId;
+
+	youtubeData.getVideo($scope.video.youtubeVideoId).success(function(response) {
 		var videoDetails = response.items[0].snippet;
-		console.log(videoDetails);
 		$scope.video.defaultTitle = videoDetails.title;
 		$scope.video.description = videoDetails.description;
 		$scope.video.title = videoDetails.title;
@@ -254,7 +253,8 @@ angular.module('breakpoint.controllers', ['breakpoint.services', 'amliu.timePars
 	}
 
 	$scope.createVideo = function(video) {
-		console.log(video);
+		parse.createVideo(video);
+		$state.go('app.video',{youtubeVideoId: $scope.video.youtubeVideoId});
 	}
 
 })

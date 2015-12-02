@@ -7,7 +7,7 @@
     </ion-refresher>
 
     <div class="full-width-video">
-    	<iframe src="{{trust('https://www.youtube.com/embed/'+youtubeVideoId+'?showinfo=0&modestbranding=1&controls=0')}}" frameborder="0" allowfullscreen></iframe>
+    	<iframe src="{{trust('https://www.youtube.com/embed/'+video.youtubeVideoId+'?showinfo=0&modestbranding=1&controls=0')}}" frameborder="0" allowfullscreen></iframe>
     </div>
 
     <div class="padding">
@@ -32,7 +32,7 @@
  	 			<label class="item item-input item-select">
  	 				<div class="input-label">Category</div>
 	 	 			<select ng-model="video.category" ng-change="categoryChanged(video.category)">
-	 	 				<option></option>
+	 	 				<!-- <option></option> -->
 	 	 				<option ng-repeat="category in categories">{{category}}</option>
 	 	 			</select>
  	 			</label>
