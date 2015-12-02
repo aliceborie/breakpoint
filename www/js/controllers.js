@@ -135,9 +135,10 @@ angular.module('breakpoint.controllers', ['breakpoint.services', 'amliu.timePars
 
 .controller('VideoCtrl', function($window, $rootScope, $scope, $stateParams, parse, timeParser) {
 
-  $scope.timeParser = timeParser;
+    $scope.timeParser = timeParser;
+    $scope.playMode = "PM_PUSH";
+    // $scope.videoId = $stateParams.videoId;
 
-  // $scope.videoId = $stateParams.videoId;
   parse.getVideo($stateParams.youtubeVideoId).then(function(video) {
     $scope.videoId = video.id;
   })
@@ -192,13 +193,19 @@ angular.module('breakpoint.controllers', ['breakpoint.services', 'amliu.timePars
     this.$broadcast(event_name);
   };
 
-
   // Need to figure this out ... not working yet
   // For some reason the cordova screen oritentaion plugin works above but not here
   $scope.fullscreen = function() {
       screen.lockOrientation('landscape');
       this.$broadcast("FULLSCREEN");
   }
+
+    $scope.changePlayMode = function() {
+        console.log($scope.playMode);
+        var selectEl = document.querySelector(".player-controls#"+$scope.videoId+" .playmode select");
+        var newPlaymode = selectEl.selectedOptions[0].value;
+        $rootScope.$broadcast("CHANGE_PLAYMODE", newPlaymode);
+    }
 
   $scope.leave_fullscreen = function() {
     screen.lockOrientation('portrait');
