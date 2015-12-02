@@ -212,7 +212,7 @@ angular.module('breakpoint.directives', ['breakpoint.services', 'amliu.timeParse
             angular.element(document.getElementById(scope.videoid).parentNode).addClass("no-scroll");
 
             angular.element(document.getElementsByTagName("ion-view")).removeClass("has-header");
-            angular.element(document.getElementsByTagName("ion-nav-bar")).addClass("hide");
+            angular.element(document.querySelectorAll("ion-header-bar")).addClass("hide");
             angular.element(document.getElementsByTagName("ion-footer-bar")).addClass("hide");
 
             angular.element(document.querySelectorAll("youtube[id='"+scope.videoid+"'] .yt_playoverlay")).removeClass("hide");
@@ -224,7 +224,7 @@ angular.module('breakpoint.directives', ['breakpoint.services', 'amliu.timeParse
             angular.element(document.getElementById(scope.videoid).parentNode).removeClass("no-scroll");
 
             angular.element(document.getElementsByTagName("ion-view")).addClass("has-header");
-            angular.element(document.getElementsByTagName("ion-nav-bar")).removeClass("hide");
+            angular.element(document.querySelectorAll("ion-header-bar")).removeClass("hide");
             angular.element(document.getElementsByTagName("ion-footer-bar")).removeClass("hide");
 
             angular.element(document.querySelectorAll("youtube[id='"+scope.videoid+"'] .yt_playoverlay")).addClass("hide");
