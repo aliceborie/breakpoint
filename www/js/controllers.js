@@ -207,8 +207,18 @@ angular.module('breakpoint.controllers', ['breakpoint.services', 'amliu.timePars
 
 })
 
-.controller('CreateBreakpointVideoCtrl', function($scope, $stateParams, parse) {
+.controller('CreateBreakpointVideoCtrl', function($scope, $stateParams, parse, youtubeData) {
 	$scope.youtubeVideoId = $stateParams.youtubeVideoId;
+
+	$scope.video = {};
+
+	youtubeData.getVideo($scope.youtubeVideoId).success(function(response) {
+		var videoDetails = response.items[0].snippet;
+		console.log(videoDetails);
+		$scope.video.defaultTitle = videoDetails.title;
+		$scope.video.description = videoDetails.description;
+		$scope.video.title = videoDetails.title;
+	})
 
 	$scope.showInstructions = true;
 	$scope.showCreateForm = false;
@@ -223,17 +233,12 @@ angular.module('breakpoint.controllers', ['breakpoint.services', 'amliu.timePars
 		$scope.showCreateForm = true;
 	}
 
-	$scope.defaultVideoName = "Youtube Title";
-
 	parse.getCategories().then(function(parseCategoryObjects) {
 		$scope.categories = []
 		angular.forEach(parseCategoryObjects, function(parseCategoryObject) {
 			$scope.categories.push(parseCategoryObject.attributes.name)
 		})
 	})
-
-	// $scope.category = '';
-	$scope.video = {};
 
 	$scope.categoryChanged = function(selectedCategory) {
 		$scope.video.category = selectedCategory;

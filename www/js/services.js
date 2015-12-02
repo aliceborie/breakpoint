@@ -80,16 +80,23 @@ angular.module('breakpoint.services', [])
 })
 
 .service('youtubeData', function($http) {
+  youtubeParams = {};
+  youtubeParams.key = 'AIzaSyCTxnCjUXY9Yqi0FRytJtDoTVG55tv5Eds';
   return {
     search: function(searchTerms) {
-      youtubeParams = {};
-      youtubeParams.key = 'AIzaSyCTxnCjUXY9Yqi0FRytJtDoTVG55tv5Eds';
+      // youtubeParams = {};
+      // youtubeParams.key = 'AIzaSyCTxnCjUXY9Yqi0FRytJtDoTVG55tv5Eds';
       youtubeParams.type = 'video';
       youtubeParams.maxResults = '20';
       youtubeParams.part = 'id,snippet';
       youtubeParams.q = searchTerms;
       youtubeParams.order = 'date';
       return $http.get('https://www.googleapis.com/youtube/v3/search', {params:youtubeParams})
+    },
+    getVideo: function(youtubeVideoId) {
+      youtubeParams.part = 'snippet,contentDetails';
+      youtubeParams.id = youtubeVideoId;
+      return $http.get('https://www.googleapis.com/youtube/v3/videos', {params: youtubeParams})
     }
   }
 })
