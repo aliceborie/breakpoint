@@ -42,7 +42,9 @@
             <li ng-repeat="breakpoint in breakpoints" ng-class-odd="'odd'" ng-class-even="'even'">
                 <div class="tickmark"></div>
                 <div class="chosen_bp" ng-if="$index === currentBp"></div>
-                <a href="javascript:;" class="bp_start" ng-click="jumpToBp($index)">Starts at {{parseTime(breakpoint.attributes.time)}}</a>
+                <a href="javascript:;" class="bp_start" ng-click="jumpToBp($index)">
+                
+                Starts at {{parseTime(breakpoint.attributes.time)}}</a>
                 <span style="display:block;">{{breakpoint.attributes.title}}</span>
                 <p>
                     {{breakpoint.attributes.description}}
