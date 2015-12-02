@@ -30,7 +30,10 @@
 
         <table class="breakpoint-table">
             <tr ng-repeat="breakpoint in breakpoints">
-                <td class="time-cell">{{ timeParser.convertSeconds(breakpoint.attributes.time) }}</td>
+
+                <td class="time-cell">
+                    <button class="button button-icon" ng-click="sendControlEvent('PLAY')">{{ timeParser.convertSeconds(breakpoint.attributes.time) }} </button>
+                <!-- {{ timeParser.convertSeconds(breakpoint.attributes.time) }} --></td>
                 <td class="step-description-cell">
                     <h5> {{ breakpoint.attributes.title }}</h5>
                     <p> {{ breakpoint.attributes.description }}</p>
@@ -39,4 +42,11 @@
         </table>
 
     </ion-content>
+
+<!--     <ion-footer-bar ng-controller="AppCtrl">
+        <div class="title">
+            <button class="button button-icon center" ng-click="scrollTop()">Back to Top</button>
+        </div>
+    </ion-footer-bar> -->
+
 </ion-view>

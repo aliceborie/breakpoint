@@ -147,6 +147,7 @@ document.addEventListener("deviceready", onDeviceReady, false);
 
     // Handles all events that don't require additional arguments
     $scope.sendControlEvent = function (event_name) {
+    	console.log("in here!!!!");
         this.$broadcast(event_name);
     };
 
