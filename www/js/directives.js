@@ -17,6 +17,8 @@ angular.module('breakpoint.directives', ['breakpoint.services', 'amliu.timeParse
       videoid: "@", // Our video ID (not the yt one)
       player: "=", // iFrame YT player element
 
+      isFullscreened: "=",
+
       duration: "=", // Duration of the YT video in seconds
       duration_formatted: "=", // Duration of video formatted
 
@@ -150,6 +152,7 @@ angular.module('breakpoint.directives', ['breakpoint.services', 'amliu.timeParse
             scope.duration_formatted = timeParser.convertSeconds(scope.duration);
             scope.currentTime = scope.player.getCurrentTime();
             scope.currentTime_formatted = "00:00"
+            scope.isFullscreened = false;
 
             document.querySelector("youtube[id='"+scope.videoid+"'] .bottom_player input").value = scope.currentTime;
             positionBreakpoints();
@@ -211,6 +214,7 @@ angular.module('breakpoint.directives', ['breakpoint.services', 'amliu.timeParse
         }
 
         scope.fullscreen = function() {
+            scope.isFullscreened = true;
             // Parent of the youtube tag is the scroller container. We use ID to ensure we grab the currently viewed page
             angular.element(document.getElementById(scope.videoid).parentNode).addClass("no-scroll");
 
@@ -220,10 +224,15 @@ angular.module('breakpoint.directives', ['breakpoint.services', 'amliu.timeParse
 
             angular.element(document.querySelectorAll("youtube[id='"+scope.videoid+"'] .yt_playoverlay")).removeClass("hide");
             angular.element(document.querySelector("youtube[id='"+scope.videoid+"']")).addClass("fullscreen");
+
+            // angular.element(document.querySelector("youtube[id='"+scope.videoid+"'] .yt_playoverlay")).addClass("fadeIn");
+
             positionBreakpoints();
         }
 
         scope.leave_fullscreen = function() {
+            scope.isFullscreened = false;
+            
             angular.element(document.getElementById(scope.videoid).parentNode).removeClass("no-scroll");
 
             angular.element(document.getElementsByTagName("ion-view")).addClass("has-header");

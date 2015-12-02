@@ -139,7 +139,7 @@ label.duration {
     float: right;
     margin: 5px 15px 10px 5px;
 }
-.yt_bottombar .compress {
+.yt_bottombar .compress, .yt_bottombar .expand {
     float: right;
     color: white;
     margin: 5px 10px 10px 10px;
@@ -344,4 +344,18 @@ ul.player_breakpoints li {
     margin: 0 auto;
     left: 0;
     right: 0;
+}
+
+
+
+.fadeIn {
+    animation: fadeIn 0.25s;
+}
+@keyframes fadeIn {
+    0% {
+        opacity: 0;
+    }
+    100% {
+        opacity: 1;
+    }
 }

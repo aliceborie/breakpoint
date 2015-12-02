@@ -64,7 +64,11 @@
 <!-- The bottom player elements -->
 <div class="yt_bottombar">
     <label class="current_time" ng-bind="currentTime_formatted"></label>
-    <a class="compress" href="javascript:;" ng-click="leave_fullscreen()"><fa name="compress"></fa></a>
+    <div class="chosen_bp" ng-if="$index === currentBp"></div>
+
+    <a class="compress" href="javascript:;" ng-click="leave_fullscreen()" ng-if="isFullscreened"><fa name="compress"></fa></a>
+    <a class="expand" href="javascript:;" ng-click="fullscreen()" ng-if="!isFullscreened"><fa name="expand"></fa></a>
+
     <label class="duration" ng-bind="duration_formatted"></label>
     <span class="bottom_player">
         <div class="played"></div>
