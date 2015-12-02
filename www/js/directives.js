@@ -75,7 +75,7 @@ angular.module('breakpoint.directives', ['breakpoint.services', 'amliu.timeParse
         // An event that is emitted when the videoshow page is 'popped' by pressing back
         scope.$on("LEAVE_VIDEOSHOW", function() {
             window.clearTimeout(scope.api_timeoutId); // Stop this timeout event
-            stopPlayer();
+            scope.stopPlayer();
             annyang.removeCommands(); // Reset annyang so it doesn't use the old player
             annyang.abort();
         })
@@ -215,8 +215,8 @@ angular.module('breakpoint.directives', ['breakpoint.services', 'amliu.timeParse
             angular.element(document.getElementsByTagName("ion-nav-bar")).addClass("hide");
             angular.element(document.getElementsByTagName("ion-footer-bar")).addClass("hide");
 
-            angular.element(document.querySelectorAll("youtube#"+scope.videoid+" .yt_playoverlay")).removeClass("hide");
-            angular.element(document.querySelector("youtube#"+scope.videoid)).addClass("fullscreen");
+            angular.element(document.querySelectorAll("youtube[id='"+scope.videoid+"'] .yt_playoverlay")).removeClass("hide");
+            angular.element(document.querySelector("youtube[id='"+scope.videoid+"']")).addClass("fullscreen");
             positionBreakpoints();
         }
 
@@ -227,14 +227,14 @@ angular.module('breakpoint.directives', ['breakpoint.services', 'amliu.timeParse
             angular.element(document.getElementsByTagName("ion-nav-bar")).removeClass("hide");
             angular.element(document.getElementsByTagName("ion-footer-bar")).removeClass("hide");
 
-            angular.element(document.querySelectorAll("youtube#"+scope.videoid+" .yt_playoverlay")).addClass("hide");
-            angular.element(document.querySelector("youtube#"+scope.videoid)).removeClass("fullscreen");
+            angular.element(document.querySelectorAll("youtube[id='"+scope.videoid+"'] .yt_playoverlay")).addClass("hide");
+            angular.element(document.querySelector("youtube[id='"+scope.videoid+"']")).removeClass("fullscreen");
             positionBreakpoints();
         }
 
         scope.showHide_BpBrowser = function() {
-            angular.element(document.querySelector("youtube#"+scope.videoid+" .yt_playoverlay")).toggleClass("browsing");
-            document.querySelector("youtube#"+scope.videoid+" .chosen_bp").scrollIntoView();
+            angular.element(document.querySelector("youtube[id='"+scope.videoid+"'] .yt_playoverlay")).toggleClass("browsing");
+            document.querySelector("youtube[id='"+scope.videoid+"'] .chosen_bp").scrollIntoView();
             // TODO :: The scrollIntoView gets it visible, but doesn't attempt to center on it
         }
 
@@ -246,7 +246,7 @@ angular.module('breakpoint.directives', ['breakpoint.services', 'amliu.timeParse
             refreshCurrentTime_watcher();
         }
 
-        scope.getCurrentTime = function getCurrentTime() {
+        scope.getCurrentTime = function() {
             return scope.player.getCurrentTime();
         }
 
@@ -257,7 +257,7 @@ angular.module('breakpoint.directives', ['breakpoint.services', 'amliu.timeParse
             scope.currentTime = scope.breakpoints[scope.currentBp].get("time");
             scope.currentTime_formatted = timeParser.convertSeconds(scope.currentTime);
 
-            document.querySelector("youtube#"+scope.videoid+" .bottom_player input").value = scope.currentTime;
+            document.querySelector("youtube[id='"+scope.videoid+"'] .bottom_player input").value = scope.currentTime;
 
             if (scope.player.getPlayerState() !== 0 && scope.player.getPlayerState() !== 2) {
                 // Only restart the current time watcher if the player is not stopped (0) or paused (2)
@@ -300,7 +300,7 @@ angular.module('breakpoint.directives', ['breakpoint.services', 'amliu.timeParse
         scope.$watch("currentBp", function(newValue, oldValue) {
             positionPlayedSegments();
             resetCurrentBpStartEnd();
-            document.querySelector("youtube#"+scope.videoid+" .yt_miniscrubber input").value = scope.currentTime;
+            document.querySelector("youtube[id='"+scope.videoid+"'] .yt_miniscrubber input").value = scope.currentTime;
             playNotification();
         })
 
@@ -333,16 +333,18 @@ angular.module('breakpoint.directives', ['breakpoint.services', 'amliu.timeParse
         // Given current time, returns true if current is pointing to right BP 
         // (the closest one that is less than current time)
         function currentIsSynced(currentTime) {
-            var currBP = scope.breakpoints[scope.currentBp].get("time");
-            if (scope.currentBp === 0 && currentTime < scope.breakpoints[scope.currentBp].get("time")) {
-                return true;
-            }
-            if (scope.currentBp !== (scope.breakpoints.length - 1)) {
-                var forwardBP = scope.breakpoints[scope.currentBp + 1].get("time");
-                return ((currentTime < forwardBP) && (currentTime >= currBP));
-            } else {
-                return currentTime >= currBP;
-            }
+            if (typeof scope.breakpoints != 'undefined') {
+                var currBP = scope.breakpoints[scope.currentBp].get("time");
+                if (scope.currentBp === 0 && currentTime < scope.breakpoints[scope.currentBp].get("time")) {
+                    return true;
+                }
+                if (scope.currentBp !== (scope.breakpoints.length - 1)) {
+                    var forwardBP = scope.breakpoints[scope.currentBp + 1].get("time");
+                    return ((currentTime < forwardBP) && (currentTime >= currBP));
+                } else {
+                    return currentTime >= currBP;
+                }
+            } return false;
         }
 
         // Given the current time, locates the closest breakpoint to set as the current BP
@@ -367,39 +369,44 @@ angular.module('breakpoint.directives', ['breakpoint.services', 'amliu.timeParse
 
         // Resets the currentBp_start and currentBp_end variables
         function resetCurrentBpStartEnd() {
-            scope.currentBp_start = scope.breakpoints[scope.currentBp].get("time");
-            scope.currentBp_start_formatted = timeParser.convertSeconds(scope.currentBp_start);
-            if (scope.currentBp === scope.breakpoints.length - 1) {
-                scope.currentBp_end = scope.duration;
-            } else {
-                scope.currentBp_end = scope.breakpoints[scope.currentBp + 1].get("time");
+            if (typeof scope.breakpoints != 'undefined') {
+                scope.currentBp_start = scope.breakpoints[scope.currentBp].get("time");
+                scope.currentBp_start_formatted = timeParser.convertSeconds(scope.currentBp_start);
+                if (scope.currentBp === scope.breakpoints.length - 1) {
+                    scope.currentBp_end = scope.duration;
+                } else {
+                    scope.currentBp_end = scope.breakpoints[scope.currentBp + 1].get("time");
+                }
+                scope.currentBp_end_formatted = timeParser.convertSeconds(scope.currentBp_end);
+                document.querySelector("youtube[id='"+scope.videoid+"'] .yt_miniscrubber input").min = scope.currentBp_start;
+                document.querySelector("youtube[id='"+scope.videoid+"'] .yt_miniscrubber input").max = scope.currentBp_end;
             }
-            scope.currentBp_end_formatted = timeParser.convertSeconds(scope.currentBp_end);
-            document.querySelector("youtube#"+scope.videoid+" .yt_miniscrubber input").min = scope.currentBp_start;
-            document.querySelector("youtube#"+scope.videoid+" .yt_miniscrubber input").max = scope.currentBp_end;
         }
 
         // Repositions breakpoints to line up with the video's custom bottom player
+        // NOTE: Since IDs may start with a number, we need to select via [id=...]
         function positionBreakpoints() {
-            var bottomplayer_width = document.querySelector("youtube#"+scope.videoid+" .bottom_player input").offsetWidth;
+            var bottomplayer_width = document.querySelector("youtube[id='"+scope.videoid+"'] .bottom_player input").offsetWidth;
             for (var i = 0; i < scope.breakpoints.length; i++) {
                 var breakpoint = scope.breakpoints[i];
                 var position = Math.floor((breakpoint.get("time") / scope.duration) * bottomplayer_width);
-                var breakpointEl = angular.element(document.querySelector("#"+breakpoint.id)).css("left", position+"px");
+                var breakpointEl = angular.element(document.querySelector("[id='"+breakpoint.id+"']")).css("left", position+"px");
             }
         }
 
         // Repositions the darker violet bar that indicates already played/passed segments
         function positionPlayedSegments() {
-            var bottomplayer_width = document.querySelector("youtube#"+scope.videoid+" .bottom_player input").offsetWidth;
-            var breakpoint = scope.breakpoints[scope.currentBp];
-            var playedWidth = Math.floor( (breakpoint.get("time") / scope.duration) * bottomplayer_width);
-            angular.element(document.querySelector("youtube#"+scope.videoid+" .bottom_player .played")).css("width", playedWidth+"px");
+            if (typeof scope.breakpoints != 'undefined') {
+                 var bottomplayer_width = document.querySelector("youtube[id='"+scope.videoid+"'] .bottom_player input").offsetWidth;
+                var breakpoint = scope.breakpoints[scope.currentBp];
+                var playedWidth = Math.floor( (breakpoint.get("time") / scope.duration) * bottomplayer_width);
+                angular.element(document.querySelector("youtube[id='"+scope.videoid+"'] .bottom_player .played")).css("width", playedWidth+"px");
+            }
         }
 
         // Plays the notification animation and updates the notification text too
         function playNotification() {
-            var notifEl = document.querySelector("youtube#"+scope.videoid+" .yt_notifications");
+            var notifEl = document.querySelector("youtube[id='"+scope.videoid+"'] .yt_notifications");
 
             angular.element(notifEl).removeClass("slideInOut");
 
