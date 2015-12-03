@@ -331,15 +331,16 @@ angular.module('breakpoint.directives', ['breakpoint.services', 'amliu.timeParse
         // and reset the start and end points and DOM values of the miniscrubber
         // Also show the notification thing
         scope.$watch("currentBp", function(newValue, oldValue) {
-            positionPlayedSegments();
-            resetCurrentBpStartEnd();
-            document.querySelector("youtube[id='"+scope.videoid+"'] .yt_miniscrubber input").value = scope.currentTime;
-            playNotification();
+            if (typeof scope.breakpoints != 'undefined') {
+                positionPlayedSegments();
+                resetCurrentBpStartEnd();
+                document.querySelector("youtube[id='"+scope.videoid+"'] .yt_miniscrubber input").value = scope.currentTime;
+                playNotification();
+            }
         })
 
         // While dragging the mini scrubber we don't want the interface to... disappear lmao
         scope.$watch("draggingMiniSlider", function(newValue, oldValue, $event) {
-            console.log(scope.draggingMiniSlider);
             if (scope.draggingMiniSlider) {
                 window.clearTimeout(scope.controlFadeTimeout);
                 scope.fastShowControls();
