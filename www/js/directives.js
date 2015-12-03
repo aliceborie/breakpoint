@@ -34,6 +34,7 @@ angular.module('breakpoint.directives', ['breakpoint.services', 'amliu.timeParse
       controlFadeTimeout: "=", // Used to set a timeout that fades out fullscreen controls
 
       draggingSlider: "=", // Set to true if the user is using the slider to skip around the video
+      draggingMiniSlider: "=", // Set to true if the user is using the miniscrubber
       playMode: "=", // What does the player do when a breakpoint is hit?
       // "PM_PUSH" -> Keep going through BP
       // "PM_PAUSE" -> Pause when BP hit
@@ -336,9 +337,10 @@ angular.module('breakpoint.directives', ['breakpoint.services', 'amliu.timeParse
             playNotification();
         })
 
-        // While dragging any slider, we don't want the interface to... disappear lmao
-        scope.$watch("draggingSlider", function(newValue, oldValue, $event) {
-            if (scope.draggingSlider) {
+        // While dragging the mini scrubber we don't want the interface to... disappear lmao
+        scope.$watch("draggingMiniSlider", function(newValue, oldValue, $event) {
+            console.log(scope.draggingMiniSlider);
+            if (scope.draggingMiniSlider) {
                 window.clearTimeout(scope.controlFadeTimeout);
                 scope.fastShowControls();
                 event.stopPropagation();
