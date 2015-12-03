@@ -12,12 +12,10 @@ angular.module('breakpoint.directives', ['breakpoint.services', 'amliu.timeParse
     restrict: "E",
 
     scope: {
-      height: "@",
-      width: "@",
       videoid: "@", // Our video ID (not the yt one)
       player: "=", // iFrame YT player element
 
-      isFullscreened: "=",
+      isFullscreened: "=", // Video states
       isPaused: "=",
 
       duration: "=", // Duration of the YT video in seconds
@@ -32,6 +30,8 @@ angular.module('breakpoint.directives', ['breakpoint.services', 'amliu.timeParse
       currentTime: "=", // Current time in seconds
       currentTime_formatted: "=", // Current time that's been formated 00:00:00
       currentTime_intervalPromise: "=", // A promise used to clear the currentTime $interval watcher
+
+      controlFadeTimeout: "=", // Used to set a timeout that fades out fullscreen controls
 
       draggingSlider: "=", // Set to true if the user is using the slider to skip around the video
       playMode: "=", // What does the player do when a breakpoint is hit?
@@ -87,17 +87,6 @@ angular.module('breakpoint.directives', ['breakpoint.services', 'amliu.timeParse
             scope.playMode = data;
             console.log(scope.playMode);
         })
-
-
-        // --------------------------------------------------
-        // PLAYER CHANGES
-
-        scope.$watch('height + width', function(newValue, oldValue) {
-            if (newValue == oldValue) {
-                return;
-            }
-            scope.player.setSize(scope.width, scope.height);
-        });
 
         // --------------------------------------------------
         // PLAYER EVENT LISTENERS
@@ -168,14 +157,18 @@ angular.module('breakpoint.directives', ['breakpoint.services', 'amliu.timeParse
 
             $interval.cancel(scope.currentTime_intervalPromise);
             scope.currentTime = scope.player.getCurrentTime();
+
+            window.clearTimeout(scope.controlFadeTimeout);
+            scope.fastShowControls();
         }
 
-        scope.pausePlayPlayer = function() {
+        scope.pausePlayPlayer = function($event) {
             if (scope.player.getPlayerState() !== 1) { // Paused, need to play
                 playPlayer();
             } else { // Playing, need to pause
                 pausePlayer();
             }
+            event.stopPropagation();
         }
 
         function playPlayer() {
@@ -184,12 +177,17 @@ angular.module('breakpoint.directives', ['breakpoint.services', 'amliu.timeParse
             positionBreakpoints();
             scope.player.playVideo();
             scope.isPaused = false;
+
+            scope.fadeOutControls();
         }
 
         function pausePlayer() {
             $interval.cancel(scope.currentTime_intervalPromise);
             scope.player.pauseVideo();
             scope.isPaused = true;
+
+            window.clearTimeout(scope.controlFadeTimeout);
+            scope.fastShowControls();
         }
 
         scope.forwardPlayer = function() {
@@ -231,7 +229,9 @@ angular.module('breakpoint.directives', ['breakpoint.services', 'amliu.timeParse
             angular.element(document.querySelectorAll("youtube[id='"+scope.videoid+"'] .yt_playoverlay")).removeClass("hide");
             angular.element(document.querySelector("youtube[id='"+scope.videoid+"']")).addClass("fullscreen");
 
-            // angular.element(document.querySelector("youtube[id='"+scope.videoid+"'] .yt_playoverlay")).addClass("fadeIn");
+            // By default, the fullscreen player controls are faded out from view, similar to the YT mobile app
+            angular.element(document.querySelectorAll("youtube[id='"+scope.videoid+"'] .yt_playoverlay")).removeClass("fadeOut");
+            angular.element(document.querySelectorAll("youtube[id='"+scope.videoid+"'] .yt_playoverlay")).addClass("fadedOut");
 
             positionBreakpoints();
         }
@@ -250,18 +250,32 @@ angular.module('breakpoint.directives', ['breakpoint.services', 'amliu.timeParse
             positionBreakpoints();
         }
 
-        scope.showHide_BpBrowser = function() {
-            angular.element(document.querySelector("youtube[id='"+scope.videoid+"'] .yt_playoverlay")).toggleClass("browsing");
-            document.querySelector("youtube[id='"+scope.videoid+"'] .chosen_bp").scrollIntoView();
-            // TODO :: The scrollIntoView gets it visible, but doesn't attempt to center on it
+        scope.showHide_BpBrowser = function($event) {
+            if (angular.element(document.querySelector("youtube[id='"+scope.videoid+"'] .yt_playoverlay")).hasClass("browsing")) {
+                angular.element(document.querySelector("youtube[id='"+scope.videoid+"'] .yt_playoverlay")).removeClass("browsing");
+
+                // Fade out the controls if they aren't pressed on like before
+                scope.controlFadeTimeout = window.setTimeout(scope.fadeOutControls, 2500);
+            } else {
+                angular.element(document.querySelector("youtube[id='"+scope.videoid+"'] .yt_playoverlay")).addClass("browsing");
+                document.querySelector("youtube[id='"+scope.videoid+"'] .chosen_bp").scrollIntoView();
+                // TODO :: The scrollIntoView gets it visible, but doesn't attempt to center on it
+
+                // Prevent fading out while the user browses
+                window.clearTimeout(scope.controlFadeTimeout);
+                scope.fastShowControls();
+            }
+            event.stopPropagation();
         }
 
-        scope.jumpToBp = function(bpIndex) {
+        scope.jumpToBp = function(bpIndex, $event) {
             scope.currentBp = bpIndex;
             scope.player.seekTo(scope.breakpoints[scope.currentBp].get("time"), true);
 
-            // We need to start the current time watcher just in case because 
+            // We need to start the current time watcher just in case due to the skip
             refreshCurrentTime_watcher();
+            scope.fadeOutControls();
+            event.stopPropagation();
         }
 
         scope.getCurrentTime = function() {
@@ -320,6 +334,17 @@ angular.module('breakpoint.directives', ['breakpoint.services', 'amliu.timeParse
             resetCurrentBpStartEnd();
             document.querySelector("youtube[id='"+scope.videoid+"'] .yt_miniscrubber input").value = scope.currentTime;
             playNotification();
+        })
+
+        // While dragging any slider, we don't want the interface to... disappear lmao
+        scope.$watch("draggingSlider", function(newValue, oldValue, $event) {
+            if (scope.draggingSlider) {
+                window.clearTimeout(scope.controlFadeTimeout);
+                scope.fastShowControls();
+                event.stopPropagation();
+            } else {
+                scope.controlFadeTimeout = window.setTimeout(scope.fadeOutControls, 2500);
+            }
         })
 
         // Used in the bottom player slider to get input from slider and set the video
@@ -441,6 +466,44 @@ angular.module('breakpoint.directives', ['breakpoint.services', 'amliu.timeParse
         scope.parseTime = function(time){
             return timeParser.convertSeconds(time);
         }
+
+
+        // --------------------------------------------------
+        // MANAGING VISIBILITY OF FULLSCREEN CONTROLS
+
+        // Makes the controls fade in and appear, and automatically handles making it disappear when not hit in a while
+        scope.toggleControls = function() {
+            window.clearTimeout(scope.controlFadeTimeout);
+            scope.fadeInControls();
+            scope.controlFadeTimeout = window.setTimeout(scope.fadeOutControls, 2500);
+        }
+
+        // Without the fade effect, shows the fullscreen player controls
+        scope.fastShowControls = function() {
+            angular.element(document.querySelectorAll("youtube[id='"+scope.videoid+"'] .yt_playoverlay")).addClass("fadedIn");
+            angular.element(document.querySelectorAll("youtube[id='"+scope.videoid+"'] .yt_playoverlay")).removeClass("fadedOut");
+            angular.element(document.querySelectorAll("youtube[id='"+scope.videoid+"'] .yt_playoverlay")).removeClass("fadeOut");
+            angular.element(document.querySelectorAll("youtube[id='"+scope.videoid+"'] .yt_playoverlay")).removeClass("fadeIn");
+        }
+
+        // Fadein the fullscreen player controls
+        scope.fadeInControls = function() {
+            angular.element(document.querySelectorAll("youtube[id='"+scope.videoid+"'] .yt_playoverlay")).removeClass("fadedOut");
+            angular.element(document.querySelectorAll("youtube[id='"+scope.videoid+"'] .yt_playoverlay")).removeClass("fadeOut");
+            angular.element(document.querySelectorAll("youtube[id='"+scope.videoid+"'] .yt_playoverlay")).addClass("fadeIn");
+            angular.element(document.querySelectorAll("youtube[id='"+scope.videoid+"'] .yt_playoverlay")).addClass("fadedIn");
+        }
+
+        // Fadeout the fullscreen player controls
+        scope.fadeOutControls = function() {
+            angular.element(document.querySelectorAll("youtube[id='"+scope.videoid+"'] .yt_playoverlay")).removeClass("fadedIn");
+            angular.element(document.querySelectorAll("youtube[id='"+scope.videoid+"'] .yt_playoverlay")).removeClass("fadeIn");
+            angular.element(document.querySelectorAll("youtube[id='"+scope.videoid+"'] .yt_playoverlay")).addClass("fadeOut");
+            angular.element(document.querySelectorAll("youtube[id='"+scope.videoid+"'] .yt_playoverlay")).addClass("fadedOut");
+        }
+
+
+
 
 
     }

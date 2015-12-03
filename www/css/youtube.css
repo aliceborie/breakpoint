@@ -354,6 +354,9 @@ ul.player_breakpoints li {
 
 
 .fadedOut { opacity: 0; }
+/* All children of the faded out parent shouldn't be clickable (which they are with 0 opacity)
+so we need to use pointer-events as well*/
+.fadedOut * { pointer-events: none; }
 .fadedIn { opacity: 1; }
 .fadeIn {
     animation: fadeIn 0.25s;
@@ -364,10 +367,10 @@ ul.player_breakpoints li {
     100% { opacity: 1; }
 }
 .fadeOut {
-    animation: fadeOut 0.25s;
+    animation: fadeOut 0.75s;
     opacity: 0;
 }
-@keyframes fadeIn {
+@keyframes fadeOut {
     0% { opacity: 1; }
     100% { opacity: 0; }
 }
