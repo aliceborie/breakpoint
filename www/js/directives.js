@@ -494,11 +494,8 @@ angular.module('breakpoint.directives', ['breakpoint.services', 'amliu.timeParse
 
       function getCurrentTime() {
         console.log(scope.player.getCurrentTime())
+        scope.$parent.currentTime = scope.player.getCurrentTime();
       }
-
-      // scope.getCurrentTime = function() {
-      //   console.log(scope.player.getCurrentTime())
-      // }
 
     }
   }

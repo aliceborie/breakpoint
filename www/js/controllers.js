@@ -274,7 +274,7 @@ angular.module('breakpoint.controllers', ['breakpoint.services', 'amliu.timePars
         $scope.video = video;
     });
 
-    // Gets current time from player
+    // Gets time that the video is currently at 
   	$scope.getCurrentTime = function() {
     	this.$broadcast('getCurrentTime');
   	};	
