@@ -87,6 +87,10 @@ angular.module('breakpoint.directives', ['breakpoint.services', 'amliu.timeParse
             console.log(scope.playMode);
         })
 
+        scope.$on('SKIP', function(event,time) { 
+            playPlayer();
+            scope.player.seekTo(time); 
+        })
 
         // --------------------------------------------------
         // PLAYER CHANGES
@@ -109,6 +113,8 @@ angular.module('breakpoint.directives', ['breakpoint.services', 'amliu.timeParse
         scope.$on('REPEAT', function() { scope.repeatPlayerSegment(); })
 
         scope.$on('FULLSCREEN', function() { scope.fullscreen(); })
+
+
 
         // --------------------------------------------------
         // VIDEO METHODS
@@ -258,6 +264,7 @@ angular.module('breakpoint.directives', ['breakpoint.services', 'amliu.timeParse
             return scope.player.getCurrentTime();
         }
 
+    
         // Used in any instance where we skip between breakpoints (forward, backward, repeat, browse)
         // Refreshes the current time interval and variables
         function refreshCurrentTime_watcher() {

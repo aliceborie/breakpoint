@@ -192,7 +192,9 @@ angular.module('breakpoint.controllers', ['breakpoint.services', 'amliu.timePars
 
   // Handles all events that don't require additional arguments
   $scope.sendControlEvent = function (event_name) {
-    this.$broadcast(event_name);
+  	console.log(event_name);
+    // this.$broadcast(event_name);
+    $rootScope.$broadcast(event_name);
   };
 
   // Need to figure this out ... not working yet
@@ -212,6 +214,10 @@ angular.module('breakpoint.controllers', ['breakpoint.services', 'amliu.timePars
   $scope.leave_fullscreen = function() {
     screen.lockOrientation('portrait');
     this.$broadcast("LEAVE_FULLSCREEN");
+  }
+
+  $scope.playBP = function(time){
+  	$rootScope.$broadcast("SKIP",time);
   }
 
 })
