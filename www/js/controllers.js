@@ -154,7 +154,6 @@ angular.module('breakpoint.controllers', ['breakpoint.services', 'amliu.timePars
 
     $scope.timeParser = timeParser;
     $scope.playMode = "PM_PUSH";
-    // $scope.videoId = $stateParams.videoId;
 
   parse.getVideo($stateParams.youtubeVideoId).then(function(video) {
     $scope.videoId = video.id;
@@ -162,23 +161,10 @@ angular.module('breakpoint.controllers', ['breakpoint.services', 'amliu.timePars
   
   $scope.youtubeVideoId = $stateParams.youtubeVideoId;
 
-  document.addEventListener("deviceready", onDeviceReady, false);
-  function onDeviceReady() {
-      console.log("READY!");
-      $scope.changeOriantationLandspace = function() {
-          screen.lockOrientation('landscape');
-      }
-       
-      $scope.changeOriantationPortrait = function() {
-          screen.lockOrientation('portrait');
-      } 
-  }
-
   // Page has entered
   $scope.$on('$ionicView.beforeEnter', function() {
       parse.getVideo($stateParams.youtubeVideoId).then(function(video) {
           $scope.video = video;
-          // $scope.$broadcast('INIT', video.get("yt_videoId"));
           $scope.$broadcast('INIT', $stateParams.youtubeVideoId);
           // Loading sets, breakpoints, sorting breakpoints in order of time
           parse.getSetsForVideo(video.id).then(function(sets) {
@@ -214,24 +200,12 @@ angular.module('breakpoint.controllers', ['breakpoint.services', 'amliu.timePars
     $rootScope.$broadcast(event_name);
   };
 
-  // Need to figure this out ... not working yet
-  // For some reason the cordova screen oritentaion plugin works above but not here
-  $scope.fullscreen = function() {
-      screen.lockOrientation('landscape');
-      this.$broadcast("FULLSCREEN");
-  }
-
     $scope.changePlayMode = function() {
         console.log($scope.playMode);
         var selectEl = document.querySelector(".player-controls#"+$scope.videoId+" .playmode select");
         var newPlaymode = selectEl.selectedOptions[0].value;
         $rootScope.$broadcast("CHANGE_PLAYMODE", newPlaymode);
     }
-
-  $scope.leave_fullscreen = function() {
-    screen.lockOrientation('portrait');
-    this.$broadcast("LEAVE_FULLSCREEN");
-  }
 
   $scope.playBP = function(time){
   	$rootScope.$broadcast("SKIP",time);
@@ -264,7 +238,7 @@ angular.module('breakpoint.controllers', ['breakpoint.services', 'amliu.timePars
 		$scope.showCreateForm = true;
 	}
 
-	parse.getCategories().then(function(parseCategoryObjects) {
+	parse.getAllCategories().then(function(parseCategoryObjects) {
 		$scope.categories = []
 		angular.forEach(parseCategoryObjects, function(parseCategoryObject) {
 			$scope.categories.push(parseCategoryObject.attributes.name)
@@ -274,7 +248,7 @@ angular.module('breakpoint.controllers', ['breakpoint.services', 'amliu.timePars
 	$scope.categoryChanged = function(selectedCategory) {
 		$scope.video.category = selectedCategory;
 		$scope.video.subcategory = '';
-		parse.getSubcategories(angular.lowercase(selectedCategory)).then(function(parseSubcategoryObjects) {
+		parse.getAllSubcategories(angular.lowercase(selectedCategory)).then(function(parseSubcategoryObjects) {
 			$scope.subcategories = [];
 			angular.forEach(parseSubcategoryObjects, function(parseSubcategoryObject) {
 				$scope.$apply(function() {

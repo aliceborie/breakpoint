@@ -1,3 +1,5 @@
+
+
 <div></div> <!-- Youtube replaces this with the iframe -->
 
 <!-- Overlay that is shown when video is not playing -->
@@ -9,7 +11,7 @@
 
 <!-- Overlay that is shown while the video is fullscreened and playing -->
 <!-- If the browse BP overlay is open, it gets one more class "browsing" that affects styling of children -->
-<div class="yt_playoverlay hide">
+<div class="yt_playoverlay hide fadedOut" ng-click="toggleControls()" data-tap-disabled="true">
 
     <!-- The main play controls - back, repeat, pause/play, browse, forward -->
     <div class="yt_playcontrols">
@@ -21,8 +23,11 @@
             <button class="button button-small button-circle button-assertive icon ion-loop" ng-click="repeatPlayerSegment()"><!-- Repeat --></button>
         </span>
 
-        <span class="yt_pauseplay">
-            <button class="button button-small button-circle button-assertive icon ion-play" ng-click="pausePlayPlayer()"><!-- Send Play --></button>
+        <span class="yt_pauseplay"> <!-- Send Play -->
+            <button class="button button-small button-circle button-assertive" ng-click="pausePlayPlayer()">
+                <fa ng-if="!isPaused" name="pause"></fa>
+                <fa ng-if="isPaused" name="play"></fa>
+            </button>
         </span>
 
         <span class="yt_bpBrowse">
@@ -37,12 +42,10 @@
     <!-- The breakpoint browse window -->
     <div class="bp_browser">
         <ul>
-            <li ng-repeat="breakpoint in breakpoints" ng-class-odd="'odd'" ng-class-even="'even'">
+            <li ng-repeat="breakpoint in breakpoints" ng-class-odd="'odd'" ng-class-even="'even'" ng-click="stopPropagation()">
                 <div class="tickmark"></div>
                 <div class="chosen_bp" ng-if="$index === currentBp"></div>
-                <a href="javascript:;" class="bp_start" ng-click="jumpToBp($index)">
-                
-                Starts at {{parseTime(breakpoint.attributes.time)}}</a>
+                <a href="javascript:;" class="bp_start" ng-click="jumpToBp($index)">Starts at {{parseTime(breakpoint.attributes.time)}}</a>
                 <span style="display:block;">{{breakpoint.attributes.title}}</span>
                 <p>
                     {{breakpoint.attributes.description}}
@@ -56,7 +59,7 @@
         <label class="current_time" ng-bind="currentBp_start_formatted"></label>
         <label class="duration" ng-bind="currentBp_end_formatted"></label>
         <span class="miniscrubber">
-            <input type="range" min="{{ currentBp_start }}" max="{{ currentBp_end }}" step="0.1" ng-model="currentTime" ng-change="setToSpot()" ng-mousedown="draggingSlider = true" ng-mouseleave="draggingSlider = false">
+            <input type="range" min="{{ currentBp_start }}" max="{{ currentBp_end }}" step="0.1" ng-model="currentTime" ng-click="setInterval_currentTime()" ng-change="setToSpot()" ng-mousedown="draggingSlider = true; draggingMiniSlider = true" ng-mouseup="draggingSlider = false; draggingMiniSlider = false">
         </span>
     </div>
 </div>
@@ -64,14 +67,18 @@
 <!-- The bottom player elements -->
 <div class="yt_bottombar">
     <label class="current_time" ng-bind="currentTime_formatted"></label>
-    <a class="compress" href="javascript:;" ng-click="leave_fullscreen()"><fa name="compress"></fa></a>
+    <div class="chosen_bp" ng-if="$index === currentBp"></div>
+
+    <a class="compress" href="javascript:;" ng-click="leave_fullscreen()" ng-if="isFullscreened"><fa name="compress"></fa></a>
+    <a class="expand" href="javascript:;" ng-click="fullscreen()" ng-if="!isFullscreened"><fa name="expand"></fa></a>
+
     <label class="duration" ng-bind="duration_formatted"></label>
     <span class="bottom_player">
         <div class="played"></div>
         <ul class="player_breakpoints">
             <li ng-repeat="breakpoint in breakpoints" id="{{ breakpoint.id }}"></li>
         </ul>
-        <input type="range" min="0" max="{{ duration }}" step="0.2" ng-model="currentTime" ng-change="setToSpot()" ng-mousedown="draggingSlider = true" ng-mouseleave="draggingSlider = false">
+        <input type="range" min="0" max="{{ duration }}" step="0.2" ng-model="currentTime" ng-change="setToSpot()" ng-click="setInterval_currentTime()" ng-mousedown="draggingSlider = true" ng-mouseleave="draggingSlider = false">
         <div class="progress"></div>
     </div>
 </div>
