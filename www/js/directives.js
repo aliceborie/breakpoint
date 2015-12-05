@@ -500,8 +500,9 @@ angular.module('breakpoint.directives', ['breakpoint.services', 'amliu.timeParse
       scope.$on('getCurrentTime', function() { getCurrentTime(); })
 
       function getCurrentTime() {
-        console.log(scope.player.getCurrentTime())
-        scope.$parent.currentTime = scope.player.getCurrentTime();
+        // console.log(scope.player.getCurrentTime())
+        // scope.$parent.currentTime = scope.player.getCurrentTime();
+        scope.$parent.breakpoint.time = scope.player.getCurrentTime();
       }
 
     }

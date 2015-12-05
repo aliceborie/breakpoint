@@ -43,6 +43,32 @@ angular.module('breakpoint.services', [])
       })
     },
 
+    createSet: function(youtubeVideoId) {
+      var Video = Parse.Object.extend("Video");
+      // get video that matches videoId
+      var query = new Parse.Query(Video).equalTo("yt_videoId", youtubeVideoId);
+      return query.first().then(function(video) {
+        var videoId = video.id;
+        return videoId
+      }).then(function(videoOId) {
+        var Set = Parse.Object.extend("Set");
+        var set = new Set();
+        set.set("videoOId", videoOId);
+        set.set("videoId", videoOId)
+        return set.save();
+      });
+    },
+
+    createBreakpoint: function(breakpointDetails) {
+      var Breakpoint = Parse.Object.extend("Breakpoint");
+      var breakpoint = new Breakpoint();
+      breakpoint.set("time", breakpointDetails.time);
+      breakpoint.set("title", breakpointDetails.title);
+      breakpoint.set("description", breakpointDetails.description);
+      breakpoint.set("setId", breakpointDetails.setId);
+      breakpoint.save();
+    },
+
     getCategories: function() {
       var Category = Parse.Object.extend("Category");
       var query = new Parse.Query(Category).select(["name","url", "image_url","id","children"]).equalTo("hierarchy",1).exists("videos");

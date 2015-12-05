@@ -8,9 +8,46 @@
     <breakpointer class="full-width-video" videoid="{{youtubeVideoId}}"></breakpointer>
 
     <div class="text-center padding" class="player-controls">
-		  <button class="button button-assertive" ng-click="getCurrentTime()">Get Current Time</button>
+		  <button class="button button-assertive" ng-click="createBreakpoint()">Create Breakpoint</button>
     </div>
 
-    <div>{{currentTime}}</div>
+    <!-- <div>{{currentTime}}</div> -->
+
+    <div class="padding" id="add-breakpoint" ng-show="creatingBreakpoint">
+      <form ng-submit="addBreakpoint(breakpoint)">
+        <div class="list">
+          <label class="item item-input">
+            <span class="input-label">Time</span>
+            <input type="text" ng-model="breakpoint.time">
+          </label>
+          <label class="item item-input">
+            <span class="input-label">Title</span>
+            <input type="text" ng-model="breakpoint.title">
+          </label>
+          <label class="item item-input">
+            <span class="input-label">Description</span>
+            <input type="text" ng-model="breakpoint.description">
+          </label>
+        </div>
+        <div class="text-center padding">
+          <button type="submit" class="button button-royal">Add</button>
+          <button type="reset" class="button button-royal center" ng-click="removeBreakpointForm()">Cancel</button>
+        </div>
+      </form>
+    </div>
+
+    <table class="breakpoint-table">
+      <tr ng-repeat="breakpoint in breakpoints">
+        <td class="time-cell">
+          <button class="button button-icon">{{ timeParser.convertSeconds(breakpoint.time) }} </button>
+        </td>
+        <td class="step-description-cell">
+          <h5> {{ breakpoint.title }}</h5>
+          <p> {{ breakpoint.description }}</p>
+        </td>
+      </tr>
+    </table>
+
+
   </ion-content>
 </ion-view>

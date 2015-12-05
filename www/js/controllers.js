@@ -1,7 +1,7 @@
 
 angular.module('breakpoint.controllers', ['breakpoint.services', 'amliu.timeParser'])
 
-.controller('AppCtrl', function($scope, $ionicModal, $ionicPopup, $sce, $ionicScrollDelegate, $state) {
+.controller('AppCtrl', function($scope, $ionicModal, $ionicPopup, $sce, $ionicScrollDelegate, $state, timeParser) {
 	$scope.goToCategories = function() {
 		$state.go('app.browse')
 	}
@@ -62,7 +62,9 @@ angular.module('breakpoint.controllers', ['breakpoint.services', 'amliu.timePars
 
   	$scope.scrollTop = function() {
     	$ionicScrollDelegate.scrollTop();
-  };
+  	};
+
+  	$scope.timeParser = timeParser;
 })
 
 .controller('LandingCtrl', function($scope) {
@@ -274,15 +276,40 @@ angular.module('breakpoint.controllers', ['breakpoint.services', 'amliu.timePars
 })
 
 .controller('AddBreakpointsCtrl', function($scope, $stateParams, parse) {
-	$scope.youtubeVideoId = $stateParams.youtubeVideoId
+	$scope.youtubeVideoId = $stateParams.youtubeVideoId;
+
+	$scope.breakpoints = [];
 
 	parse.getVideo($scope.youtubeVideoId).then(function(video) {
         $scope.video = video;
     });
 
+    parse.createSet($scope.youtubeVideoId).then(function(set) {
+    	$scope.set = set;
+    	console.log(set);
+    })
+
     // Gets time that the video is currently at 
   	$scope.getCurrentTime = function() {
     	this.$broadcast('getCurrentTime');
   	};	
+
+  	$scope.createBreakpoint = function() {
+  		$scope.breakpoint = {setId : $scope.set.id}
+  		$scope.getCurrentTime();
+  		$scope.creatingBreakpoint = true;
+  	}
+
+  	$scope.removeBreakpointForm = function() {
+  		$scope.breakpoint = {};
+  		$scope.creatingBreakpoint = false;
+  	}
+
+  	$scope.addBreakpoint = function() {
+  		// console.log($scope.breakpoint)
+  		parse.createBreakpoint($scope.breakpoint);
+  		$scope.breakpoints.push($scope.breakpoint);
+  		$scope.removeBreakpointForm();
+  	}
 })
 
