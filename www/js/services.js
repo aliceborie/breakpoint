@@ -16,7 +16,7 @@ angular.module('breakpoint.services', [])
       var subcategoryQuery = new Parse.Query(Category);
       subcategoryQuery.equalTo("name",videoDetails.subcategory);
       // get ID for category and add it to categories array for video
-      categoryQuery.first().then(function(category) {
+      return categoryQuery.first().then(function(category) {
         video.categories.push(category.id);
         return subcategoryQuery.first()
       // get ID for subcategory and add it to categories array for video, then save the video
@@ -38,9 +38,10 @@ angular.module('breakpoint.services', [])
             }
           }); // query.get
         }) // forEach
-      }, function(error) {
-        console.log(error);
-      })
+        return video
+      }) //, function(error) {
+      //   console.log(error);
+      // })
     },
 
     createSet: function(youtubeVideoId) {

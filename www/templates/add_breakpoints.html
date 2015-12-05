@@ -3,35 +3,44 @@
     <nav-buttons></nav-buttons>
   </ion-nav-buttons>
   <ion-content>
-    <p class="padding">Thanks for adding this video to our breakpointed videos! Now add a couple breakpoints to it.</p>
+    <p class="padding">Thanks for adding this video to our breakpointed videos! Now add a couple breakpoints to it by playing the video and hitting add breakpoint when the video reaches a time you want to breakpoint.</p>
     
     <breakpointer class="full-width-video" videoid="{{youtubeVideoId}}"></breakpointer>
 
-    <div class="text-center padding" class="player-controls">
-		  <button class="button button-assertive" ng-click="createBreakpoint()">Create Breakpoint</button>
+    <div class="text-center padding" ng-show="!creatingBreakpoint">
+		  <button class="button button-full button-royal" ng-click="createBreakpoint()">Add Breakpoint</button>
     </div>
-
-    <!-- <div>{{currentTime}}</div> -->
 
     <div class="padding" id="add-breakpoint" ng-show="creatingBreakpoint">
       <form ng-submit="addBreakpoint(breakpoint)">
-        <div class="list">
-          <label class="item item-input">
-            <span class="input-label">Time</span>
-            <input type="text" ng-model="breakpoint.time">
-          </label>
-          <label class="item item-input">
-            <span class="input-label">Title</span>
-            <input type="text" ng-model="breakpoint.title">
-          </label>
-          <label class="item item-input">
-            <span class="input-label">Description</span>
-            <input type="text" ng-model="breakpoint.description">
-          </label>
-        </div>
+        <!-- <div class="list"> -->
+        <table class="add-breakpoint-table">
+          <tr>
+            <td class="time-cell">
+              <label class="item item-input no-outline" style="padding-right:0;padding-left:0">
+                <!-- <span class="input-label">Time</span> -->
+                <input type="text" ng-model="breakpoint.time" placeholder="Time" class="text-center input-no-padding" style="padding-right:0;padding-left:0">
+                <span class="input-label shrink">sec </span>
+              </label>
+            </td>
+            <td class="step-description-cell">
+              <label class="item item-input no-outline">
+                <!-- <span class="input-label">Title</span> -->
+                <input class="no-outline" type="text" ng-model="breakpoint.title" placeholder="Title">
+              </label>
+              <br>
+              <label class="item item-input no-outline">
+                <!-- <span class="input-label">Description</span> -->
+                <input type="text" ng-model="breakpoint.description" placeholder="Description">
+              </label>
+            </td>
+          </tr>
+        </table>
+        <!-- </div> -->
+        <i class="glyphicon glyphicon-remove"></i>
         <div class="text-center padding">
-          <button type="submit" class="button button-royal">Add</button>
-          <button type="reset" class="button button-royal center" ng-click="removeBreakpointForm()">Cancel</button>
+          <button type="submit" class="button button-small button-circle button-balanced icon ion-checkmark"></button>
+          <button type="reset" class="button button-small button-circle button-assertive icon ion-close" ng-click="removeBreakpointForm()"></button>
         </div>
       </form>
     </div>
@@ -47,6 +56,10 @@
         </td>
       </tr>
     </table>
+
+    <div class="text-center padding" ng-if="breakpoints.length > 0">
+      <button class="button button-full button-royal" ng-click="saveSet()">Save Set</button>
+    </div>
 
 
   </ion-content>

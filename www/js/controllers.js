@@ -270,12 +270,14 @@ angular.module('breakpoint.controllers', ['breakpoint.services', 'amliu.timePars
 	}
 
 	$scope.createVideo = function(video) {
-		parse.createVideo(video);
-		$state.go('app.addBreakpoints',{youtubeVideoId: $scope.video.youtubeVideoId});
+		parse.createVideo(video).then(function() {
+			// Don't change state until video is saved into parse DB
+			$state.go('app.addBreakpoints',{youtubeVideoId: $scope.video.youtubeVideoId});
+		});
 	}
 })
 
-.controller('AddBreakpointsCtrl', function($scope, $stateParams, parse) {
+.controller('AddBreakpointsCtrl', function($scope, $stateParams, $state, parse) {
 	$scope.youtubeVideoId = $stateParams.youtubeVideoId;
 
 	$scope.breakpoints = [];
@@ -286,17 +288,23 @@ angular.module('breakpoint.controllers', ['breakpoint.services', 'amliu.timePars
 
     parse.createSet($scope.youtubeVideoId).then(function(set) {
     	$scope.set = set;
-    	console.log(set);
+    	var firstBreakpoint = {
+    		time: 0,
+    		setId: $scope.set.id,
+    		title: 'Beginning'
+    	}
+    	parse.createBreakpoint(firstBreakpoint);
+  		$scope.breakpoints.push(firstBreakpoint);
     })
 
-    // Gets time that the video is currently at 
-  	$scope.getCurrentTime = function() {
+    // Gets time that the video is currently at and pauses player
+  	$scope.getCurrentTimeAndPause = function() {
     	this.$broadcast('getCurrentTime');
   	};	
 
   	$scope.createBreakpoint = function() {
   		$scope.breakpoint = {setId : $scope.set.id}
-  		$scope.getCurrentTime();
+  		$scope.getCurrentTimeAndPause();
   		$scope.creatingBreakpoint = true;
   	}
 
@@ -306,10 +314,13 @@ angular.module('breakpoint.controllers', ['breakpoint.services', 'amliu.timePars
   	}
 
   	$scope.addBreakpoint = function() {
-  		// console.log($scope.breakpoint)
   		parse.createBreakpoint($scope.breakpoint);
   		$scope.breakpoints.push($scope.breakpoint);
   		$scope.removeBreakpointForm();
+  	}
+
+  	$scope.saveSet = function() {
+  		$state.go('app.video',{youtubeVideoId: $scope.youtubeVideoId});
   	}
 })
 
