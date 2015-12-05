@@ -1,7 +1,12 @@
 
 angular.module('breakpoint.controllers', ['breakpoint.services', 'amliu.timeParser'])
 
-.controller('AppCtrl', function($scope, $ionicModal, $ionicPopup, $sce, $ionicScrollDelegate, $state, timeParser) {
+.controller('AppCtrl', function($window, $scope, $ionicModal, $ionicPopup, $sce, $ionicScrollDelegate, $state, timeParser) {
+	// reload the page instead of refreshing scope
+    $scope.doRefresh = function() {
+    	$window.location.reload(true)
+    }
+
 	$scope.goToCategories = function() {
 		$state.go('app.browse')
 	}
