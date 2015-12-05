@@ -571,7 +571,7 @@ angular.module('breakpoint.directives', ['breakpoint.services', 'amliu.timeParse
       player: "=", // iFrame YT player element  
     },
 
-    templateUrl: '../directives/breakpointer.html',
+    templateUrl: './directives/breakpointer.html',
 
     link: function(scope, element) {
       var tag = document.createElement('script');

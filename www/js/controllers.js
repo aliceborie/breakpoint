@@ -223,7 +223,7 @@ angular.module('breakpoint.controllers', ['breakpoint.services', 'amliu.timePars
 		$scope.showCreateForm = true;
 	}
 
-	parse.getCategories().then(function(parseCategoryObjects) {
+	parse.getAllCategories().then(function(parseCategoryObjects) {
 		$scope.categories = []
 		angular.forEach(parseCategoryObjects, function(parseCategoryObject) {
 			$scope.categories.push(parseCategoryObject.attributes.name)
@@ -233,7 +233,7 @@ angular.module('breakpoint.controllers', ['breakpoint.services', 'amliu.timePars
 	$scope.categoryChanged = function(selectedCategory) {
 		$scope.video.category = selectedCategory;
 		$scope.video.subcategory = '';
-		parse.getSubcategories(angular.lowercase(selectedCategory)).then(function(parseSubcategoryObjects) {
+		parse.getAllSubcategories(angular.lowercase(selectedCategory)).then(function(parseSubcategoryObjects) {
 			$scope.subcategories = [];
 			angular.forEach(parseSubcategoryObjects, function(parseSubcategoryObject) {
 				$scope.$apply(function() {
