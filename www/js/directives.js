@@ -248,8 +248,8 @@ angular.module('breakpoint.directives', ['breakpoint.services', 'amliu.timeParse
             angular.element(document.querySelectorAll("youtube[id='"+scope.videoid+"'] .yt_playoverlay")).removeClass("fadeOut");
             angular.element(document.querySelectorAll("youtube[id='"+scope.videoid+"'] .yt_playoverlay")).addClass("fadedOut");
 
-            positionBreakpoints();
             scope.landscape();
+            positionBreakpoints();
         }
 
         scope.leave_fullscreen = function() {
@@ -263,8 +263,9 @@ angular.module('breakpoint.directives', ['breakpoint.services', 'amliu.timeParse
 
             angular.element(document.querySelectorAll("youtube[id='"+scope.videoid+"'] .yt_playoverlay")).addClass("hide");
             angular.element(document.querySelector("youtube[id='"+scope.videoid+"']")).removeClass("fullscreen");
-            positionBreakpoints();
+
             scope.portrait();
+            positionBreakpoints();
         }
 
         scope.showHide_BpBrowser = function($event) {
@@ -459,6 +460,7 @@ angular.module('breakpoint.directives', ['breakpoint.services', 'amliu.timeParse
         function positionBreakpoints() {
             if (typeof scope.breakpoints != 'undefined') {
                 var bottomplayer_width = document.querySelector("youtube[id='"+scope.videoid+"'] .bottom_player input").offsetWidth;
+                console.log(bottomplayer_width);
                 for (var i = 0; i < scope.breakpoints.length; i++) {
                     var breakpoint = scope.breakpoints[i];
                     var position = Math.floor((breakpoint.get("time") / scope.duration) * bottomplayer_width);
