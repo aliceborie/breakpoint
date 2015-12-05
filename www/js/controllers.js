@@ -187,6 +187,12 @@ angular.module('breakpoint.controllers', ['breakpoint.services', 'amliu.timePars
       })
   });
 
+	$scope.doRefresh = function() {
+		$window.location.reload(true);
+    	$scope.$broadcast('scroll.refreshComplete');
+    	$scope.$apply();
+    }
+
   // When the page is "popped" and we go back
   $scope.$on('$stateChangeStart', function(event) {
     // For some we don't have access to scope, so just use rootscope
