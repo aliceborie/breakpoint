@@ -221,6 +221,17 @@ angular.module('breakpoint.directives', ['breakpoint.services', 'amliu.timeParse
             refreshCurrentTime_watcher();
         }
 
+        // Rotating the screen for native
+        document.addEventListener("deviceready", function() {
+            scope.landscape = function() {
+                screen.lockOrientation('landscape');
+            }
+
+            scope.portrait = function() {
+                screen.lockOrientation('portrait');
+            }
+        }, false)
+
         scope.fullscreen = function() {
             scope.isFullscreened = true;
             // Parent of the youtube tag is the scroller container. We use ID to ensure we grab the currently viewed page
@@ -238,6 +249,7 @@ angular.module('breakpoint.directives', ['breakpoint.services', 'amliu.timeParse
             angular.element(document.querySelectorAll("youtube[id='"+scope.videoid+"'] .yt_playoverlay")).addClass("fadedOut");
 
             positionBreakpoints();
+            scope.landscape();
         }
 
         scope.leave_fullscreen = function() {
@@ -252,6 +264,7 @@ angular.module('breakpoint.directives', ['breakpoint.services', 'amliu.timeParse
             angular.element(document.querySelectorAll("youtube[id='"+scope.videoid+"'] .yt_playoverlay")).addClass("hide");
             angular.element(document.querySelector("youtube[id='"+scope.videoid+"']")).removeClass("fullscreen");
             positionBreakpoints();
+            scope.portrait();
         }
 
         scope.showHide_BpBrowser = function($event) {
