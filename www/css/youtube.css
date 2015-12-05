@@ -110,6 +110,12 @@
 span.yt_back { right: inherit; }
 span.yt_repeat { margin-left: 20%; }
 span.yt_pauseplay { margin: 0 auto; }
+span.yt_pauseplay span.fa {
+    font-size: 15px;
+    margin-top: -8px;
+}
+span.yt_pauseplay span.fa[name="play"] { margin-left: 15px; }
+span.yt_pauseplay span.fa[name="pause"] { margin-left: 12px; }
 span.yt_bpBrowse {
     margin-right: 20%;
     left: inherit;
@@ -139,7 +145,7 @@ label.duration {
     float: right;
     margin: 5px 15px 10px 5px;
 }
-.yt_bottombar .compress {
+.yt_bottombar .compress, .yt_bottombar .expand {
     float: right;
     color: white;
     margin: 5px 10px 10px 10px;
@@ -345,3 +351,27 @@ ul.player_breakpoints li {
     left: 0;
     right: 0;
 }
+
+
+.fadedOut { opacity: 0; }
+/* All children of the faded out parent shouldn't be clickable (which they are with 0 opacity)
+so we need to use pointer-events as well*/
+.fadedOut * { pointer-events: none; }
+.fadedIn { opacity: 1; }
+.fadeIn {
+    animation: fadeIn 0.25s;
+    opacity: 1;
+}
+@keyframes fadeIn {
+    0% { opacity: 0; }
+    100% { opacity: 1; }
+}
+.fadeOut {
+    animation: fadeOut 0.75s;
+    opacity: 0;
+}
+@keyframes fadeOut {
+    0% { opacity: 1; }
+    100% { opacity: 0; }
+}
+
