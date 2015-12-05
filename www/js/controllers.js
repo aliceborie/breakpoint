@@ -75,7 +75,15 @@ angular.module('breakpoint.controllers', ['breakpoint.services', 'amliu.timePars
 	parse.getCategories().then(function(categories){
 		$scope.categories = categories;
 		})
-	})
+
+	$scope.doRefresh = function() {
+		parse.getCategories().then(function(categories){
+			$scope.categories = categories;
+		})
+    	$scope.$broadcast('scroll.refreshComplete');
+    	$scope.$apply();
+    }
+})
 
 
 .controller('SubcategoryCtrl', function($scope, $stateParams, parse){
@@ -83,6 +91,13 @@ angular.module('breakpoint.controllers', ['breakpoint.services', 'amliu.timePars
 	parse.getSubcategories(category).then(function(subcategories){
 		$scope.subcategories = subcategories;
 	})
+	$scope.doRefresh = function() {
+		parse.getSubcategories(category).then(function(subcategories){
+		$scope.subcategories = subcategories;
+	})
+    	$scope.$broadcast('scroll.refreshComplete');
+    	$scope.$apply();
+    }
 	
 })
 

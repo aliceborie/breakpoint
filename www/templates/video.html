@@ -4,7 +4,7 @@
     </ion-nav-buttons>
     <ion-content>
     <!-- ngview -->
-    <!-- <ion-refresher pulling-text="Pull to refresh" on-refresh="doRefresh()">
+   <!--  <ion-refresher pulling-text="Pull to refresh" on-refresh="doRefresh()">
     </ion-refresher> -->
         <!-- <div ng-repeat="breakpoint in breakpoints">
             {{ breakpoint.attributes.time }}
@@ -49,16 +49,10 @@
 
                 <td class="time-cell">
 
-       
+                     <a href="javascript:;" ng-click="playBP({{breakpoint.attributes.time}})">{{ timeParser.convertSeconds(breakpoint.attributes.time) }} </a>
 
-                    <button class="button button-icon" ng-click="playBP({{breakpoint.attributes.time}})">{{ timeParser.convertSeconds(breakpoint.attributes.time) }} </button>
+             <!--        <button class="button button-icon" ng-click="playBP({{breakpoint.attributes.time}})">{{ timeParser.convertSeconds(breakpoint.attributes.time) }} </button> -->
 
-                <!-- <div class="chosen_bp" ng-if="$index === currentBp"></div> -->
-                <!-- <a href="javascript:;" class="bp_start" ng-click="jumpToBp($index)">
-                 -->
-                <!-- {{timeParser.convertSeconds(breakpoint.attributes.time)}}</a> -->
-
-                <!-- {{ timeParser.convertSeconds(breakpoint.attributes.time) }} -->
                 </td>
                 <td class="step-description-cell">
                     <h5> {{ breakpoint.attributes.title }}</h5>
