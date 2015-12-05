@@ -159,7 +159,6 @@ angular.module('breakpoint.controllers', ['breakpoint.services', 'amliu.timePars
 
   // Page has entered
   $scope.$on('$ionicView.beforeEnter', function() {
-    debugger;
       parse.getVideo($stateParams.youtubeVideoId).then(function(video) {
           $scope.video = video;
           $scope.$broadcast('INIT', $stateParams.youtubeVideoId);

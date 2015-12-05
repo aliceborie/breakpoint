@@ -42,7 +42,7 @@
     <!-- The breakpoint browse window -->
     <div class="bp_browser">
         <ul>
-            <li ng-repeat="breakpoint in breakpoints" ng-class-odd="'odd'" ng-class-even="'even'">
+            <li ng-repeat="breakpoint in breakpoints" ng-class-odd="'odd'" ng-class-even="'even'" ng-click="stopPropagation()">
                 <div class="tickmark"></div>
                 <div class="chosen_bp" ng-if="$index === currentBp"></div>
                 <a href="javascript:;" class="bp_start" ng-click="jumpToBp($index)">Starts at {{parseTime(breakpoint.attributes.time)}}</a>
@@ -59,7 +59,7 @@
         <label class="current_time" ng-bind="currentBp_start_formatted"></label>
         <label class="duration" ng-bind="currentBp_end_formatted"></label>
         <span class="miniscrubber">
-            <input type="range" min="{{ currentBp_start }}" max="{{ currentBp_end }}" step="0.1" ng-model="currentTime" ng-click="setInterval_currentTime()" ng-change="setToSpot()" ng-mousedown="draggingSlider = true; draggingMiniSlider = true" ng-mouseleave="draggingSlider = false; draggingMiniSlider = false">
+            <input type="range" min="{{ currentBp_start }}" max="{{ currentBp_end }}" step="0.1" ng-model="currentTime" ng-click="setInterval_currentTime()" ng-change="setToSpot()" ng-mousedown="draggingSlider = true; draggingMiniSlider = true" ng-mouseup="draggingSlider = false; draggingMiniSlider = false">
         </span>
     </div>
 </div>

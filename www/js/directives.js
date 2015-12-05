@@ -70,6 +70,7 @@ angular.module('breakpoint.directives', ['breakpoint.services', 'amliu.timeParse
 
         // Loading in Sets and Breakpoints from controller
         scope.$on('LOAD_BPS', function(event, data) {
+            console.log("Load BPS");
             scope.currentBp = 0;
             scope.breakpoints = data;
             resetCurrentBpStartEnd();
@@ -139,6 +140,7 @@ angular.module('breakpoint.directives', ['breakpoint.services', 'amliu.timeParse
             });
         }
         function onPlayerReady() {
+            console.log("Player Ready");
             scope.duration = scope.player.getDuration();
             scope.duration_formatted = timeParser.convertSeconds(scope.duration);
             scope.currentTime = scope.player.getCurrentTime();
@@ -152,7 +154,6 @@ angular.module('breakpoint.directives', ['breakpoint.services', 'amliu.timeParse
         }
 
         scope.stopPlayer = function() {
-            scope.player.seekTo(0);
             scope.player.stopVideo();
             scope.isPaused = true;
 
@@ -230,7 +231,7 @@ angular.module('breakpoint.directives', ['breakpoint.services', 'amliu.timeParse
             angular.element(document.querySelectorAll("youtube[id='"+scope.videoid+"'] .yt_playoverlay")).removeClass("hide");
             angular.element(document.querySelector("youtube[id='"+scope.videoid+"']")).addClass("fullscreen");
 
-            // By default, the fullscreen player controls are faded out from view, similar to the YT mobile app
+            // // By default, the fullscreen player controls are faded out from view, similar to the YT mobile app
             angular.element(document.querySelectorAll("youtube[id='"+scope.videoid+"'] .yt_playoverlay")).removeClass("fadeOut");
             angular.element(document.querySelectorAll("youtube[id='"+scope.videoid+"'] .yt_playoverlay")).addClass("fadedOut");
 
@@ -284,11 +285,12 @@ angular.module('breakpoint.directives', ['breakpoint.services', 'amliu.timeParse
         }
 
         // Starts up the interval event only if the player is currently not paused or stopped
-        scope.setInterval_currentTime = function() {
+        scope.setInterval_currentTime = function($event) {
             if (scope.player.getPlayerState() !== 0 && scope.player.getPlayerState() !== 2) {
                 // Only restart the current time watcher if the player is not stopped (0) or paused (2)
                 scope.currentTime_intervalPromise = $interval(refreshCurrentTime, 250);
             }
+            event.stopPropagation();
         }
 
         // Used in any instance where we skip between breakpoints (forward, backward, repeat, browse)
@@ -350,10 +352,10 @@ angular.module('breakpoint.directives', ['breakpoint.services', 'amliu.timeParse
             if (scope.draggingMiniSlider) {
                 window.clearTimeout(scope.controlFadeTimeout);
                 scope.fastShowControls();
-                event.stopPropagation();
-            } else {
+            } else if (typeof scope.draggingMiniSlider != "undefined" && !scope.isPaused) {
                 scope.controlFadeTimeout = window.setTimeout(scope.fadeOutControls, 2500);
             }
+            event.stopPropagation();
         })
 
         // Used in the bottom player slider to get input from slider and set the video
@@ -362,7 +364,9 @@ angular.module('breakpoint.directives', ['breakpoint.services', 'amliu.timeParse
             scope.player.seekTo(scope.currentTime, true);
         }
 
-
+        scope.stopPropagation = function($event) {
+            event.stopPropagation();
+        }
 
         // --------------------------------------------------
         // METHODS
