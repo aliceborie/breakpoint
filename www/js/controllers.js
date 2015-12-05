@@ -1,7 +1,7 @@
 
 angular.module('breakpoint.controllers', ['breakpoint.services', 'amliu.timeParser'])
 
-.controller('AppCtrl', function($scope, $ionicModal, $ionicPopup, $sce, $ionicScrollDelegate, $state) {
+.controller('AppCtrl', function($scope, $ionicModal, $ionicPopup, $sce, $ionicScrollDelegate, $state, timeParser) {
 	$scope.goToCategories = function() {
 		$state.go('app.browse')
 	}
@@ -62,7 +62,9 @@ angular.module('breakpoint.controllers', ['breakpoint.services', 'amliu.timePars
 
   	$scope.scrollTop = function() {
     	$ionicScrollDelegate.scrollTop();
-  };
+  	};
+
+  	$scope.timeParser = timeParser;
 })
 
 .controller('LandingCtrl', function($scope) {
@@ -152,7 +154,8 @@ angular.module('breakpoint.controllers', ['breakpoint.services', 'amliu.timePars
           // Loading sets, breakpoints, sorting breakpoints in order of time
           parse.getSetsForVideo(video.id).then(function(sets) {
               // For now, just default to first set always
-              parse.getBreakpointsForSet(sets[0].id).then(function(set_breakpoints) {
+              if (sets[0]) {
+              	parse.getBreakpointsForSet(sets[0].id).then(function(set_breakpoints) {
                   $scope.breakpoints = set_breakpoints;
                   $scope.breakpoints.sort(function(a, b) {
                       if (a.get("time") < b.get("time"))
@@ -163,7 +166,8 @@ angular.module('breakpoint.controllers', ['breakpoint.services', 'amliu.timePars
                   })
                   // Pass sorted breakpoints into the youtube directive too
                   $scope.$broadcast('LOAD_BPS', $scope.breakpoints);
-              })
+              	})
+              } 
           })
       })
   });
@@ -176,7 +180,9 @@ angular.module('breakpoint.controllers', ['breakpoint.services', 'amliu.timePars
 
   // Handles all events that don't require additional arguments
   $scope.sendControlEvent = function (event_name) {
-    this.$broadcast(event_name);
+  	console.log(event_name);
+    // this.$broadcast(event_name);
+    $rootScope.$broadcast(event_name);
   };
 
     $scope.changePlayMode = function() {
@@ -186,16 +192,19 @@ angular.module('breakpoint.controllers', ['breakpoint.services', 'amliu.timePars
         $rootScope.$broadcast("CHANGE_PLAYMODE", newPlaymode);
     }
 
+  $scope.playBP = function(time){
+  	$rootScope.$broadcast("SKIP",time);
+  }
+
 })
 
-.controller('CreateBreakpointVideoCtrl', function($scope, $stateParams, parse, youtubeData) {
-	$scope.youtubeVideoId = $stateParams.youtubeVideoId;
-
+.controller('CreateBreakpointVideoCtrl', function($scope, $stateParams, $state, parse, youtubeData) {
 	$scope.video = {};
 
-	youtubeData.getVideo($scope.youtubeVideoId).success(function(response) {
+	$scope.video.youtubeVideoId = $stateParams.youtubeVideoId;
+
+	youtubeData.getVideo($scope.video.youtubeVideoId).success(function(response) {
 		var videoDetails = response.items[0].snippet;
-		console.log(videoDetails);
 		$scope.video.defaultTitle = videoDetails.title;
 		$scope.video.description = videoDetails.description;
 		$scope.video.title = videoDetails.title;
@@ -235,8 +244,57 @@ angular.module('breakpoint.controllers', ['breakpoint.services', 'amliu.timePars
 	}
 
 	$scope.createVideo = function(video) {
-		console.log(video);
+		parse.createVideo(video).then(function() {
+			// Don't change state until video is saved into parse DB
+			$state.go('app.addBreakpoints',{youtubeVideoId: $scope.video.youtubeVideoId});
+		});
 	}
+})
 
+.controller('AddBreakpointsCtrl', function($scope, $stateParams, $state, parse) {
+	$scope.youtubeVideoId = $stateParams.youtubeVideoId;
+
+	$scope.breakpoints = [];
+
+	parse.getVideo($scope.youtubeVideoId).then(function(video) {
+        $scope.video = video;
+    });
+
+    parse.createSet($scope.youtubeVideoId).then(function(set) {
+    	$scope.set = set;
+    	var firstBreakpoint = {
+    		time: 0,
+    		setId: $scope.set.id,
+    		title: 'Beginning'
+    	}
+    	parse.createBreakpoint(firstBreakpoint);
+  		$scope.breakpoints.push(firstBreakpoint);
+    })
+
+    // Gets time that the video is currently at and pauses player
+  	$scope.getCurrentTimeAndPause = function() {
+    	this.$broadcast('getCurrentTime');
+  	};	
+
+  	$scope.createBreakpoint = function() {
+  		$scope.breakpoint = {setId : $scope.set.id}
+  		$scope.getCurrentTimeAndPause();
+  		$scope.creatingBreakpoint = true;
+  	}
+
+  	$scope.removeBreakpointForm = function() {
+  		$scope.breakpoint = {};
+  		$scope.creatingBreakpoint = false;
+  	}
+
+  	$scope.addBreakpoint = function() {
+  		parse.createBreakpoint($scope.breakpoint);
+  		$scope.breakpoints.push($scope.breakpoint);
+  		$scope.removeBreakpointForm();
+  	}
+
+  	$scope.saveSet = function() {
+  		$state.go('app.video',{youtubeVideoId: $scope.youtubeVideoId});
+  	}
 })
 

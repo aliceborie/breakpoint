@@ -140,12 +140,24 @@ iframe.sample-video {
     font-size: 120%;
 }
 
+.add-breakpoint-table {
+    width: 100%;
+    margin-top: 0px;
+    margin-bottom: 0px;
+    font-size: 120%;
+}
+
+.no-outline {
+    border-style: none none solid none;
+}
+
 .time-cell {
     border-right: 2.5px solid rgba(136,106,234,.2);
     width: 30%;
     color: rgb(46,8,84);
     font-weight: bold;
     text-align: center;
+    padding: 0px 15px 0px 0px;
 }
 
 .step-description-cell {
@@ -163,5 +175,14 @@ iframe.sample-video {
 
 .icon {
     font-size: 4px;
+}
+
+.shrink {
+    font-size: 90%;
+}
+
+.input-no-padding {
+    padding-left: 0;
+    padding-right: 0!;
 }
 
