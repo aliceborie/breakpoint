@@ -159,9 +159,9 @@ angular.module('breakpoint.controllers', ['breakpoint.services', 'amliu.timePars
 
   // Page has entered
   $scope.$on('$ionicView.beforeEnter', function() {
+    debugger;
       parse.getVideo($stateParams.youtubeVideoId).then(function(video) {
           $scope.video = video;
-          // $scope.$broadcast('INIT', video.get("yt_videoId"));
           $scope.$broadcast('INIT', $stateParams.youtubeVideoId);
           // Loading sets, breakpoints, sorting breakpoints in order of time
           parse.getSetsForVideo(video.id).then(function(sets) {

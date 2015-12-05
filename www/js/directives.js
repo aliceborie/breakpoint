@@ -283,6 +283,14 @@ angular.module('breakpoint.directives', ['breakpoint.services', 'amliu.timeParse
             return scope.player.getCurrentTime();
         }
 
+        // Starts up the interval event only if the player is currently not paused or stopped
+        scope.setInterval_currentTime = function() {
+            if (scope.player.getPlayerState() !== 0 && scope.player.getPlayerState() !== 2) {
+                // Only restart the current time watcher if the player is not stopped (0) or paused (2)
+                scope.currentTime_intervalPromise = $interval(refreshCurrentTime, 250);
+            }
+        }
+
         // Used in any instance where we skip between breakpoints (forward, backward, repeat, browse)
         // Refreshes the current time interval and variables
         function refreshCurrentTime_watcher() {
@@ -291,12 +299,10 @@ angular.module('breakpoint.directives', ['breakpoint.services', 'amliu.timeParse
             scope.currentTime_formatted = timeParser.convertSeconds(scope.currentTime);
 
             document.querySelector("youtube[id='"+scope.videoid+"'] .bottom_player input").value = scope.currentTime;
-
-            if (scope.player.getPlayerState() !== 0 && scope.player.getPlayerState() !== 2) {
-                // Only restart the current time watcher if the player is not stopped (0) or paused (2)
-                scope.currentTime_intervalPromise = $interval(refreshCurrentTime, 250);
-            }
+            scope.setInterval_currentTime();
         }
+
+        // Starts the current time interval event watcher
         function refreshCurrentTime() {
             console.log("GOOGO");
             scope.currentTime = scope.player.getCurrentTime();
