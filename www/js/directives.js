@@ -43,7 +43,7 @@ angular.module('breakpoint.directives', ['breakpoint.services', 'amliu.timeParse
       breakpoints: "=", // Array of Parse Breakpoint Objs
       api_timeoutId: "=" // ID of the timeout event that rechecks yt API load state
     },
-    templateUrl: '../templates/videoOverlay.html',
+    templateUrl: './templates/videoOverlay.html',
 
     link: function(scope, element) {
 
@@ -54,6 +54,7 @@ angular.module('breakpoint.directives', ['breakpoint.services', 'amliu.timeParse
         // will get back to us and let us know videoId and youtubeID and also because we don't know when
         // the youtube API has loaded
         scope.$on('INIT', function(event, data) {
+            console.log("Init");
             scope.playMode = "PM_PUSH";
             initPage(data);
         });
@@ -118,6 +119,7 @@ angular.module('breakpoint.directives', ['breakpoint.services', 'amliu.timeParse
         }
 
         function resetPlayer(data) {
+            console.log("reset player");
             scope.player = new YT.Player(element.children()[0], {
                 playerVars: {
                     autoplay: 0,
