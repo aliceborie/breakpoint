@@ -24,14 +24,16 @@
 }
 
 #browse {
-	margin: 20px 0;
-	padding: 0 20px;
+    position: relative;
+    margin:0;
+	padding: 20px;
+    padding-bottom: 40px;
+    box-shadow: 0px 3px 5px 0px rgba(0,0,0,0.2);
 }
 
 #make-breakpoint {
-	background-color: rgba(136,106,234,.5);
+	background-color: rgb(218, 213, 232);
 	padding: 20px 20px 50px 20px;
-	margin: 20px 0 0 0;
 }
 
 #categories-grid {

@@ -99,6 +99,10 @@ angular.module('breakpoint.directives', ['breakpoint.services', 'amliu.timeParse
             scope.player.seekTo(time); 
         })
 
+        scope.$on('VIDEO_NOT_FOUND', function(event, data) {
+            videoNotFound();
+        })
+
         // --------------------------------------------------
         // PLAYER EVENT LISTENERS
 
@@ -160,6 +164,7 @@ angular.module('breakpoint.directives', ['breakpoint.services', 'amliu.timeParse
 
             scope.isFullscreened = false;
             scope.isPaused = true;
+            hideLoading();
 
             document.querySelector("youtube[id='"+scope.videoid+"'] .bottom_player input").value = scope.currentTime;
             positionBreakpoints();
@@ -242,7 +247,6 @@ angular.module('breakpoint.directives', ['breakpoint.services', 'amliu.timeParse
             scope.landscape = function() {
                 screen.lockOrientation('landscape');
             }
-
             scope.portrait = function() {
                 screen.lockOrientation('portrait');
             }
@@ -382,13 +386,15 @@ angular.module('breakpoint.directives', ['breakpoint.services', 'amliu.timeParse
 
         // While dragging the mini scrubber we don't want the interface to... disappear lmao
         scope.$watch("draggingMiniSlider", function(newValue, oldValue, $event) {
-            if (scope.draggingMiniSlider) {
-                window.clearTimeout(scope.controlFadeTimeout);
-                scope.fastShowControls();
-            } else if (typeof scope.draggingMiniSlider != "undefined" && !scope.isPaused) {
-                scope.controlFadeTimeout = window.setTimeout(scope.fadeOutControls, 2500);
+            if (typeof scope.draggingMiniSlider != "undefined") {
+                if (scope.draggingMiniSlider) {
+                    window.clearTimeout(scope.controlFadeTimeout);
+                    scope.fastShowControls();
+                } else if (!scope.isPaused) {
+                    scope.controlFadeTimeout = window.setTimeout(scope.fadeOutControls, 2500);
+                }
+                event.stopPropagation();
             }
-            event.stopPropagation();
         })
 
         // Used in the bottom player slider to get input from slider and set the video
@@ -554,6 +560,14 @@ angular.module('breakpoint.directives', ['breakpoint.services', 'amliu.timeParse
             angular.element(document.querySelectorAll("youtube[id='"+scope.videoid+"'] .yt_playoverlay")).addClass("fadedOut");
         }
 
+        function hideLoading() {
+            angular.element(document.querySelector("youtube[id='"+scope.videoid+"'] .videoLoading")).addClass("hide");
+        }
+
+        function videoNotFound() {
+            angular.element(document.querySelector("youtube[id='"+scope.videoid+"'] ion-spinner")).addClass("hide");
+            angular.element(document.querySelector("youtube[id='"+scope.videoid+"'] .notFound")).removeClass("hide");
+        }
 
 
 

@@ -139,36 +139,40 @@ angular.module('breakpoint.controllers', ['breakpoint.services', 'amliu.timePars
 
     $scope.timeParser = timeParser;
     $scope.playMode = "PM_PUSH";
-
-  parse.getVideo($stateParams.youtubeVideoId).then(function(video) {
-    $scope.videoId = video.id;
-  })
   
-  $scope.youtubeVideoId = $stateParams.youtubeVideoId;
+    $scope.youtubeVideoId = $stateParams.youtubeVideoId;
 
   // Page has entered
   $scope.$on('$ionicView.beforeEnter', function() {
       parse.getVideo($stateParams.youtubeVideoId).then(function(video) {
-          $scope.video = video;
-          $scope.$broadcast('INIT', $stateParams.youtubeVideoId);
-          // Loading sets, breakpoints, sorting breakpoints in order of time
-          parse.getSetsForVideo(video.id).then(function(sets) {
-              // For now, just default to first set always
-              if (sets[0]) {
-              	parse.getBreakpointsForSet(sets[0].id).then(function(set_breakpoints) {
-                  $scope.breakpoints = set_breakpoints;
-                  $scope.breakpoints.sort(function(a, b) {
-                      if (a.get("time") < b.get("time"))
-                          return -1;
-                      if (a.get("time") > b.get("time"))
-                          return 1;
-                      return 0;
-                  })
-                  // Pass sorted breakpoints into the youtube directive too
-                  $scope.$broadcast('LOAD_BPS', $scope.breakpoints);
-              	})
-              } 
-          })
+        if (typeof video == 'undefined') { // Breakpoint doesn't have this video
+            $scope.$broadcast('VIDEO_NOT_FOUND');
+        } else {
+            $scope.video = video;
+            $scope.videoId = video.id;
+            $scope.$broadcast('INIT', $stateParams.youtubeVideoId);
+
+            // Loading sets, breakpoints, sorting breakpoints in order of time
+            parse.getSetsForVideo(video.id).then(function(sets) {
+                // For now, just default to first set always
+                if (sets[0]) {
+                    parse.getBreakpointsForSet(sets[0].id).then(function(set_breakpoints) {
+                        $scope.breakpoints = set_breakpoints;
+                        $scope.breakpoints.sort(function(a, b) {
+                            if (a.get("time") < b.get("time"))
+                                return -1;
+                            if (a.get("time") > b.get("time"))
+                                return 1;
+                            return 0;
+                        })
+                        // Pass sorted breakpoints into the youtube directive too
+                        $scope.$broadcast('LOAD_BPS', $scope.breakpoints);
+                    })
+                } 
+
+            })
+
+        }
       })
   });
 
