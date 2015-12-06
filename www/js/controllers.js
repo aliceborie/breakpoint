@@ -170,7 +170,6 @@ angular.module('breakpoint.controllers', ['breakpoint.services', 'amliu.timePars
                                 return 0;
                             })
                             $scope.bps_loaded = true;
-                            // angular.element(document.querySelector("youtube[id='"+$scope.youtubeVideoId +"'] .loading_BPS")).addClass("hide");
                             // Pass sorted breakpoints into the youtube directive too
                             $scope.$broadcast('LOAD_BPS', $scope.breakpoints);
                         } else { // No breakpoints
