@@ -3,12 +3,8 @@
         <nav-buttons></nav-buttons>
     </ion-nav-buttons>
     <ion-content>
-    <!-- ngview -->
-    <!-- <ion-refresher pulling-text="Pull to refresh" on-refresh="doRefresh()">
-    </ion-refresher> -->
-        <!-- <div ng-repeat="breakpoint in breakpoints">
-            {{ breakpoint.attributes.time }}
-        </div> -->
+        <ion-refresher pulling-text="Pull to refresh" on-refresh="doRefresh()"></ion-refresher>
+
 
         <youtube class="full-width-video" id="{{ videoId }}" videoid="{{ videoId }}"></youtube>
 
@@ -44,7 +40,9 @@
         <table class="breakpoint-table" id="{{ videoId }}">
             <tr ng-repeat="breakpoint in breakpoints">
                 <td class="time-cell">
-                    <button class="button button-icon" ng-click="playBP({{breakpoint.attributes.time}})">{{ timeParser.convertSeconds(breakpoint.attributes.time) }} </button>
+                     <a href="javascript:;" ng-click="playBP({{breakpoint.attributes.time}})">{{ timeParser.convertSeconds(breakpoint.attributes.time) }} </a>
+
+             <!--        <button class="button button-icon" ng-click="playBP({{breakpoint.attributes.time}})">{{ timeParser.convertSeconds(breakpoint.attributes.time) }} </button> -->
                 </td>
                 <td class="step-description-cell">
                     <h5> {{ breakpoint.attributes.title }}</h5>
@@ -57,10 +55,10 @@
        
     </ion-content>
 
-<!--     <ion-footer-bar ng-controller="AppCtrl">
+    <ion-footer-bar ng-controller="AppCtrl">
         <div class="title">
             <button class="button button-icon center" ng-click="scrollTop()">Back to Top</button>
         </div>
-    </ion-footer-bar> -->
+    </ion-footer-bar>
 
 </ion-view>

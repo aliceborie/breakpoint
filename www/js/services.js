@@ -70,15 +70,29 @@ angular.module('breakpoint.services', [])
       breakpoint.save();
     },
 
+    // For categories that contain breakpointed videos
     getCategories: function() {
       var Category = Parse.Object.extend("Category");
       var query = new Parse.Query(Category).select(["name","url", "image_url","id","children"]).equalTo("hierarchy",1).exists("videos");
       return query.find();      
     },
 
+    // For subcategories that contain breakpointed videos
     getSubcategories: function(category) {
       var Category = Parse.Object.extend("Category");
       var query = new Parse.Query(Category).equalTo("parent",category).exists("videos").select(["name","url","image_url","id"]);
+      return query.find();
+    },
+
+    getAllCategories: function() {
+      var Category = Parse.Object.extend("Category");
+      var query = new Parse.Query(Category).select(["name","url", "image_url","id","children"]).equalTo("hierarchy",1);
+      return query.find();      
+    },
+
+    getAllSubcategories: function(category) {
+      var Category = Parse.Object.extend("Category");
+      var query = new Parse.Query(Category).equalTo("parent",category).select(["name","url","image_url","id"]);
       return query.find();
     },
 

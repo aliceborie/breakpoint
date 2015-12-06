@@ -1,7 +1,12 @@
 
 angular.module('breakpoint.controllers', ['breakpoint.services', 'amliu.timeParser'])
 
-.controller('AppCtrl', function($scope, $ionicModal, $ionicPopup, $sce, $ionicScrollDelegate, $state, timeParser) {
+.controller('AppCtrl', function($window, $scope, $ionicModal, $ionicPopup, $sce, $ionicScrollDelegate, $state, timeParser) {
+	// reload the page instead of refreshing scope
+    $scope.doRefresh = function() {
+    	$window.location.reload(true)
+    }
+
 	$scope.goToCategories = function() {
 		$state.go('app.browse')
 	}
@@ -75,7 +80,15 @@ angular.module('breakpoint.controllers', ['breakpoint.services', 'amliu.timePars
 	parse.getCategories().then(function(categories){
 		$scope.categories = categories;
 		})
-	})
+
+	$scope.doRefresh = function() {
+		parse.getCategories().then(function(categories){
+			$scope.categories = categories;
+		})
+    	$scope.$broadcast('scroll.refreshComplete');
+    	$scope.$apply();
+    }
+})
 
 
 .controller('SubcategoryCtrl', function($scope, $stateParams, parse){
@@ -83,6 +96,13 @@ angular.module('breakpoint.controllers', ['breakpoint.services', 'amliu.timePars
 	parse.getSubcategories(category).then(function(subcategories){
 		$scope.subcategories = subcategories;
 	})
+	$scope.doRefresh = function() {
+		parse.getSubcategories(category).then(function(subcategories){
+		$scope.subcategories = subcategories;
+	})
+    	$scope.$broadcast('scroll.refreshComplete');
+    	$scope.$apply();
+    }
 	
 })
 
@@ -184,6 +204,12 @@ angular.module('breakpoint.controllers', ['breakpoint.services', 'amliu.timePars
       })
   });
 
+	$scope.doRefresh = function() {
+		$window.location.reload(true);
+    	$scope.$broadcast('scroll.refreshComplete');
+    	$scope.$apply();
+    }
+
   // When the page is "popped" and we go back
   $scope.$on('$stateChangeStart', function(event) {
     // For some we don't have access to scope, so just use rootscope
@@ -235,7 +261,7 @@ angular.module('breakpoint.controllers', ['breakpoint.services', 'amliu.timePars
 		$scope.showCreateForm = true;
 	}
 
-	parse.getCategories().then(function(parseCategoryObjects) {
+	parse.getAllCategories().then(function(parseCategoryObjects) {
 		$scope.categories = []
 		angular.forEach(parseCategoryObjects, function(parseCategoryObject) {
 			$scope.categories.push(parseCategoryObject.attributes.name)
@@ -245,7 +271,7 @@ angular.module('breakpoint.controllers', ['breakpoint.services', 'amliu.timePars
 	$scope.categoryChanged = function(selectedCategory) {
 		$scope.video.category = selectedCategory;
 		$scope.video.subcategory = '';
-		parse.getSubcategories(angular.lowercase(selectedCategory)).then(function(parseSubcategoryObjects) {
+		parse.getAllSubcategories(angular.lowercase(selectedCategory)).then(function(parseSubcategoryObjects) {
 			$scope.subcategories = [];
 			angular.forEach(parseSubcategoryObjects, function(parseSubcategoryObject) {
 				$scope.$apply(function() {
