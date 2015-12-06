@@ -393,3 +393,8 @@ so we need to use pointer-events as well*/
     color: #B8ADDA;
     font-size:20px;
 }
+.loading_BPS {
+    text-align: center;
+    padding: 20px;
+    color: #998ABF;
+}

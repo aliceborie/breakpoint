@@ -37,21 +37,14 @@
             </div>
           </div>
 
+        <div class="loading_BPS" ng-if="!bps_loaded">
+             <div class="loading" ng-if="!no_bps"><fa name="circle-o-notch" spin></fa> Loading breakpoints...</div>
+             <span class="notFound" ng-if="no_bps">This video has not been breakpointed.</span>
+        </div>
         <table class="breakpoint-table" id="{{ videoId }}">
             <tr ng-repeat="breakpoint in breakpoints">
-
                 <td class="time-cell">
-
-       
-
                     <button class="button button-icon" ng-click="playBP({{breakpoint.attributes.time}})">{{ timeParser.convertSeconds(breakpoint.attributes.time) }} </button>
-
-                <!-- <div class="chosen_bp" ng-if="$index === currentBp"></div> -->
-                <!-- <a href="javascript:;" class="bp_start" ng-click="jumpToBp($index)">
-                 -->
-                <!-- {{timeParser.convertSeconds(breakpoint.attributes.time)}}</a> -->
-
-                <!-- {{ timeParser.convertSeconds(breakpoint.attributes.time) }} -->
                 </td>
                 <td class="step-description-cell">
                     <h5> {{ breakpoint.attributes.title }}</h5>

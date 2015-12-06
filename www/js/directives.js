@@ -565,7 +565,7 @@ angular.module('breakpoint.directives', ['breakpoint.services', 'amliu.timeParse
         }
 
         function videoNotFound() {
-            angular.element(document.querySelector("youtube[id='"+scope.videoid+"'] ion-spinner")).addClass("hide");
+            angular.element(document.querySelector("youtube[id='"+scope.videoid+"'] .loading")).addClass("hide");
             angular.element(document.querySelector("youtube[id='"+scope.videoid+"'] .notFound")).removeClass("hide");
         }
 

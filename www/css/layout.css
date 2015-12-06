@@ -5,3 +5,8 @@ ion-header-bar {
 ion-header-bar button {
     color: white !important;
 }
+
+.nav-bar-block {
+    color: white !important;
+}
+

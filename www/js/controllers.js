@@ -141,12 +141,15 @@ angular.module('breakpoint.controllers', ['breakpoint.services', 'amliu.timePars
     $scope.playMode = "PM_PUSH";
   
     $scope.youtubeVideoId = $stateParams.youtubeVideoId;
+    $scope.bps_loaded = false;
+    $scope.no_bps = false;
 
   // Page has entered
   $scope.$on('$ionicView.beforeEnter', function() {
       parse.getVideo($stateParams.youtubeVideoId).then(function(video) {
         if (typeof video == 'undefined') { // Breakpoint doesn't have this video
             $scope.$broadcast('VIDEO_NOT_FOUND');
+            $scope.no_bps = true;
         } else {
             $scope.video = video;
             $scope.videoId = video.id;
@@ -157,16 +160,22 @@ angular.module('breakpoint.controllers', ['breakpoint.services', 'amliu.timePars
                 // For now, just default to first set always
                 if (sets[0]) {
                     parse.getBreakpointsForSet(sets[0].id).then(function(set_breakpoints) {
-                        $scope.breakpoints = set_breakpoints;
-                        $scope.breakpoints.sort(function(a, b) {
-                            if (a.get("time") < b.get("time"))
-                                return -1;
-                            if (a.get("time") > b.get("time"))
-                                return 1;
-                            return 0;
-                        })
-                        // Pass sorted breakpoints into the youtube directive too
-                        $scope.$broadcast('LOAD_BPS', $scope.breakpoints);
+                        if (set_breakpoints.length > 0) {
+                            $scope.breakpoints = set_breakpoints;
+                            $scope.breakpoints.sort(function(a, b) {
+                                if (a.get("time") < b.get("time"))
+                                    return -1;
+                                if (a.get("time") > b.get("time"))
+                                    return 1;
+                                return 0;
+                            })
+                            $scope.bps_loaded = true;
+                            // angular.element(document.querySelector("youtube[id='"+$scope.youtubeVideoId +"'] .loading_BPS")).addClass("hide");
+                            // Pass sorted breakpoints into the youtube directive too
+                            $scope.$broadcast('LOAD_BPS', $scope.breakpoints);
+                        } else { // No breakpoints
+                            $scope.no_bps = true;
+                        }
                     })
                 } 
 
