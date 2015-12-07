@@ -7,7 +7,7 @@
 		<ion-refresher pulling-text="Pull to refresh" on-refresh="doRefresh()"></ion-refresher>
 
 		<div id="categories-grid">
-			<h4>Select Subcategory:</h4>
+			<!-- <h4>Select Subcategory:</h4> -->
 			<div class="category category-container" ng-repeat="subcategory in subcategories">
 				<a href="#/browse/{{subcategory.attributes.parent}}/{{subcategory.attributes.url}}">
 					<div class="item">
