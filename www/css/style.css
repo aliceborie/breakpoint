@@ -66,35 +66,46 @@ iframe.sample-video {
 .category > a > .item{
 	display: inline-block;
 	float: left;
-	width: 46%;
-	height: 80px;
-	margin: 2%;
+	width: 95%;
+	height: 100px;
+	margin: 2.5%;
     padding: 0;
 }
 
 .category-overlay {
-    position: absolute;
-    width: 100%;
-    height: 100%;
+/*    position: absolute;
+    width: 0%;
+    height: 0%;
     z-index:100000;
-    background-color: rgba(255,255,255,.5);
-    text-align:left;
+    background-color: rgba(255,255,255,.5);*/
+
+    position: absolute;
+    width: 80%;
+    height: 80%;
+    z-index:100000;
+    /*background-color: rgba(255,255,255,.5);*/
+    /*text-align:center;*/
+
 }
 
 .category-background {
     width: 100%;
     height: 100%;
-    -webkit-filter: blur(1px);
+    opacity: 0.6;
+ /*   -webkit-filter: blur(1px);
     -moz-filter: blur(1px);
     -o-filter: blur(1px);
     -ms-filter: blur(1px);
-    filter: blur(1px);
+    filter: blur(1px);*/
 }
 
 .category-overlay > h2 {
+    text-align: center;
     color: black;
-    padding: 8px;
-    font-weight: 450;
+    padding: 40px;
+    font-size: 100%;
+    padding-left: 110px;
+    font-weight: bold;
 }
 
 /* Video grid and overlay on browse category pages */
@@ -187,4 +198,6 @@ iframe.sample-video {
     padding-left: 0;
     padding-right: 0!;
 }
-
+.title.title-center.header-item{
+    color: white;
+}
