@@ -10,3 +10,7 @@ ion-header-bar button {
     color: white !important;
 }
 
+.bar.bar-stable .title {
+    color: white !important;
+}
+
