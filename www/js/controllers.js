@@ -143,6 +143,8 @@ angular.module('breakpoint.controllers', ['breakpoint.services', 'amliu.timePars
 		}); 
 	})
 
+  $scope.searchTerms = $stateParams.q
+
 	$scope.all = true;
 	$scope.breakpointed = true;
 

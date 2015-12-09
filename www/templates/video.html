@@ -22,13 +22,21 @@
             <br />
 
             <div class="playmode">
-                <label>Playmode:</label>
+                <!-- <label>Playmode:</label>
                 <span>
                 <select ng-model="playMode" ng-change="changePlayMode()" ng-init="PM_PUSH">
                   <option value="PM_PUSH">Push through breakpoints</option>
                   <option value="PM_PAUSE">Pause on breakpoint</option>
                   <option value="PM_REPEAT">Repeat until ready</option>
-                </select>
+                </select> -->
+                <label class="item item-input item-select">
+                    <div class="input-label">Playmode:</div>
+                    <select ng-model="playMode" ng-change="changePlayMode()" ng-init="PM_PUSH">
+                      <option value="PM_PUSH">Push through breakpoints</option>
+                      <option value="PM_PAUSE">Pause on breakpoint</option>
+                      <option value="PM_REPEAT">Repeat until ready</option>
+                    </select>
+                </label>
             </span>
             </div>
           </div>
