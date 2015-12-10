@@ -8,8 +8,12 @@ angular.module('breakpoint.controllers', ['breakpoint.services', 'amliu.timePars
     }
 
 	$scope.goToCategories = function() {
-		$state.go('app.browse')
+		$state.go('app.browse');
 	}
+
+    $scope.goHome = function() {
+        $state.go('app.landing');
+    }
 
 	$scope.search = {};
 	// Opens search popup when search button in nav bar clicked
