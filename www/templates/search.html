@@ -5,9 +5,13 @@
   <ion-content>
     <ion-refresher pulling-text="Pull to refresh" on-refresh="doRefresh()"></ion-refresher>
       
-    <div class="button-bar">
-      <a class="button button-royal" ng-click="showBreakpointed()">Show Breakpointed Videos</a>
-      <a class="button button-dark" ng-click="showAll()">Show All Videos</a>
+    <div class="padding">
+      <h4>Results for: {{ searchTerms }}.</h4>
+      Shows breakpointed and non-breakpointed videos. If a video is breakpointed, click on it to view it. If a video isn't breakpointed, click on it to add breakpoints to the video and add it to breakpointed videos collection.
+    </div>
+    <div class="button-bar padding">
+      <a class="button button-royal" ng-click="showBreakpointed()"> Breakpointed Videos</a>
+      <a class="button button-dark" ng-click="showAll()">All Videos</a>
     </div>  
     
     <div class="list">
@@ -27,6 +31,14 @@
         </a>
       </div>
     </div>
+
+    <div style="height:30px;"></div>
+
+    <ion-footer-bar ng-controller="AppCtrl">
+      <div class="title">
+        <button class="button button-icon center" ng-click="scrollTop()">Back to Top</button>
+      </div>
+    </ion-footer-bar>
 
   </ion-content>
 </ion-view>

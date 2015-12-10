@@ -1,7 +1,7 @@
-<ion-view view-title>
-	<ion-nav-buttons side="right" class="show">
-		<nav-buttons></nav-buttons>
-	</ion-nav-buttons>
+<ion-view hide-nav-bar="true">
+	<!-- <ion-nav-buttons side="right" class="show"> -->
+		<!-- <nav-buttons></nav-buttons> -->
+	<!-- </ion-nav-buttons> -->
 	
 	<ion-content>
 		<ion-refresher pulling-text="Pull to refresh" on-refresh="doRefresh()"></ion-refresher>
@@ -29,19 +29,20 @@
 			</ion-slide>
 		</ion-slide-box>
 		<div id="browse">
-			<a class="button button-block button-royal" href="#/browse">Browse</a>
-			<label class="item item-input with-button">
+			<a class="button <!-- button-block --> button-royal" href="#/browse">Browse</a>
+			<!-- <label class="item item-input with-button">
 				<input type="text" placeholder="Search">
 				<button class="button button-royal "><i class="icon ion-search"></i></button>
-			</label>
+			</label> -->
 		</div>
-		<div id="make-breakpoint">
-			<h4>Can't find a video?</h4>
-			<p>Breakpoint it in a few seconds</p>
-			<label class="item item-input with-button">
+		<div id="search-section">
+			<h4>Looking for a specific video?</h4>
+			<button class="button button-royal center" ng-click="openSearch()">Search <i class="icon ion-search"></i></button>
+			<!-- <p>Breakpoint it in a few seconds</p> -->
+			<!-- <label class="item item-input with-button">
 				<input type="text" placeholder="Enter YouTube link">
 				<button class="button button-royal"><i class="icon ion-arrow-right-c"></i></button>
-			</label>
+			</label> -->
 		</div>
 	</ion-content>
 </ion-view>

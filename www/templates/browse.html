@@ -6,7 +6,6 @@
 	<ion-content>
 		<ion-refresher pulling-text="Pull to refresh" on-refresh="doRefresh()"></ion-refresher>
 		<div id="categories-grid">
-			<h4>Select category:</h4>
 			<div class="category category-container" ng-repeat="category in categories">
 				<a href="#/browse/{{category.attributes.url}}">
 					<div class="item">
@@ -16,16 +15,13 @@
 				</a>
 			</div>
 		</div>
-		<div id="search">
-			<label class="item item-input with-button">
+		<div id="search-section">
+			<!-- <label class="item item-input with-button">
 				<input type="text" placeholder="Search">
 				<button class="button button-royal "><i class="icon ion-search"></i></button>
-			</label>
+			</label> -->
+			<h4>Looking for a specific video?</h4>
+			<button class="button button-royal center" ng-click="openSearch()">Search <i class="icon ion-search"></i></button>
 		</div>
 	</ion-content>
-	  <ion-footer-bar ng-controller="AppCtrl">
-        <div class="title">
-            <button class="button button-icon center" ng-click="scrollTop()">Back to Top</button>
-        </div>
-    </ion-footer-bar>
 </ion-view>
