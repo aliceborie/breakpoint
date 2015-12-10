@@ -19,9 +19,11 @@
 }
 
 #breakpoint-description {
-	margin: 20px 0;
+    margin-bottom: 35px;
+    margin-top: 10px;
 	padding: 0 20px;
 }
+#breakpoint-description h4 { text-align: center; }
 
 #browse {
     position: relative;
