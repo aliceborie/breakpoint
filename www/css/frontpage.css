@@ -1,0 +1,86 @@
+/* CSS for front page b/c I am losing track of where stuff is lol */
+
+.vertical-center {
+    position: relative;
+    top: 50%;
+    transform: translateY(-50%);
+}
+
+.section {
+    /*box-shadow: 0px -17px 5px 20px rgba(0,0,0,0.5);*/
+}
+
+/* Introduction section */
+
+.introduction {
+    background-image: url("../img/introBG.png");
+    background-size: cover;
+    height: 90vh;
+}
+.topLogo {
+    position: absolute;
+    margin-left: 20px;
+    margin-top: 20px;
+}
+.topLogo img {
+    max-width: 30px;
+}
+.topLogo span {
+    display: inline;
+    margin: 0;
+    vertical-align: top;
+    line-height: 20pt;
+    font-size: 20px;
+    color: white;
+    font-weight: 500;
+}
+
+.about {
+    text-align: center;
+    min-width: 300px;
+    width: 65%;
+    left: 0;
+    margin: 0 auto;
+    color: white;
+}
+.about h4 {
+    margin-top: 0;
+    margin-bottom: 5px;
+    font-size: 30px;
+    color: white;
+    font-weight: 600;
+}
+.about span {
+    display: block;
+    font-size: 20px;
+    font-weight: 300;
+    margin-bottom: 8px;
+}
+.about p {
+    max-width: 500px;
+    left: 0;
+    margin: 0 auto;
+    margin-bottom: 5px;
+}
+.about button, .about .button {
+    width: 50%;
+    min-width: 200px;
+    margin-top: 5px;
+    background: rgba(255,255,255,0.8);
+    border: 2px solid white;
+}
+
+/* Instructions section */
+.whatIs, .whoDoes {
+    min-height: 150px;
+    width: 70%;
+    min-width: 320px;
+    left: 0;
+    margin: 0 auto;
+    padding-top: 20px;
+}
+
+.instructions h4 {
+        border-bottom: 1px solid #E8E8E8;
+    padding-bottom: 10px;
+}

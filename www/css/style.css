@@ -14,11 +14,11 @@ html,body { height:100%; }
 /* Add this to ionic scrolling windows to prevent them from scrolling*/
 .no-scroll { transform: initial !important; }
 
-#logo {
+/*#logo {
 	width: 70%;
 	height: 100%;
 	margin: 20px auto;
-}
+}*/
 
 #breakpoint-description {
     margin-bottom: 35px;

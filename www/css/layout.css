@@ -1,3 +1,5 @@
+/* Ionic overrides */
+
 ion-header-bar {
     background-color: #6636DA !important;
 }
@@ -13,4 +15,3 @@ ion-header-bar button {
 .bar.bar-stable .title {
     color: white !important;
 }
-
