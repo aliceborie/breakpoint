@@ -289,12 +289,16 @@ angular.module('breakpoint.directives', ['breakpoint.services', 'amliu.timeParse
         }
 
         scope.showHide_BpBrowser = function($event) {
+            // Hide
             if (angular.element(document.querySelector("youtube[id='"+scope.videoid+"'] .yt_playoverlay")).hasClass("browsing")) {
                 angular.element(document.querySelector("youtube[id='"+scope.videoid+"'] .yt_playoverlay")).removeClass("browsing");
 
                 // Fade out the controls if they aren't pressed on like before
                 scope.controlFadeTimeout = window.setTimeout(scope.fadeOutControls, 2500);
+
+            // Show
             } else {
+                pausePlayer();
                 angular.element(document.querySelector("youtube[id='"+scope.videoid+"'] .yt_playoverlay")).addClass("browsing");
                 document.querySelector("youtube[id='"+scope.videoid+"'] .chosen_bp").scrollIntoView();
                 // TODO :: The scrollIntoView gets it visible, but doesn't attempt to center on it
