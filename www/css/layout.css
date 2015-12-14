@@ -1,7 +1,10 @@
 /* Ionic overrides */
 
 ion-header-bar {
-    background: background: linear-gradient(to right, rgba(26, 14, 123, 0.5), rgba(154, 22, 70, 0.5)),rgba(0,0,0,0.7) !important;
+    background: linear-gradient(to right, rgba(26, 14, 123, 0.5), rgba(154, 22, 70, 0.5)),rgba(0,0,0,0.7) !important;
+    border: none !important;
+    box-shadow: 0px 3px 5px 0px rgba(0,0,0,0.2);
+
 }
 
 ion-header-bar button {
