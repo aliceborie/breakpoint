@@ -89,30 +89,19 @@ iframe.sample-video {
 }
 
 .category-overlay {
-/*    position: absolute;
-    width: 0%;
-    height: 0%;
-    z-index:100000;
-    background-color: rgba(255,255,255,.5);*/
-
     position: absolute;
-    width: 80%;
-    height: 80%;
-    z-index:100000;
-    /*background-color: rgba(255,255,255,.5);*/
-    /*text-align:center;*/
-
+    width: 100%;
+    height: 100%;
+    z-index: 100000;
+    background: linear-gradient(to right, rgba(53, 46, 109, 0.7), rgba(109,46,69, 0.7)),rgba(0,0,0,0.3);
 }
 
 .category-background {
     width: 100%;
     height: 100%;
+    object-fit: cover;
     opacity: 0.6;
-/*    -webkit-filter: blur(1px);
-    -moz-filter: blur(1px);
-    -o-filter: blur(1px);
-    -ms-filter: blur(1px);
-    filter: blur(1px);*/
+
     -webkit-filter: grayscale(30%) contrast(120%) brightness(80%);
     -moz-filter: grayscale(30%) contrast(120%) brightness(80%);
     -o-filter: grayscale(30%) contrast(120%) brightness(80%);
@@ -121,8 +110,8 @@ iframe.sample-video {
 }
 
 .category-overlay > h2 {
+    text-align: center;
     color: white;
-    margin: 30px;
     font-size: 150%;
     font-weight: 70;
     text-shadow: 0px 0px 8px rgba(0,0,0,1);
