@@ -115,6 +115,8 @@ angular.module('breakpoint.controllers', ['breakpoint.services', 'amliu.timePars
 
 
 .controller('CategoryCtrl', function($scope, $stateParams, parse) {
+    $scope.videos_loaded = false;
+
 	// get category name from params so can know which category 
 	var category = $stateParams.subcategory;
 	var parent = $stateParams.categoryName;
@@ -123,6 +125,7 @@ angular.module('breakpoint.controllers', ['breakpoint.services', 'amliu.timePars
 	})
 	parse.getVideosForCategory(category).then( function(videos) {
 		$scope.videos = videos;
+        $scope.videos_loaded = true;
 	})
 
 	$scope.doRefresh = function() {

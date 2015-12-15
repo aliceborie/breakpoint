@@ -148,6 +148,11 @@ iframe.sample-video {
     width: 100%;
     height: 100%;
 }
+.video-as-link img {
+    object-fit: cover;
+    width: 100%;
+    height: 100%;
+}
 
 .video-overlay > h5 {
     color: white;
