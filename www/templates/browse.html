@@ -5,23 +5,26 @@
 	
 	<ion-content>
 		<ion-refresher pulling-text="Pull to refresh" on-refresh="doRefresh()"></ion-refresher>
+
+        <div class="loading_categories" ng-if="!categories_loaded">
+             <div class="loading vertical-center">
+                <fa name="circle-o-notch" spin></fa> Loading categories...
+            </div>
+        </div>
+
 		<div id="categories-grid">
 			<div class="category category-container" ng-repeat="category in categories">
 				<a href="#/browse/{{category.attributes.url}}">
 					<div class="item">
-						<div class="category-overlay"><h2>{{ category.attributes.name }}</h2></div>
+						<div class="category-overlay"><h2 class="vertical-center">{{ category.attributes.name }}</h2></div>
 						<img class="category-background" src="{{ category.attributes.image_url }}">
 					</div>
 				</a>
 			</div>
 		</div>
 		<div id="search-section">
-			<!-- <label class="item item-input with-button">
-				<input type="text" placeholder="Search">
-				<button class="button button-royal "><i class="icon ion-search"></i></button>
-			</label> -->
-			<h4>Looking for a specific video?</h4>
-			<button class="button button-royal center" ng-click="openSearch()">Search <i class="icon ion-search"></i></button>
+			<h4>Can't find the video you're looking for?</h4>
+			<button class="button center" ng-click="openSearch()">Search Videos</button>
 		</div>
 	</ion-content>
 </ion-view>

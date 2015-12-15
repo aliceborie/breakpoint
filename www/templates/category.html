@@ -4,13 +4,23 @@
 	</ion-nav-buttons>
 	<ion-content>
 	    <ion-refresher pulling-text="Pull to refresh" on-refresh="doRefresh()"></ion-refresher>
+
+
+
+        <div class="loading_videos" ng-if="!videos_loaded">
+             <div class="loading vertical-center">
+                <fa name="circle-o-notch" spin></fa> Loading videos ...
+            </div>
+        </div>
 	    
 		<div class="video-grid">
 			<div ng-repeat="video in videos" class="video-container">
 				<a href="#/video/{{video.attributes.yt_videoId}}">
-					<div class="video-overlay"><h5>{{ video.attributes.yt_title }}</h5></div>
-					<iframe class="video-as-link" src="{{trust('https://www.youtube.com/embed/'+video.attributes.yt_videoId+'?showinfo=0&modestbranding=1&controls=0')}}" frameborder="0" allowfullscreen></iframe>
-					<!-- <img style="width:100%;" ng-src="https://i.ytimg.com/vi/q8fxeArYMT4/hqdefault.jpg" src="https://i.ytimg.com/vi/q8fxeArYMT4/hqdefault.jpg"> -->
+					<div class="video-overlay"><h5 class="vertical-center">{{ video.attributes.yt_title }}</h5></div>
+                    <div class="video-as-link">
+                        <img src="{{trust('https://img.youtube.com/vi/' + video.attributes.yt_videoId + '/0.jpg')}}" />
+                    </div>
+<!-- 					<iframe class="video-as-link" src="{{trust('https://www.youtube.com/embed/'+video.attributes.yt_videoId+'?showinfo=0&modestbranding=1&controls=0')}}" frameborder="0" allowfullscreen></iframe> -->
 				</a>
 			</div>
 		</div>

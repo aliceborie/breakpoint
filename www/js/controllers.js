@@ -81,9 +81,12 @@ angular.module('breakpoint.controllers', ['breakpoint.services', 'amliu.timePars
 
 .controller('BrowseCtrl', function($scope, parse){
 
-	parse.getCategories().then(function(categories){
+    $scope.categories_loaded = false;
+
+	parse.getCategories().then(function(categories) {
 		$scope.categories = categories;
-		})
+        $scope.categories_loaded = true;
+	})
 
 	$scope.doRefresh = function() {
 		parse.getCategories().then(function(categories){
@@ -112,6 +115,8 @@ angular.module('breakpoint.controllers', ['breakpoint.services', 'amliu.timePars
 
 
 .controller('CategoryCtrl', function($scope, $stateParams, parse) {
+    $scope.videos_loaded = false;
+
 	// get category name from params so can know which category 
 	var category = $stateParams.subcategory;
 	var parent = $stateParams.categoryName;
@@ -120,6 +125,7 @@ angular.module('breakpoint.controllers', ['breakpoint.services', 'amliu.timePars
 	})
 	parse.getVideosForCategory(category).then( function(videos) {
 		$scope.videos = videos;
+        $scope.videos_loaded = true;
 	})
 
 	$scope.doRefresh = function() {
@@ -133,7 +139,9 @@ angular.module('breakpoint.controllers', ['breakpoint.services', 'amliu.timePars
 
 
 .controller('SearchCtrl', function($scope, $http, $stateParams, youtubeData, parse) {
-	$scope.videos = [];
+	$scope.videos_loaded = false;
+
+    $scope.videos = [];
 
 	youtubeData.search($stateParams.q).success(function(response) {
 		parse.getYTVideoIDs().then(function(breakpointedVideos) {
@@ -144,6 +152,7 @@ angular.module('breakpoint.controllers', ['breakpoint.services', 'amliu.timePars
 				video.isBreakpointed = (breakpointedVideos.indexOf(video.id.videoId) !== -1);
 				$scope.videos.push(video);
 			})
+            $scope.videos_loaded = true;
 		}); 
 	})
 

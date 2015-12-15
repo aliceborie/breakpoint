@@ -11,7 +11,7 @@
 			<div class="category category-container" ng-repeat="subcategory in subcategories">
 				<a href="#/browse/{{subcategory.attributes.parent}}/{{subcategory.attributes.url}}">
 					<div class="item">
-						<div class="category-overlay"><h2>{{ subcategory.attributes.name }}</h2></div>
+						<div class="category-overlay"><h2 class="vertical-center">{{ subcategory.attributes.name }}</h2></div>
 						<img class="category-background" src="{{ subcategory.attributes.image_url }}">
 					</div>
 				</a>
