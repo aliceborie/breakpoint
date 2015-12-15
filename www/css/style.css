@@ -31,7 +31,7 @@ html,body { height:100%; }
 }
 
 #search-section {
-	background-color: rgb(218, 213, 232);
+	background-color: rgb(241, 234, 238);
 	padding: 35px 20px 50px 20px;
     text-align: center;
     vertical-align: center;
@@ -151,7 +151,8 @@ iframe.sample-video {
 
 .video-overlay > h5 {
     color: white;
-    padding: 8px;
+    text-align: center;
+    margin: 0;
     font-weight: 500 !important;
     text-shadow: 0px 0px 8px rgba(0,0,0,1);
 }
